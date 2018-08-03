@@ -247,6 +247,9 @@ CREATE TABLE aud_ses_tbl
 	snd_node_id UUID NOT NULL, -- THE ID OF THE SENDING node_tbl
 	snt_ep VARCHAR(256) NOT NULL, -- THE SENDING ENDPOINT
 	crt_utc TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, -- THE TIME THAT THE SESSION WAS CREATED
+	crt_usr_id UUID NOT NULL, 
+	obslt_utc TIMESTAMPTZ,
+	obslt_usr_id UUID,
 	CONSTRAINT pk_aud_ses_tbl PRIMARY KEY (ses_id),
 	CONSTRAINT fk_rcvr_nod_id FOREIGN KEY (rcv_node_id) REFERENCES aud_node_tbl(node_id),
 	CONSTRAINT fk_snd_node_id FOREIGN KEY (snd_node_id) REFERENCES aud_node_tbl(node_id)
@@ -268,7 +271,8 @@ CREATE TABLE aud_tbl
 	evt_utc TIMESTAMPTZ NOT NULL, -- THE TIME THE EVENT OCCURRED
 	crt_utc TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, -- THE TIMESTAMP OF THE EVENT
 	ses_id UUID, -- THE UUID OF THE AUDIT CORRELATION
-	ps_name VARCHAR(256) NOT NULL, -- THE NAME OF THE PROCESS
+	ps_name VARCHAR(256), -- THE NAME OF THE PROCESS
+	ps_id VARCHAR(256) NOT NULL, 
 	CONSTRAINT pk_aud_tbl PRIMARY KEY (aud_id),
 	CONSTRAINT fk_aud_act_cd_id_tbl FOREIGN KEY (act_cd_id) REFERENCES aud_cd_tbl(cd_id),
 	CONSTRAINT fk_aud_out_cd_id_tbl FOREIGN KEY (out_cd_id) REFERENCES aud_cd_tbl(cd_id),
@@ -288,9 +292,10 @@ CREATE TABLE aud_ptcpt_tbl
 	ptcpt_id UUID NOT NULL DEFAULT uuid_generate_v1(), -- UNIQUE ISENTIFIER FOR THE PARTICIPANT
 	node_id UUID, -- THE LINKED NODE VERSION IN THE RECORD
 	sid UUID, -- THE USER OR DEVICE SECURITY IDENTIFIER MAPPED TO 
-	raw_usr_id VARCHAR(256), -- THE USER IDENTIFIER AS IT APPEARED ON THE AUDIT
-	raw_usr_name VARCHAR(256), -- THE USER NAME AS IT APPEARED ON THE AUDIT
+	usr_id VARCHAR(256), -- THE USER IDENTIFIER AS IT APPEARED ON THE AUDIT
+	usr_name VARCHAR(256), -- THE USER NAME AS IT APPEARED ON THE AUDIT
 	net_ap VARCHAR(256), -- THE IP ADDRESS OF THE PARITICIPANT
+	net_ap_typ INTEGER, 
 	CONSTRAINT pk_aud_ptcpt_tbl PRIMARY KEY (ptcpt_id),
 	CONSTRAINT fk_aud_ptcpt_node_tbl FOREIGN KEY (node_id) REFERENCES aud_node_tbl(node_id),
 );
@@ -302,10 +307,11 @@ CREATE INDEX aud_ptcpt_node_idx ON aud_ptcpt_tbl(node_id);
 -- LINKS PARTICIPANTS TO AUDITS
 CREATE TABLE aud_ptcpt_aud_assoc_tbl 
 (
+	assoc_id UUID NOT NULL DEFAULT uuid_generate_v1(), -- SURROGATE KEY
 	aud_id UUID NOT NULL, -- AUDIT IDENTIFIER
 	ptcpt_id UUID NOT NULL, -- PARTICIPANT IDENTIFIER 
 	is_rqo BOOLEAN NOT NULL DEFAULT FALSE, -- TRUE IF THE PARTICIPANT INITIATED THE REQUEST
-	CONSTRAINT pk_aud_ptcpt_aud_assoc_tbl PRIMARY KEY (ptcpt_id),
+	CONSTRAINT pk_aud_ptcpt_aud_assoc_tbl PRIMARY KEY (assoc_id),
 	CONSTRAINT fk_aud_ptcpt_aud_aud_tbl FOREIGN KEY (aud_id) REFERENCES aud_tbl(aud_id),
 	CONSTRAINT fk_aud_ptcpt_aud_ptcpt_tbl FOREIGN KEY (ptcpt_id) REFERENCES aud_ptcpt_tbl(ptcpt_id)
 );
@@ -314,12 +320,9 @@ CREATE TABLE aud_ptcpt_aud_assoc_tbl
 -- TRACKS AN ASSOCIATION BETWEEN AN AUDIT ACTIVE PARTICIPANT AND THE ROLE CODES
 CREATE TABLE aud_ptcpt_rol_cd_assoc_tbl
 (
-	aud_id UUID NOT NULL, -- THE ID OF THE AUDIT
-	ptcpt_id UUID NOT NULL, -- THE IDENTIFIER OF THE PARTICIPANT TO WHICH THE ASSOCIATION APPLIES
+	assoc_id UUID NOT NULL DEFAULT uuid_generate_v1(), -- ASSOCIATION THIS ROLE APPLIES TO
 	cd_id UUID NOT NULL, -- THE IDENTIFIER FOR THE ROLE CODE
-	CONSTRAINT pk_aud_ptcpt_rol_cd_assoc_tbl PRIMARY KEY (aud_id, ptcpt_id, cd_id),
-	CONSTRAINT fk_aud_ptcpt_rol_cd_aud_tbl FOREIGN KEY (aud_id) REFERENCES aud_tbl(aud_id),
-	CONSTRAINT fk_aud_ptcpt_rol_cd_ptcpt_tbl FOREIGN KEY (ptcpt_id) REFERENCES aud_ptcpt_tbl(ptcpt_id),
+	CONSTRAINT pk_aud_ptcpt_rol_cd_assoc_tbl PRIMARY KEY (assoc_id, cd_id),
 	CONSTRAINT fk_aud_ptcpt_rol_cd_cd_tbl FOREIGN KEY (cd_id) REFERENCES aud_cd_tbl(cd_id)
 );
 
@@ -373,9 +376,10 @@ CREATE TABLE aud_src_typ_tbl
 -- TRACKS THE RELATIONSHIP BETWEEN AN AUDIT SOURCE AND AN AUDIT MESSAGE
 CREATE TABLE aud_src_assoc_tbl
 (
+	assoc_id UUID NOT NULL DEFAULT uuid_generate_v1(),
 	aud_src_id UUID NOT NULL, -- THE AUDIT SOURCE TO WHICH THE ASSOCIATION APPLIES,
 	aud_id UUID NOT NULL, -- THE IDENTIFIER OF THE AUDIT TO WHICH THE ASSOCIATION APPLIES
-	CONSTRAINT pk_aud_src_assoc_tbl PRIMARY KEY (aud_src_id, aud_id),
+	CONSTRAINT pk_aud_src_assoc_tbl PRIMARY KEY (assoc_id),
 	CONSTRAINT fk_aud_src_assoc_aud_src_tbl FOREIGN KEY (aud_src_id) REFERENCES aud_src_tbl(aud_src_id),
 	CONSTRAINT fk_aud_src_assoc_aud_tbl FOREIGN KEY (aud_id) REFERENCES aud_tbl(aud_id)
 );
@@ -449,7 +453,7 @@ CREATE INDEX aud_obj_dtl_obj_idx ON aud_obj_dtl_tbl(obj_id);
 -- STORES AUDIT ERRORS 
 CREATE TABLE aud_dtl_tbl
 (
-	err_id UUID NOT NULL DEFAULT uuid_generate_v1(), -- A UNIQUE IDENTIFIER FOR THE ERROR
+	dtl_id UUID NOT NULL DEFAULT uuid_generate_v1(), -- A UNIQUE IDENTIFIER FOR THE ERROR
 	ses_id UUID NOT NULL, -- THE SESSION IN WHICH THE AUDIT WAS COLLECTED
 	level NUMERIC(2) NOT NULL, -- THE LEVEL OF THE DETAIL
 	msg TEXT NOT NULL, -- THE ERROR MESSAGE
@@ -457,7 +461,9 @@ CREATE TABLE aud_dtl_tbl
 	stack TEXT, -- THE STACK TRACE OF ANY EXCEPTION WHICH CAUSED THE ERROR
 	crt_utc TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	caus_by_id UUID, -- THE CAUSE OF THIS ERROR (IF APPLICABLE)
-	CONSTRAINT pk_aud_err_tbl PRIMARY KEY (err_id), 
-	CONSTRAINT fk_aud_err_ses_tbl FOREIGN KEY (ses_id) REFERENCES aud_ses_tbl(ses_id),
-	CONSTRAINT fk_aud_err_caus_tbl FOREIGN KEY (caus_by_id) REFERENCES aud_err_tbl(err_id)
+	sts_cd_id INTEGER NOT NULL DEFAULT 0,
+	CONSTRAINT pk_aud_dtl_tbl PRIMARY KEY (err_id), 
+	CONSTRAINT fk_aud_dtl_ses_tbl FOREIGN KEY (ses_id) REFERENCES aud_ses_tbl(ses_id),
+	CONSTRAINT fk_aud_dtl_caus_tbl FOREIGN KEY (caus_by_id) REFERENCES aud_err_tbl(err_id),
+	CONSTRAINT fk_aud_dtl_sts_tbl FOREIGN KEY (sts_cd_id) REFERENCES aud_sts_cdtbl(cd_id)
 );

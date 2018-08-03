@@ -41,9 +41,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AuditDataPersistenceService.cs" />
+    <Compile Include="Services\AuditNodePersistenceService.cs" />
+    <Compile Include="Services\AuditSessionPersistenceService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\PSQL\santeguard-ddl.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MARC.HI.EHRS.SVC.Core">
+      <Version>2.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="SnateDB.Plugin">
+      <Version>1.1.0.2</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SanteGuard.Core\SanteGuard.Core.csproj">
+      <Project>{ad258df6-81c3-4c02-826a-2d72c0d61f5e}</Project>
+      <Name>SanteGuard.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\Map\" />
+    <Folder Include="Data\Model\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
