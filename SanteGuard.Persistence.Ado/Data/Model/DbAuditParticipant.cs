@@ -11,6 +11,7 @@ namespace SanteGuard.Persistence.Ado.Data.Model
     /// Represents an actor in the db for audits
     /// </summary>
     [Table("aud_ptcpt_tbl")]
+    [AssociativeTable(typeof(DbAuditCode), typeof(DbAuditParticipantRoleAssocation))]
     public class DbAuditParticipant : DbIdentified
     {
         /// <summary>

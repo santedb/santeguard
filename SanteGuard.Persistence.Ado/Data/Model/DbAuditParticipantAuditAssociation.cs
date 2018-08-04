@@ -11,7 +11,7 @@ namespace SanteGuard.Persistence.Ado.Data.Model
     /// Represents a mapping between a participant and an audit
     /// </summary>
     [Table("aud_ptcpt_aud_assoc_tbl")]
-    public class DbAuditParticipantAuditAssociation  : DbIdentified
+    public class DbAuditParticipantAuditAssociation  : DbAssociation
     {
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace SanteGuard.Persistence.Ado.Data.Model
         /// Gets or sets the audit
         /// </summary>
         [Column("aud_id"), ForeignKey(typeof(DbAudit), nameof(DbAudit.Key))]
-        public Guid AuditKey { get; set; }
+        public override Guid SourceKey { get; set; }
 
         /// <summary>
         /// Gets or sets the participant

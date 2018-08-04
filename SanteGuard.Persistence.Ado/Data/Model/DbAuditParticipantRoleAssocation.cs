@@ -11,14 +11,15 @@ namespace SanteGuard.Persistence.Ado.Data.Model
     /// Represents the audit participant role 
     /// </summary>
     [Table("aud_ptcpt_rol_cd_assoc_tbl")]
-    public class DbAuditParticipantRoleAssocation
+    public class DbAuditParticipantRoleAssocation 
     {
 
+      
         /// <summary>
         /// Reference to the association
         /// </summary>
         [Column("assoc_id"), ForeignKey(typeof(DbAuditParticipantAuditAssociation), nameof(DbAuditParticipantAuditAssociation.Key)), PrimaryKey]
-        public Guid AssociationKey { get; set; }
+        public Guid ParticipantKey { get; set; }
 
         /// <summary>
         /// The role 

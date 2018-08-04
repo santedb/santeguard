@@ -11,7 +11,7 @@ namespace SanteGuard.Persistence.Ado.Data.Model
     /// Represents an object specification
     /// </summary>
     [Table("aud_obj_spec_tbl")]
-    public class DbAuditObjectSpecification : DbIdentified
+    public class DbAuditObjectSpecification : DbAssociation
     {
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace SanteGuard.Persistence.Ado.Data.Model
         /// Gets or sets the object to which the spec is attached
         /// </summary>
         [Column("obj_id"), NotNull, ForeignKey(typeof(DbAuditObject), nameof(DbAuditObject.Key))]
-        public Guid ObjectKey { get; set; }
+        public override Guid SourceKey { get; set; }
 
         /// <summary>
         /// Gets or sets the specification

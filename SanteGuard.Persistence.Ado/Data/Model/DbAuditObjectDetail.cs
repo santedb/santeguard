@@ -11,7 +11,7 @@ namespace SanteGuard.Persistence.Ado.Data.Model
     /// Represents the audit object detail
     /// </summary>
     [Table("aud_obj_dtl_tbl")]
-    public class DbAuditObjectDetail : DbIdentified
+    public class DbAuditObjectDetail : DbAssociation
     {
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace SanteGuard.Persistence.Ado.Data.Model
         /// Gets or sets the object key
         /// </summary>
         [Column("obj_id"), NotNull, ForeignKey(typeof(DbAuditObject), nameof(DbAuditObject.Key))]
-        public Guid ObjectKey { get; set; }
+        public override Guid SourceKey { get; set; }
 
         /// <summary>
         /// Gets or sets the detail type

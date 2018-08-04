@@ -58,6 +58,8 @@
     <Compile Include="Data\Model\DbBaseData.cs" />
     <Compile Include="Data\Model\DbIdentified.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AdoAuditPersistenceService.cs" />
+    <Compile Include="Services\Persistence\AuditPersistenceService.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Data\Map\ModelMap.xml" />
@@ -78,8 +80,6 @@
       <Name>SanteGuard.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -11,13 +11,19 @@ namespace SanteGuard.Persistence.Ado.Data.Model
     /// Represents the audit event type association
     /// </summary>
     [Table("aud_evt_typ_cd_assoc_tbl")]
-    public class DbAuditEventTypeAssociation
+    public class DbAuditEventTypeAssociation : DbAssociation
     {
+
+        /// <summary>
+        /// Key is ignored
+        /// </summary>
+        public override Guid Key { get; set; }
+
         /// <summary>
         /// Gets or sets the audit key
         /// </summary>
         [Column("aud_id"), NotNull, ForeignKey(typeof(DbAudit), nameof(DbAudit.Key)), PrimaryKey]
-        public Guid AuditKey { get; set; }
+        public override Guid SourceKey { get; set; }
 
         /// <summary>
         /// Type code key

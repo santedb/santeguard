@@ -11,7 +11,8 @@ namespace SanteGuard.Persistence.Ado.Data.Model
     /// Represents an audit in the database
     /// </summary>
     [Table("aud_tbl"), 
-        AssociativeTable(typeof(DbAuditParticipant), typeof(DbAuditParticipantAuditAssociation))]
+        AssociativeTable(typeof(DbAuditParticipant), typeof(DbAuditParticipantAuditAssociation)),
+        AssociativeTable(typeof(DbAuditCode), typeof(DbAuditEventTypeAssociation))]
     public class DbAudit : DbIdentified
     {
         /// <summary>
