@@ -45,7 +45,7 @@ namespace SanteGuard.Model
         {
             this.EventTypeCodes = new List<AuditTerm>();
             this.Objects = new List<AuditObject>();
-            this.Participants = new List<AuditActor>();
+            this.Participants = new List<AuditParticipation>();
         }
 
         private AuditSession m_session = null;

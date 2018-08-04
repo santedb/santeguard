@@ -18,7 +18,6 @@
  * Date: 2017-9-1
  */
 using SanteDB.OrmLite.Attributes;
-using SanteDB.Persistence.Data.ADO.Data.Model.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,12 +73,12 @@ namespace SanteGuard.Persistence.Ado.Data.Model
         /// <summary>
         /// Gets or sets the entity id which created this
         /// </summary>
-        [Column("crt_usr_id"), ForeignKey(typeof(DbSecurityUser), nameof(DbSecurityUser.Key))]
+        [Column("crt_usr_id")]
         public Guid CreatedByKey { get; set; }
         /// <summary>
         /// Gets or sets the id which obsoleted this
         /// </summary>
-        [Column("obslt_usr_id"), ForeignKey(typeof(DbSecurityUser), nameof(DbSecurityUser.Key))]
+        [Column("obslt_usr_id")]
         public Guid? ObsoletedByKey { get; set; }
         /// <summary>
         /// Gets or sets the creation time
@@ -102,7 +101,7 @@ namespace SanteGuard.Persistence.Ado.Data.Model
         /// <summary>
         /// Gets or sets the updated user
         /// </summary>
-        [Column("upd_usr_id"), ForeignKey(typeof(DbSecurityUser), nameof(DbSecurityUser.Key))]
+        [Column("upd_usr_id")]
         public Guid? UpdatedByKey { get; set; }
 
         /// <summary>
