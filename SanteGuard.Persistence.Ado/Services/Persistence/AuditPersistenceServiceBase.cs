@@ -35,7 +35,7 @@ namespace SanteGuard.Persistence.Ado.Services
     /// Represents an audit persistence service
     /// </summary>
     [TraceSource(SanteGuardConstants.TraceSourceName + ".Ado")]
-    public abstract class AuditPersistenceServiceBase<TModel> : IDataPersistenceService<TModel>, IFastQueryDataPersistenceService<TModel>, IStoredQueryDataPersistenceService<TModel> IAdoPersistenceService where TModel : IdentifiedData
+    public abstract class AuditPersistenceServiceBase<TModel> : IDataPersistenceService<TModel>, IFastQueryDataPersistenceService<TModel>, IStoredQueryDataPersistenceService<TModel>, IAdoPersistenceService where TModel : IdentifiedData
     {
 
         /// <summary>

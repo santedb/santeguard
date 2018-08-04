@@ -124,7 +124,7 @@ namespace SanteGuard.Persistence.Ado.Data.Extensions
             {
 
                 // Get the domain type
-                var dataType = AuditPersistenceService.GetMapper().MapModelType(me.GetType());
+                var dataType = AdoAuditPersistenceService.GetMapper().MapModelType(me.GetType());
                 var tableMap = TableMapping.Get(dataType);
 
                 // Get the classifier attribute value
@@ -139,7 +139,7 @@ namespace SanteGuard.Persistence.Ado.Data.Extensions
                 }
 
                 // Column 
-                var column = tableMap.GetColumn(AuditPersistenceService.GetMapper().MapModelProperty(me.GetType(), dataType, classProperty));
+                var column = tableMap.GetColumn(AdoAuditPersistenceService.GetMapper().MapModelProperty(me.GetType(), dataType, classProperty));
                 // Now we want to query 
                 SqlStatement stmt = context.CreateSqlStatement().SelectFrom(dataType)
                     .Where($"{column.Name} = ?", classifierValue);

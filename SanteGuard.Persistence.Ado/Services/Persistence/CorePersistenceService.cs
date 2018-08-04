@@ -29,7 +29,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
     {
 
         // Query persistence
-        protected IQueryPersistenceService m_queryPersistence = ApplicationContext.Current.GetService<IQueryPersistenceService>();
+        protected SanteDB.Core.Services.IQueryPersistenceService m_queryPersistence = ApplicationContext.Current.GetService<SanteDB.Core.Services.IQueryPersistenceService>();
 
         /// <summary>
         /// Get the order by function
@@ -164,11 +164,11 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             {
 
                 // Query has been registered?
-                if (queryId != Guid.Empty && this.m_queryPersistence?.IsRegistered(queryId.ToString()) == true)
+                if (queryId != Guid.Empty && this.m_queryPersistence?.IsRegistered(queryId) == true)
                 {
-                    totalResults = (int)this.m_queryPersistence.QueryResultTotalQuantity(queryId.ToString());
-                    var resultKeys = this.m_queryPersistence.GetQueryResults<Guid>(queryId.ToString(), offset, count.Value);
-                    return resultKeys.Select(p => p.Id).OfType<Object>();
+                    totalResults = (int)this.m_queryPersistence.QueryResultTotalQuantity(queryId);
+                    var resultKeys = this.m_queryPersistence.GetQueryResults(queryId, offset, count.Value);
+                    return resultKeys.OfType<Object>();
                 }
 
                 // Is obsoletion time already specified?
@@ -185,7 +185,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
                 {
                     Type lastJoined = typeof(TDomain);
                     if (typeof(CompositeResult).IsAssignableFrom(typeof(TQueryReturn)))
-                        foreach (var p in typeof(TQueryReturn).GenericTypeArguments.Select(o => AuditPersistenceService.GetMapper().MapModelType(o)))
+                        foreach (var p in typeof(TQueryReturn).GenericTypeArguments.Select(o => AdoAuditPersistenceService.GetMapper().MapModelType(o)))
                             if (p != typeof(TDomain))
                             {
                                 // Find the FK to join
@@ -198,7 +198,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
                 else
                 {
                     m_tracer.TraceEvent(System.Diagnostics.TraceEventType.Verbose, 0, "Will use slow query construction due to complex mapped fields");
-                    domainQuery = AuditPersistenceService.GetQueryBuilder().CreateQuery(query);
+                    domainQuery = AdoAuditPersistenceService.GetQueryBuilder().CreateQuery(query);
                 }
 
                 // Count = 0 means we're not actually fetching anything so just hit the db
@@ -212,7 +212,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
                         ColumnMapping pkColumn = null;
                         if (typeof(CompositeResult).IsAssignableFrom(typeof(TQueryReturn)))
                         {
-                            foreach (var p in typeof(TQueryReturn).GenericTypeArguments.Select(o => AuditPersistenceService.GetMapper().MapModelType(o)))
+                            foreach (var p in typeof(TQueryReturn).GenericTypeArguments.Select(o => AdoAuditPersistenceService.GetMapper().MapModelType(o)))
                                 if (!typeof(IDbVersionedData).IsAssignableFrom(p))
                                 {
                                     pkColumn = TableMapping.Get(p).Columns.SingleOrDefault(o => o.IsPrimaryKey);
@@ -222,13 +222,13 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
                         else
                             pkColumn = TableMapping.Get(typeof(TQueryReturn)).Columns.SingleOrDefault(o => o.IsPrimaryKey);
 
-                        var keyQuery = AuditPersistenceService.GetQueryBuilder().CreateQuery(query, pkColumn).Build();
+                        var keyQuery = AdoAuditPersistenceService.GetQueryBuilder().CreateQuery(query, pkColumn).Build();
 
                         var resultKeys = context.Query<Guid>(keyQuery.Build());
 
                         //ApplicationContext.Current.GetService<IThreadPoolService>().QueueNonPooledWorkItem(a => this.m_queryPersistence?.RegisterQuerySet(queryId.ToString(), resultKeys.Select(o => new Identifier<Guid>(o)).ToArray(), query), null);
                         // Another check
-                        this.m_queryPersistence?.RegisterQuerySet(queryId.ToString(), resultKeys.Count(), resultKeys.Select(o => new Identifier<Guid>(o)).Take(1000).ToArray(), query);
+                        this.m_queryPersistence?.RegisterQuerySet(queryId, resultKeys.Take(1000).ToArray(), query, resultKeys.Count());
 
                         ApplicationContext.Current.GetService<IThreadPoolService>().QueueNonPooledWorkItem(o =>
                         {
@@ -236,7 +236,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
                             var rkeys = o as Guid[];
                             while (ofs < rkeys.Length)
                             {
-                                this.m_queryPersistence?.AddResults(queryId.ToString(), rkeys.Skip(ofs).Take(1000).Select(k => new Identifier<Guid>(k)).ToArray());
+                                this.m_queryPersistence?.AddResults(queryId, rkeys.Skip(ofs).Take(1000).ToArray());
                                 ofs += 1000;
                             }
                         }, resultKeys.ToArray());
