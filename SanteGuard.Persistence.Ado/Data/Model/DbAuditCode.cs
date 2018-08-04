@@ -23,13 +23,13 @@ namespace SanteGuard.Persistence.Ado.Data.Model
         /// Gets or set sthe code
         /// </summary>
         [Column("mnemonic"), NotNull]
-        public String Code { get; set; }
+        public String Mnemonic { get; set; }
 
         /// <summary>
         /// Gets or sets the code system
         /// </summary>
         [Column("domain"), NotNull]
-        public String CodeSystem { get; set; }
+        public String Domain { get; set; }
 
         /// <summary>
         /// Gets or sets the display name

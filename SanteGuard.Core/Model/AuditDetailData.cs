@@ -37,7 +37,7 @@ namespace SanteGuard.Model
         /// Gets or sets the priority of the issue
         /// </summary>
         [XmlElement("priority"), JsonProperty("priority")]
-        public DetectedIssuePriorityType Priority { get; set; }
+        public DetectedIssuePriorityType IssueType { get; set; }
 
         /// <summary>
         /// Gets or sets the error message

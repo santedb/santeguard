@@ -257,6 +257,27 @@ CREATE TABLE aud_ses_tbl
 	CONSTRAINT fk_snd_node_id FOREIGN KEY (snd_node_id) REFERENCES aud_node_tbl(node_id)
 );
 
+
+-- TABLE: AUDIT SOURCES TABLE
+-- TRACKS AN AUDIT SOURCE'S ENTERPRISE SITE AND SOURCE
+CREATE TABLE aud_src_tbl
+(
+	aud_src_id UUID NOT NULL DEFAULT uuid_generate_v1(), -- A UNIQUE IDENTIFIER FOR THE AUDIT SOURCE RECORD
+	ent_ste_nam VARCHAR(256), -- THE NAME OF THE ENTERPRISE SITE
+	aud_src_nam VARCHAR(256), -- THE NAME OF THE AUDIT SOURCE
+	CONSTRAINT pk_aud_src_tbl PRIMARY KEY (aud_src_id)
+);
+
+-- TRACKS A RELATIONSHIP BETWEEN THE AUDIT SOURCE AND TYPES
+CREATE TABLE aud_src_typ_tbl
+(
+	aud_src_id UUID NOT NULL, -- THE AUDIT SOURCE TO WHICH THE ASSOCIATION APPLIES
+	cd_id UUID NOT NULL, -- THE CODE OF WHICH THE AUDIT SOURCE IS
+	CONSTRAINT pk_aud_src_typ_tbl PRIMARY KEY(aud_src_id, cd_id),
+	CONSTRAINT fk_aud_src_aud_src_tbl FOREIGN KEY (aud_src_id) REFERENCES aud_src_tbl(aud_src_id),
+	CONSTRAINT fk_aud_src_cd_tbl FOREIGN KEY (cd_id) REFERENCES aud_cd_tbl(cd_id)
+);
+
 -- SEQUENCE
 CREATE SEQUENCE aud_seq START WITH 1 INCREMENT BY 1;
 
@@ -267,6 +288,7 @@ CREATE TABLE aud_tbl
 	aud_id	UUID NOT NULL DEFAULT uuid_generate_v1(), -- UNIQUE IDENTIFIER FOR THE AUDIT 
 	aud_seq_id NUMERIC(20,0) NOT NULL DEFAULT nextval('aud_seq'), -- SEQUENCE OF THE AUDIT
 	corr_id UUID NOT NULL, -- CORRELATION IDENTIFIER FOR THE AUDIT FROM THE EXTERNAL SYSTEM 
+	src_id UUID NOT NULL, -- THE AUDIT SOURCE 
 	act_cd_id UUID NOT NULL, -- THE CODE CONTAINING THE ACTION
 	out_cd_id UUID NOT NULL, -- THE CODE CONTAINING THE OUTCOME
 	evt_cd_id UUID NOT NULL, -- THE EVENT CODE
@@ -278,7 +300,8 @@ CREATE TABLE aud_tbl
 	CONSTRAINT fk_aud_act_cd_id_tbl FOREIGN KEY (act_cd_id) REFERENCES aud_cd_tbl(cd_id),
 	CONSTRAINT fk_aud_out_cd_id_tbl FOREIGN KEY (out_cd_id) REFERENCES aud_cd_tbl(cd_id),
 	CONSTRAINT fk_aud_evt_cd_id_tbl FOREIGN KEY (evt_cd_id) REFERENCES aud_cd_tbl(cd_id),
-	CONSTRAINT fk_aud_ses_id_tbl FOREIGN KEY (ses_id) REFERENCES aud_ses_tbl(ses_id)
+	CONSTRAINT fk_aud_ses_id_tbl FOREIGN KEY (ses_id) REFERENCES aud_ses_tbl(ses_id),
+	CONSTRAINT fk_aud_src_id_tbl FOREIGN KEY (src_id) REFERENCES aud_src_tbl(aud_src_id)
 );
 
 -- INDEX: LOOKUP BY ACTION CODE OR OUTCOME
@@ -352,42 +375,6 @@ CREATE TABLE aud_vrsn_tbl
 
 -- INDEX: LOOKUP AUDIT STATUS BY AUDIT ID
 CREATE INDEX aud_vrsn_aud_idx ON aud_vrsn_tbl(aud_id);
-
--- TABLE: AUDIT SOURCES TABLE
--- TRACKS AN AUDIT SOURCE'S ENTERPRISE SITE AND SOURCE
-CREATE TABLE aud_src_tbl
-(
-	aud_src_id UUID NOT NULL DEFAULT uuid_generate_v1(), -- A UNIQUE IDENTIFIER FOR THE AUDIT SOURCE RECORD
-	ent_ste_nam VARCHAR(256), -- THE NAME OF THE ENTERPRISE SITE
-	aud_src_nam VARCHAR(256), -- THE NAME OF THE AUDIT SOURCE
-	CONSTRAINT pk_aud_src_tbl PRIMARY KEY (aud_src_id)
-);
-
--- TRACKS A RELATIONSHIP BETWEEN THE AUDIT SOURCE AND TYPES
-CREATE TABLE aud_src_typ_tbl
-(
-	aud_src_id UUID NOT NULL, -- THE AUDIT SOURCE TO WHICH THE ASSOCIATION APPLIES
-	cd_id UUID NOT NULL, -- THE CODE OF WHICH THE AUDIT SOURCE IS
-	CONSTRAINT pk_aud_src_typ_tbl PRIMARY KEY(aud_src_id, cd_id),
-	CONSTRAINT fk_aud_src_aud_src_tbl FOREIGN KEY (aud_src_id) REFERENCES aud_src_tbl(aud_src_id),
-	CONSTRAINT fk_aud_src_cd_tbl FOREIGN KEY (cd_id) REFERENCES aud_cd_tbl(cd_id)
-);
-
--- TABLE: AUDIT SOURCE TO AUDIT ASSOCIATION TABLE
--- TRACKS THE RELATIONSHIP BETWEEN AN AUDIT SOURCE AND AN AUDIT MESSAGE
-CREATE TABLE aud_src_assoc_tbl
-(
-	assoc_id UUID NOT NULL DEFAULT uuid_generate_v1(),
-	aud_src_id UUID NOT NULL, -- THE AUDIT SOURCE TO WHICH THE ASSOCIATION APPLIES,
-	aud_id UUID NOT NULL, -- THE IDENTIFIER OF THE AUDIT TO WHICH THE ASSOCIATION APPLIES
-	CONSTRAINT pk_aud_src_assoc_tbl PRIMARY KEY (assoc_id),
-	CONSTRAINT fk_aud_src_assoc_aud_src_tbl FOREIGN KEY (aud_src_id) REFERENCES aud_src_tbl(aud_src_id),
-	CONSTRAINT fk_aud_src_assoc_aud_tbl FOREIGN KEY (aud_id) REFERENCES aud_tbl(aud_id)
-);
-
--- INDEX: LOOKUP AUDIT SOURCE BY AUDIT ID
-CREATE INDEX aud_src_assoc_aud_idx ON aud_src_assoc_tbl(aud_id);
-
 
 -- TABLE: AUDIT EVENT TYPE CODE ASSOCIATION TABLE
 -- TRACKS THE RELATIONSHIP BETWEEN AN AUDIT AND TYPE CODES

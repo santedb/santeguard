@@ -11,6 +11,7 @@ namespace SanteGuard.Persistence.Ado.Data.Model
     /// Represents an audit source
     /// </summary>
     [Table("aud_src_tbl")]
+    [AssociativeTable(typeof(DbAuditCode), typeof(DbAuditSourceType))]
     public class DbAuditSource : DbIdentified
     {
         /// <summary>

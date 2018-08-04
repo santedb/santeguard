@@ -30,7 +30,7 @@ namespace SanteGuard.Persistence.Ado.Data.Model
         /// Gets or sets the logging level
         /// </summary>
         [Column("level"), NotNull]
-        public int Level { get; set; }
+        public int IssueType { get; set; }
 
         /// <summary>
         /// Gets or sets the message
@@ -48,7 +48,7 @@ namespace SanteGuard.Persistence.Ado.Data.Model
         /// Gets or sets the stack trace if applicable
         /// </summary>
         [Column("stack")]
-        public String Stack { get; set; }
+        public String StackTrace { get; set; }
 
         /// <summary>
         /// Gets or sets the creation time

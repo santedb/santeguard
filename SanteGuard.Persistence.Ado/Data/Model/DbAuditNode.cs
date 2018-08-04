@@ -23,7 +23,7 @@ namespace SanteGuard.Persistence.Ado.Data.Model
         /// Gets or sets the device
         /// </summary>
         [Column("dev_id")]
-        public Guid? DeviceKey { get; set; }
+        public Guid? SecurityDeviceKey { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the node
@@ -41,6 +41,6 @@ namespace SanteGuard.Persistence.Ado.Data.Model
         /// Gets or sets the status code
         /// </summary>
         [Column("sts_cd_id"), NotNull]
-        public int StatusCode { get; set; }
+        public int Status { get; set; }
     }
 }

@@ -11,9 +11,7 @@ namespace SanteGuard.Persistence.Ado.Data.Model
     /// Represents an audit in the database
     /// </summary>
     [Table("aud_tbl"), 
-        AssociativeTable(typeof(DbAuditParticipant), typeof(DbAuditParticipantAuditAssociation)),
-        AssociativeTable(typeof(DbAuditSource), typeof(DbAuditSourceAssociation))]
-
+        AssociativeTable(typeof(DbAuditParticipant), typeof(DbAuditParticipantAuditAssociation))]
     public class DbAudit : DbIdentified
     {
         /// <summary>
@@ -37,26 +35,26 @@ namespace SanteGuard.Persistence.Ado.Data.Model
         /// <summary>
         /// Gets or sets the action code key
         /// </summary>
-        [Column("act_cs"), NotNull, ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
-        public int ActionCode { get; set; }
+        [Column("act_cd_id"), NotNull, ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
+        public Guid ActionCodeKey { get; set; }
 
         /// <summary>
         /// Gets or sets the outcome code
         /// </summary>
-        [Column("out_cs"), NotNull, ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
-        public int Outcome { get; set; }
+        [Column("out_cd_id"), NotNull, ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
+        public Guid OutcomeCodeKey { get; set; }
 
         /// <summary>
         /// Gets or sets the action code
         /// </summary>
-        [Column("typ_cs"), NotNull, ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
-        public int EventIdentifier { get; set; }
+        [Column("evt_cd_id"), NotNull, ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
+        public Guid EventIdCodeKey { get; set; }
 
         /// <summary>
         /// Gets or sets the event time
         /// </summary>
         [Column("evt_utc"), NotNull]
-        public DateTime Timestamp { get; set; }
+        public DateTime EventTimestamp { get; set; }
 
         /// <summary>
         /// Gets or sets the time that the audit was created
@@ -82,6 +80,11 @@ namespace SanteGuard.Persistence.Ado.Data.Model
         [Column("ps_id")]
         public String ProcessId { get; set; }
 
+        /// <summary>
+        /// Gets or sets the audit source
+        /// </summary>
+        [Column("src_id"), ForeignKey(typeof(DbAuditSource), nameof(DbAuditSource.Key))]
+        public Guid AuditSourceKey { get; set; }
 
     }
 }

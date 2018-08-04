@@ -156,7 +156,7 @@ namespace SanteGuard.Messaging.Syslog.Action
                         {
                             Message = i.Message,
                             StackTrace = i.Exception.ToString(),
-                            Priority = (DetectedIssuePriorityType)Enum.Parse(typeof(DetectedIssuePriorityType), i.Type.ToString())
+                            IssueType = (DetectedIssuePriorityType)Enum.Parse(typeof(DetectedIssuePriorityType), i.Type.ToString())
                         }).ToList();
                         insertBundle.Add(audit);
 
@@ -168,7 +168,7 @@ namespace SanteGuard.Messaging.Syslog.Action
                                 SourceEntityKey = audit.CorrelationToken,
                                 Message = i.Message,
                                 StackTrace = i.Exception.ToString(),
-                                Priority = i.Type == ResultDetailType.Error ? DetectedIssuePriorityType.Error : DetectedIssuePriorityType.Warning
+                                IssueType = i.Type == ResultDetailType.Error ? DetectedIssuePriorityType.Error : DetectedIssuePriorityType.Warning
                             });
 
                     // Batch persistence service

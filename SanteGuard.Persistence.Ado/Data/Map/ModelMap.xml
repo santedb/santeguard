@@ -1,38 +1,61 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <modelMap xmlns="http://santedb.org/model/map">
   
-  <class modelClass="MARC.HI.EHRS.SVC.Auditing.Data.AuditData, MARC.HI.EHRS.SVC.Auditing.Core, Version=2.0.0.0"
-		domainClass="SanteGuard.Persistence.ADO.Data.Model.DbAudit, SanteGuard.Persistence.ADO, Version=1.0.0.0">
+ 
+  <class modelClass="SanteGuard.Model.Audit, SanteGuard.Core, Version=1.0.0.0"
+         domainClass="SanteGuard.Persistence.Ado.Data.Model.DbAuditVersion, SanteGuard.Persistence.Ado, Version=1.0.0.0">
+  </class>
+  
+  <class modelClass="SanteGuard.Model.AuditTerm, SanteGuard.Core, Version=1.0.0.0"
+       domainClass="SanteGuard.Persistence.Ado.Data.Model.DbAuditCode, SanteGuard.Persistence.Ado, Version=1.0.0.0">
+
   </class>
 
-  <class modelClass="MARC.HI.EHRS.SVC.Auditing.Data.AuditActorData, MARC.HI.EHRS.SVC.Auditing.Core, Version=2.0.0.0"
-		domainClass="SanteGuard.Persistence.ADO.Data.Model.DbAuditParticipant, SanteGuard.Persistence.ADO, Version=1.0.0.0">
-    <property modelName="NetworkAccessPointId" domainName="NetworkAccessPoint"/>
-    <property modelName="NetworkAccessPointType" domainName="NetworkAccessPointType"/>
-    <property modelName="UserIdentifier" domainName="UserId"/>
+  <class modelClass="SanteGuard.Model.AuditParticipation, SanteGuard.Core, Version=1.0.0.0"
+       domainClass="SanteGuard.Persistence.Ado.Data.Model.DbAuditParticipantAuditAssociation, SanteGuard.Persistence.Ado, Version=1.0.0.0">
+    <property modelName="SourceEntityKey" domainName="AuditKey"/>
+    <property modelName="ActorKey" domainName="ParticipantKey"/>
   </class>
 
-  <class modelClass="MARC.HI.EHRS.SVC.Auditing.Data.AuditableObject, MARC.HI.EHRS.SVC.Auditing.Core, Version=2.0.0.0"
-		domainClass="SanteGuard.Persistence.ADO.Data.Model.DbAuditObject, SanteGuard.Persistence.ADO, Version=1.0.0.0">
-  </class>
-
-  <class modelClass="MARC.HI.EHRS.SVC.Auditing.Data.AuditCode, MARC.HI.EHRS.SVC.Auditing.Core, Version=2.0.0.0"
-  domainClass="SanteGuard.Persistence.ADO.Data.Model.DbAuditCode, SanteGuard.Persistence.ADO, Version=1.0.0.0">
-  </class>
-
-  <class modelClass="SanteGuard.Model.AuditDataVersion, SanteGuard.Core, Version=1.0.0.0"
-           domainClass="SanteGuard.Persistence.ADO.Data.Model.DbAuditVersion, SanteGuard.Persistence.ADO, Version=1.0.0.0">
+  <class modelClass="SanteGuard.Model.AuditActor, SanteGuard.Core, Version=1.0.0.0"
+     domainClass="SanteGuard.Persistence.Ado.Data.Model.DbAuditParticipant, SanteGuard.Persistence.Ado, Version=1.0.0.0">
   </class>
 
   <class modelClass="SanteGuard.Model.AuditDetailData, SanteGuard.Core, Version=1.0.0.0"
-         domainClass="SanteGuard.Persistence.ADO.Data.Model.DbAuditDetail, SanteGuard.Persistence.ADO, Version=1.0.0.0">
+     domainClass="SanteGuard.Persistence.Ado.Data.Model.DbAuditDetail, SanteGuard.Persistence.Ado, Version=1.0.0.0">
+    <property modelName="SourceEntityKey" domainName="AuditKey"/>
+  </class>
+  
+  <class modelClass="SanteGuard.Model.AuditNode, SanteGuard.Core, Version=1.0.0.0"
+     domainClass="SanteGuard.Persistence.Ado.Data.Model.DbAuditNode, SanteGuard.Persistence.Ado, Version=1.0.0.0">
   </class>
 
-  <class modelClass="SanteGuard.Model.AuditNode, SanteGuard.Core, Version=1.0.0.0"
-         domainClass="SanteGuard.Persistence.ADO.Data.Model.DbAuditNode, SanteGuard.Persistence.ADO, Version=1.0.0.0">
+  <class modelClass="SanteGuard.Model.AuditObject, SanteGuard.Core, Version=1.0.0.0"
+     domainClass="SanteGuard.Persistence.Ado.Data.Model.DbAuditObject, SanteGuard.Persistence.Ado, Version=1.0.0.0">
+    <property modelName="SourceEntityKey" domainName="AuditKey"/>
+    <property modelName="ExternalIdentifier" domainName="ExternalId"/>
+  </class>
+
+  <class modelClass="SanteGuard.Model.AuditObjectDetail, SanteGuard.Core, Version=1.0.0.0"
+     domainClass="SanteGuard.Persistence.Ado.Data.Model.DbAuditObjectDetail, SanteGuard.Persistence.Ado, Version=1.0.0.0">
+    <property modelName="SourceEntityKey" domainName="ObjectKey"/>
+    <property modelName="DetailKey" domainName="DetailType"/>
+    <property modelName="Value" domainName="DetailValue"/>
+  </class>
+
+  <class modelClass="SanteGuard.Model.AuditObjectSpecification, SanteGuard.Core, Version=1.0.0.0"
+   domainClass="SanteGuard.Persistence.Ado.Data.Model.DbAuditObjectSpecification, SanteGuard.Persistence.Ado, Version=1.0.0.0">
+    <property modelName="SourceEntityKey" domainName="ObjectKey"/>
   </class>
 
   <class modelClass="SanteGuard.Model.AuditSession, SanteGuard.Core, Version=1.0.0.0"
-         domainClass="SanteGuard.Persistence.ADO.Data.Model.DbAuditSession, SanteGuard.Persistence.ADO, Version=1.0.0.0">
+   domainClass="SanteGuard.Persistence.Ado.Data.Model.DbAuditSession, SanteGuard.Persistence.Ado, Version=1.0.0.0">
+    
   </class>
+
+  <class modelClass="SanteGuard.Model.AuditSource, SanteGuard.Core, Version=1.0.0.0"
+ domainClass="SanteGuard.Persistence.Ado.Data.Model.DbAuditSource, SanteGuard.Persistence.Ado, Version=1.0.0.0">
+  
+  </class>
+
 </modelMap>

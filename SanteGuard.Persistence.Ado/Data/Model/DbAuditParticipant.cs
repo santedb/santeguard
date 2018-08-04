@@ -35,7 +35,7 @@ namespace SanteGuard.Persistence.Ado.Data.Model
         /// Gets or sets the user id
         /// </summary>
         [Column("usr_id")]
-        public String UserId { get; set; }
+        public String UserIdentifier { get; set; }
 
         /// <summary>
         /// Gets or sets the user name
