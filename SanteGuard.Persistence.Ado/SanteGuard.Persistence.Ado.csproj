@@ -40,12 +40,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Model\DbAudit.cs" />
+    <Compile Include="Data\Model\DbAuditCode.cs" />
+    <Compile Include="Data\Model\DbAuditDetail.cs" />
+    <Compile Include="Data\Model\DbAuditEventTypeAssociation.cs" />
+    <Compile Include="Data\Model\DbAuditNode.cs" />
+    <Compile Include="Data\Model\DbAuditObject.cs" />
+    <Compile Include="Data\Model\DbAuditObjectDetail.cs" />
+    <Compile Include="Data\Model\DbAuditObjectSpecification.cs" />
+    <Compile Include="Data\Model\DbAuditParticipant.cs" />
+    <Compile Include="Data\Model\DbAuditParticipantAuditAssociation.cs" />
+    <Compile Include="Data\Model\DbAuditParticipantRoleAssocation.cs" />
+    <Compile Include="Data\Model\DbAuditSession.cs" />
+    <Compile Include="Data\Model\DbAuditSource.cs" />
+    <Compile Include="Data\Model\DbAuditSourceAssociation.cs" />
+    <Compile Include="Data\Model\DbAuditSourceType.cs" />
+    <Compile Include="Data\Model\DbAuditVersion.cs" />
+    <Compile Include="Data\Model\DbBaseData.cs" />
+    <Compile Include="Data\Model\DbIdentified.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AuditDataPersistenceService.cs" />
     <Compile Include="Services\AuditNodePersistenceService.cs" />
     <Compile Include="Services\AuditSessionPersistenceService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Data\Map\ModelMap.xml" />
     <Content Include="Data\PSQL\santeguard-ddl.sql" />
   </ItemGroup>
   <ItemGroup>
@@ -62,9 +81,6 @@
       <Name>SanteGuard.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\Map\" />
-    <Folder Include="Data\Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

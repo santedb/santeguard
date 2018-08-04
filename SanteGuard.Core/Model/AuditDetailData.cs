@@ -20,7 +20,7 @@ namespace SanteGuard.Model
     [XmlType(nameof(AuditDetailData), Namespace = "http://santedb.org/santeguard")]
     [XmlRoot(nameof(AuditDetailData), Namespace = "http://santedb.org/santeguard")]
     [JsonObject(nameof(AuditDetailData))]
-    public class AuditDetailData : IdentifiedData
+    public class AuditDetailData : Association<Audit>
     {
         // Caused by
         private AuditDetailData m_causedBy = null;
@@ -71,31 +71,6 @@ namespace SanteGuard.Model
                 if (value == null) this.CausedByKey = null;
                 else this.CausedByKey = value?.Key;
                 this.m_causedBy = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the key of the audit which caused this error
-        /// </summary>
-        [XmlElement("audit"), JsonProperty("audit")]
-        public Guid? AuditKey { get; set; }
-
-        /// <summary>
-        /// Gets or sets the audit that caused this error
-        /// </summary>
-        [SerializationReference(nameof(AuditKey)), JsonIgnore, XmlIgnore]
-        public AuditData Audit
-        {
-            get
-            {
-                if (this.m_audit == null && this.AuditKey.HasValue)
-                    this.m_audit = ApplicationServiceContext.Current.GetSerivce<IAuditRepositoryService>().Get(this.AuditKey);
-                return this.m_audit;
-            }
-            set
-            {
-                this.m_audit = value;
-                this.AuditKey = value.CorrelationToken;
             }
         }
 

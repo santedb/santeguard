@@ -18,5 +18,19 @@ namespace SanteGuard
         // Santeguard configuration section name
         public const string ConfigurationSectionName = "SanteGuard";
 
+        public const string ObjectTypeDomain = "ObjectType";
+
+        public const string ObjectRoleDomain = "ObjectRole";
+
+        public const string ObjectLifecycleDomain = "ObjectLifecycle";
+
+        public const string IEFTDomain = "RFC-3881";
+
+        public const string NetworkAccessDomain = "NetworkAccessPointType";
+
+        public const string ActionTypeDomain = "ActionType";
+
+        public const string OutcomeIndicatorDomain = "OutcomeIndicator";
+
     }
 }

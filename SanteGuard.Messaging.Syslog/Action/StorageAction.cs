@@ -86,7 +86,7 @@ namespace SanteGuard.Messaging.Syslog.Action
                 {
                     var processResult = (ParseAuditResult)p;
                     Bundle insertBundle = new Bundle();
-                    AuditData audit = processResult.Message.ToAuditData();
+                    Audit audit = processResult.Message.ToAudit();
 
                     // Is this an error?
                     if (audit != null)
@@ -145,26 +145,27 @@ namespace SanteGuard.Messaging.Syslog.Action
                             });
 
                         // Get the bundle ready ... 
-                        insertBundle.Add(new AuditDataEx()
+                        audit.CorrelationToken = processResult.SourceMessage.CorrelationId;
+                        audit.IsAlert = alertStatus;
+                        audit.ProcessId = e.Message.ProcessId;
+                        audit.ProcessName = e.Message.ProcessName;
+                        audit.CreationTime = e.Timestamp;
+                        audit.SessionKey = processResult.SourceMessage.SessionId;
+                        audit.Status = AuditStatusType.New;
+                        audit.Details = processResult.Details.Select(i => new AuditDetailData()
                         {
-                            Audit = audit,
-                            AuditKey = audit.CorrelationToken,
-                            IsAlert = false,
-                            ProcessId = e.Message.ProcessId,
-                            ProcessName = e.Message.ProcessName,
-                            CreationTime = e.Timestamp,
-                            Status = AuditStatusType.New,
-                            Session = session
-                        });
+                            Message = i.Message,
+                            StackTrace = i.Exception.ToString(),
+                            Priority = (DetectedIssuePriorityType)Enum.Parse(typeof(DetectedIssuePriorityType), i.Type.ToString())
+                        }).ToList();
+                        insertBundle.Add(audit);
 
                     }
-
-                    // Add details
-                    if (processResult.Details.Count() > 0)
+                    else if (processResult.Details.Count() > 0)
                         foreach (var i in processResult.Details.Where(o => o.Type != ResultDetailType.Information))
                             insertBundle.Add(new AuditDetailData()
                             {
-                                AuditKey = audit.CorrelationToken,
+                                SourceEntityKey = audit.CorrelationToken,
                                 Message = i.Message,
                                 StackTrace = i.Exception.ToString(),
                                 Priority = i.Type == ResultDetailType.Error ? DetectedIssuePriorityType.Error : DetectedIssuePriorityType.Warning

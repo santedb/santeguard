@@ -49,51 +49,51 @@ CREATE TABLE aud_cd_tbl
 CREATE UNIQUE INDEX aud_cd_mnemonic_idx ON aud_cd_tbl(domain, mnemonic);
 
 -- SEED DATA
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('1','ObjectType','Person');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('2','ObjectType','System Object');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('3','ObjectType','Organization');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('4','ObjectType','Other');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('1','AuditableObjectType','Person');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('2','AuditableObjectType','System Object');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('3','AuditableObjectType','Organization');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('4','AuditableObjectType','Other');
 
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('1','ObjectRole','Patient');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('2','ObjectRole','Location');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('3','ObjectRole','Report');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('4','ObjectRole','Resource');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('5','ObjectRole','Master File');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('6','ObjectRole','User');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('7','ObjectRole','List');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('8','ObjectRole','Doctor');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('9','ObjectRole','Subscriber');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('10','ObjectRole','Guarantor');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('11','ObjectRole','Security User');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('12','ObjectRole','Security Group');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('13','ObjectRole','Security Resource');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('14','ObjectRole','Security Granularity Definition');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('15','ObjectRole','Provider');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('16','ObjectRole','Data Destination');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('17','ObjectRole','Data Repository');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('18','ObjectRole','Schedule');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('19','ObjectRole','Customer');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('20','ObjectRole','Job');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('21','ObjectRole','Job Stream');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('22','ObjectRole','Table');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('23','ObjectRole','Routing Criteria');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('24','ObjectRole','Query');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('1','AuditableObjectRole','Patient');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('2','AuditableObjectRole','Location');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('3','AuditableObjectRole','Report');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('4','AuditableObjectRole','Resource');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('5','AuditableObjectRole','Master File');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('6','AuditableObjectRole','User');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('7','AuditableObjectRole','List');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('8','AuditableObjectRole','Doctor');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('9','AuditableObjectRole','Subscriber');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('10','AuditableObjectRole','Guarantor');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('11','AuditableObjectRole','Security User');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('12','AuditableObjectRole','Security Group');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('13','AuditableObjectRole','Security Resource');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('14','AuditableObjectRole','Security Granularity Definition');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('15','AuditableObjectRole','Provider');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('16','AuditableObjectRole','Data Destination');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('17','AuditableObjectRole','Data Repository');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('18','AuditableObjectRole','Schedule');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('19','AuditableObjectRole','Customer');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('20','AuditableObjectRole','Job');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('21','AuditableObjectRole','Job Stream');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('22','AuditableObjectRole','Table');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('23','AuditableObjectRole','Routing Criteria');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('24','AuditableObjectRole','Query');
 
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('1','ObjectLifecycle','Creation');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('2','ObjectLifecycle','Import');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('3','ObjectLifecycle','Amendment');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('4','ObjectLifecycle','Verification');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('5','ObjectLifecycle','Translation');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('6','ObjectLifecycle','Access');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('7','ObjectLifecycle','Deidentification');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('8','ObjectLifecycle','Aggregation');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('9','ObjectLifecycle','Report');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('10','ObjectLifecycle','Export');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('11','ObjectLifecycle','Disclosure');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('12','ObjectLifecycle','Receipt of Disclosure');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('13','ObjectLifecycle','Archiving');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('14','ObjectLifecycle','Logical Deletion');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('15','ObjectLifecycle','Permanent Erasure');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('1','AuditableObjectLifecycle','Creation');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('2','AuditableObjectLifecycle','Import');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('3','AuditableObjectLifecycle','Amendment');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('4','AuditableObjectLifecycle','Verification');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('5','AuditableObjectLifecycle','Translation');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('6','AuditableObjectLifecycle','Access');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('7','AuditableObjectLifecycle','Deidentification');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('8','AuditableObjectLifecycle','Aggregation');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('9','AuditableObjectLifecycle','Report');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('10','AuditableObjectLifecycle','Export');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('11','AuditableObjectLifecycle','Disclosure');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('12','AuditableObjectLifecycle','Receipt of Disclosure');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('13','AuditableObjectLifecycle','Archiving');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('14','AuditableObjectLifecycle','Logical Deletion');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('15','AuditableObjectLifecycle','Permanent Erasure');
 
 INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('1','RFC-3881','Medical Record');
 INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('2','RFC-3881','Patient Number');
@@ -176,6 +176,8 @@ INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('ITI-51','IHE Transac
 INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('1','NetworkAccessPointType','Machine Name');
 INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('2','NetworkAccessPointType','IP Address');
 INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('3','NetworkAccessPointType','Telephone Number');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('4','NetworkAccessPointType','Email Address');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('5','NetworkAccessPointType','URI');
 
 INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('C','ActionType','Create');
 INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('R','ActionType','Read');
@@ -227,15 +229,15 @@ INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('110137','DCM','User 
 INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('110153','DCM','Source');
 INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('110152','DCM','Destination');
 
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('1','RFC-3881 AuditSourceType','End User Interface');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('2','RFC-3881 AuditSourceType','Device Or Instrument');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('3','RFC-3881 AuditSourceType','Web Server Process');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('4','RFC-3881 AuditSourceType','Application Server Process');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('5','RFC-3881 AuditSourceType','Database Server Process');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('6','RFC-3881 AuditSourceType','Security Service Process');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('7','RFC-3881 AuditSourceType','ISO Level 1 or 3 Component');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('8','RFC-3881 AuditSourceType','ISO Level 4 or 6 Software');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('9','RFC-3881 AuditSourceType','Other');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('1','AuditSourceType','End User Interface');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('2','AuditSourceType','Device Or Instrument');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('3','AuditSourceType','Web Server Process');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('4','AuditSourceType','Application Server Process');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('5','AuditSourceType','Database Server Process');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('6','AuditSourceType','Security Service Process');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('7','AuditSourceType','ISO Level 1 or 3 Component');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('8','AuditSourceType','ISO Level 4 or 6 Software');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('9','AuditSourceType','Other');
 
 -- TABLE: AUDIT SESSION
 -- TRACKS A SESSION WITH A REMOTE HOST FOR LONG RUNNING AUDITS OR BATCHES OF AUDIT SUBMISSIONS
@@ -269,7 +271,6 @@ CREATE TABLE aud_tbl
 	out_cd_id UUID NOT NULL, -- THE CODE CONTAINING THE OUTCOME
 	evt_cd_id UUID NOT NULL, -- THE EVENT CODE
 	evt_utc TIMESTAMPTZ NOT NULL, -- THE TIME THE EVENT OCCURRED
-	crt_utc TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, -- THE TIMESTAMP OF THE EVENT
 	ses_id UUID, -- THE UUID OF THE AUDIT CORRELATION
 	ps_name VARCHAR(256), -- THE NAME OF THE PROCESS
 	ps_id VARCHAR(256) NOT NULL, 

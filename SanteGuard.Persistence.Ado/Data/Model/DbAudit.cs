@@ -32,31 +32,31 @@ namespace SanteGuard.Persistence.Ado.Data.Model
         /// Gets or sets the correlation identifier
         /// </summary>
         [Column("corr_id"), NotNull]
-        public Guid CorrelationId { get; set; }
+        public Guid CorrelationToken { get; set; }
 
         /// <summary>
         /// Gets or sets the action code key
         /// </summary>
-        [Column("act_cd_id"), NotNull, ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
-        public Guid ActionCodeKey { get; set; }
+        [Column("act_cs"), NotNull, ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
+        public int ActionCode { get; set; }
 
         /// <summary>
         /// Gets or sets the outcome code
         /// </summary>
-        [Column("out_cd_id"), NotNull, ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
-        public Guid OutcomeCodeKey { get; set; }
+        [Column("out_cs"), NotNull, ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
+        public int Outcome { get; set; }
 
         /// <summary>
         /// Gets or sets the action code
         /// </summary>
-        [Column("evt_cd_id"), NotNull, ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
-        public Guid EventCodeKey { get; set; }
+        [Column("typ_cs"), NotNull, ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
+        public int EventIdentifier { get; set; }
 
         /// <summary>
         /// Gets or sets the event time
         /// </summary>
         [Column("evt_utc"), NotNull]
-        public DateTime EventTime { get; set; }
+        public DateTime Timestamp { get; set; }
 
         /// <summary>
         /// Gets or sets the time that the audit was created
