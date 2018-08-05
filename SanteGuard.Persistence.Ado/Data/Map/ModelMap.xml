@@ -13,7 +13,7 @@
 
   <class modelClass="SanteGuard.Model.AuditParticipation, SanteGuard.Core, Version=1.0.0.0"
        domainClass="SanteGuard.Persistence.Ado.Data.Model.DbAuditParticipantAuditAssociation, SanteGuard.Persistence.Ado, Version=1.0.0.0">
-    <property modelName="SourceEntityKey" domainName="AuditKey"/>
+    <property modelName="SourceEntityKey" domainName="SourceKey"/>
     <property modelName="ActorKey" domainName="ParticipantKey"/>
   </class>
 
@@ -32,20 +32,20 @@
 
   <class modelClass="SanteGuard.Model.AuditObject, SanteGuard.Core, Version=1.0.0.0"
      domainClass="SanteGuard.Persistence.Ado.Data.Model.DbAuditObject, SanteGuard.Persistence.Ado, Version=1.0.0.0">
-    <property modelName="SourceEntityKey" domainName="AuditKey"/>
+    <property modelName="SourceEntityKey" domainName="SourceKey"/>
     <property modelName="ExternalIdentifier" domainName="ExternalId"/>
   </class>
 
   <class modelClass="SanteGuard.Model.AuditObjectDetail, SanteGuard.Core, Version=1.0.0.0"
      domainClass="SanteGuard.Persistence.Ado.Data.Model.DbAuditObjectDetail, SanteGuard.Persistence.Ado, Version=1.0.0.0">
-    <property modelName="SourceEntityKey" domainName="ObjectKey"/>
+    <property modelName="SourceEntityKey" domainName="SourceKey"/>
     <property modelName="DetailKey" domainName="DetailType"/>
     <property modelName="Value" domainName="DetailValue"/>
   </class>
 
   <class modelClass="SanteGuard.Model.AuditObjectSpecification, SanteGuard.Core, Version=1.0.0.0"
    domainClass="SanteGuard.Persistence.Ado.Data.Model.DbAuditObjectSpecification, SanteGuard.Persistence.Ado, Version=1.0.0.0">
-    <property modelName="SourceEntityKey" domainName="ObjectKey"/>
+    <property modelName="SourceEntityKey" domainName="SourceKey"/>
   </class>
 
   <class modelClass="SanteGuard.Model.AuditSession, SanteGuard.Core, Version=1.0.0.0"

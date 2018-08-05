@@ -13,7 +13,7 @@ namespace SanteGuard.Persistence.Ado.Interface
     /// <summary>
     /// Represents an ADO based IDataPersistenceServie
     /// </summary>
-    public interface IAdoPersistenceService : IDataPersistenceService
+    internal interface IAdoPersistenceService : IDataPersistenceService
     {
         /// <summary>
         /// Inserts the specified object
@@ -44,7 +44,7 @@ namespace SanteGuard.Persistence.Ado.Interface
     /// <summary>
     /// ADO associative persistence service
     /// </summary>
-    public interface IAdoAssociativePersistenceService : IAdoPersistenceService
+    internal interface IAdoAssociativePersistenceService : IAdoPersistenceService
     {
         /// <summary>
         /// Get the set objects from the source

@@ -64,25 +64,25 @@ namespace SanteGuard.Model
         /// Gets or sets the action
         /// </summary>
         [XmlElement("action"), JsonProperty("action")]
-        public Guid ActionCodeKey { get; set; }
+        public Guid? ActionCodeKey { get; set; }
 
         /// <summary>
         /// Gets or sets the outcome
         /// </summary>
         [XmlElement("outcome"), JsonProperty("outcome")]
-        public Guid OutcomeCodeKey { get; set; }
+        public Guid? OutcomeCodeKey { get; set; }
 
         /// <summary>
         /// Gets or sets the event type
         /// </summary>
         [XmlElement("eventId"), JsonProperty("eventId")]
-        public Guid EventIdCodeKey { get; set; }
+        public Guid? EventIdCodeKey { get; set; }
 
         /// <summary>
         /// Gets or sets the source
         /// </summary>
         [XmlElement("source"), JsonProperty("source")]
-        public Guid AuditSourceKey { get; set; }
+        public Guid? AuditSourceKey { get; set; }
 
         /// <summary>
         /// Gets or sets the event timestamp
@@ -152,7 +152,7 @@ namespace SanteGuard.Model
             set
             {
                 this.m_actionCode = value;
-                this.ActionCodeKey = value.Key.Value;
+                this.ActionCodeKey = value?.Key;
             }
         }
 
@@ -170,7 +170,7 @@ namespace SanteGuard.Model
             set
             {
                 this.m_outcomeCode = value;
-                this.OutcomeCodeKey = value.Key.Value;
+                this.OutcomeCodeKey = value?.Key;
             }
         }
 
@@ -188,7 +188,7 @@ namespace SanteGuard.Model
             set
             {
                 this.m_eventCode = value;
-                this.EventIdCodeKey = value.Key.Value;
+                this.EventIdCodeKey = value?.Key;
             }
         }
         
@@ -223,7 +223,7 @@ namespace SanteGuard.Model
             set
             {
                 this.m_source = value;
-                this.AuditSourceKey = value.Key.Value;
+                this.AuditSourceKey = value.Key;
             }
         }
 

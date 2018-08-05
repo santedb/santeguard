@@ -16,7 +16,7 @@ namespace SanteGuard
         public const string TraceSourceName = "SanteGuard";
 
         // Santeguard configuration section name
-        public const string ConfigurationSectionName = "SanteGuard";
+        public const string ConfigurationSectionName = "santeguard";
 
         public const string ObjectTypeDomain = "ObjectType";
 

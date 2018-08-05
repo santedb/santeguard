@@ -101,7 +101,7 @@ namespace SanteGuard.Core.Model
                         act = actorPs.Insert(new AuditActor()
                         {
                             NetworkAccessPoint = a.NetworkAccessPointId,
-                            NetworkAccessPointType = (int)a.NetworkAccessPointType,
+                            NetworkAccessPointType = (SanteGuard.Model.NetworkAccessPointType)((int)a.NetworkAccessPointType),
                             UserIdentifier = a.UserIdentifier,
                             UserName = a.UserName,
                             SecurityIdentifier = ApplicationContext.Current.GetService<ISecurityRepositoryService>().GetUser(a.UserName ?? a.UserIdentifier ?? a.AlternativeUserId).Key ??
@@ -174,7 +174,7 @@ namespace SanteGuard.Core.Model
                         act = actorPs.Insert(new AuditActor()
                         {
                             NetworkAccessPoint = a.NetworkAccessPointId,
-                            NetworkAccessPointType = (int)a.NetworkAccessPointType,
+                            NetworkAccessPointType = (SanteGuard.Model.NetworkAccessPointType)((int)a.NetworkAccessPointType),
                             UserIdentifier = a.UserIdentifier,
                             UserName = a.UserName,
                             SecurityIdentifier = ApplicationContext.Current.GetService<ISecurityRepositoryService>().GetUser(a.UserName ?? a.UserIdentifier ?? a.AlternativeUserId).Key ??

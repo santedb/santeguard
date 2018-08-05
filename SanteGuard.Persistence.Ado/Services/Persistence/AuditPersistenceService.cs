@@ -21,7 +21,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
     /// <summary>
     /// Represents a basic persistence service for audits
     /// </summary>
-    public class AuditPersistenceService : BaseDataPersistenceService<Audit, DbAuditVersion, CompositeResult<DbAuditVersion, DbAudit>>
+    public class AuditPersistenceService : VersionedDataPersistenceService<Audit, DbAuditVersion, DbAudit>
     {
 
         /// <summary>

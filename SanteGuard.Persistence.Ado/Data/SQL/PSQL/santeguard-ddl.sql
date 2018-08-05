@@ -95,18 +95,18 @@ INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('13','AuditableObject
 INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('14','AuditableObjectLifecycle','Logical Deletion');
 INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('15','AuditableObjectLifecycle','Permanent Erasure');
 
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('1','RFC-3881','Medical Record');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('2','RFC-3881','Patient Number');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('3','RFC-3881','Encounter Number');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('4','RFC-3881','Enrollee Number');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('5','RFC-3881','Social Security Number');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('6','RFC-3881','Account Number');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('7','RFC-3881','Guarantor Number');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('8','RFC-3881','Report Name');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('9','RFC-3881','Report Number');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('10','RFC-3881','Search Criterion');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('11','RFC-3881','User Identifier');
-INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('12','RFC-3881','Uri');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('1','AuditableObjectIdType','Medical Record');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('2','AuditableObjectIdType','Patient Number');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('3','AuditableObjectIdType','Encounter Number');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('4','AuditableObjectIdType','Enrollee Number');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('5','AuditableObjectIdType','Social Security Number');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('6','AuditableObjectIdType','Account Number');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('7','AuditableObjectIdType','Guarantor Number');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('8','AuditableObjectIdType','Report Name');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('9','AuditableObjectIdType','Report Number');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('10','AuditableObjectIdType','Search Criterion');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('11','AuditableObjectIdType','User Identifier');
+INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('12','AuditableObjectIdType','Uri');
 
 INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd','IHE XDS Meta Data','Submission Set');
 INSERT INTO aud_cd_tbl (mnemonic, domain, display) VALUES ('urn:uuid:a7058bb9-b4e4-4307-ba5b-e3f0ab85e12d','IHE XDS Meta Data','Submission Set Author');
@@ -291,7 +291,7 @@ CREATE TABLE aud_tbl
 	evt_utc TIMESTAMPTZ NOT NULL, -- THE TIME THE EVENT OCCURRED
 	ses_id UUID, -- THE UUID OF THE AUDIT CORRELATION
 	ps_name VARCHAR(256), -- THE NAME OF THE PROCESS
-	ps_id VARCHAR(256) NOT NULL, 
+	ps_id VARCHAR(256), 
 	CONSTRAINT pk_aud_tbl PRIMARY KEY (aud_id),
 	CONSTRAINT fk_aud_act_cd_id_tbl FOREIGN KEY (act_cd_id) REFERENCES aud_cd_tbl(cd_id),
 	CONSTRAINT fk_aud_out_cd_id_tbl FOREIGN KEY (out_cd_id) REFERENCES aud_cd_tbl(cd_id),
@@ -360,7 +360,7 @@ CREATE TABLE aud_vrsn_tbl
 (
 	aud_vrsn_id UUID NOT NULL DEFAULT uuid_generate_v1(), -- UNIQUE IDENTIFIER FOR THE CHANGE TO THE AUDIT STATUS
 	aud_id UUID NOT NULL, -- THE IDENTIFIER OF THE AUDIT FOR WHICH THIS CHANGE APPLIES
-	rplc_vrsn_id UUID NOT NULL, -- THE VERSION THAT THIS RECORD REPLACES
+	rplc_vrsn_id UUID, -- THE VERSION THAT THIS RECORD REPLACES
 	vrsn_seq_id NUMERIC(20,0) NOT NULL DEFAULT nextval('aud_vrsn_seq'), -- SEQUENCE OF THE AUDIT
 	sts_cd_id INTEGER NOT NULL, -- THE STATUS CODE TO WHICH THE NEW AUDIT IS TARGETED
 	is_alrt BOOLEAN DEFAULT FALSE,

@@ -32,7 +32,7 @@ namespace SanteGuard.Model
         /// Gets or sets the actor
         /// </summary>
         [XmlElement("actor"), JsonProperty("actor")]
-        public Guid ActorKey { get; set; }
+        public Guid? ActorKey { get; set; }
 
         /// <summary>
         /// Gets or sets whether the actor is the requestor
@@ -60,7 +60,7 @@ namespace SanteGuard.Model
             set
             {
                 this.m_actor = value;
-                this.ActorKey = value.Key.Value;
+                this.ActorKey = value.Key;
             }
         }
     }

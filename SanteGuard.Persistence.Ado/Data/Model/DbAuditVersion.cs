@@ -29,7 +29,7 @@ namespace SanteGuard.Persistence.Ado.Data.Model
         /// <summary>
         /// Gets or sets the previous version
         /// </summary>
-        [Column("replc_vrsn_id"), ForeignKey(typeof(DbAuditVersion), nameof(Key))]
+        [ForeignKey(typeof(DbAuditVersion), nameof(Key))]
         public Guid? PreviousVersionKey { get; set; }
 
         /// <summary>

@@ -1,8 +1,12 @@
 ﻿using System;
 using System.IO;
 using MARC.HI.EHRS.SVC.Core;
+using MARC.HI.EHRS.SVC.Core.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SanteDB.Core.Model.EntityLoader;
+using SanteGuard.Model;
+using SanteGuard.Persistence.Ado.Services;
+using SanteGuard.Test.Shim;
 
 namespace SanteGuard.Test
 {
@@ -34,8 +38,15 @@ namespace SanteGuard.Test
                Path.Combine(context.TestDeploymentDir, string.Empty));
 
             EntitySource.Current = new EntitySource(new PersistenceServiceEntitySource());
-            ApplicationContext.Current.Start();
             var f = typeof(FirebirdSql.Data.FirebirdClient.FirebirdClientFactory).AssemblyQualifiedName;
+
+            // Register the AuditAdoPersistenceService
+            var adoPersistenceService = ApplicationContext.Current.GetService<IDataPersistenceService<Audit>>();
+            ApplicationContext.Current.AddServiceProvider(typeof(MARC.HI.EHRS.SVC.Core.Configuration.LocalConfigurationManager));
+            if (adoPersistenceService == null)
+                ApplicationContext.Current.AddServiceProvider(typeof(AdoAuditPersistenceService));
+            ApplicationContext.Current.AddServiceProvider(typeof(DummySecurityRepositoryService)); // Sec repo service is for get user name implementation
+            ApplicationContext.Current.AddServiceProvider(typeof(DummyPolicyDecisionService));
 
             // Start the daemon services
             if (!ApplicationContext.Current.IsRunning)

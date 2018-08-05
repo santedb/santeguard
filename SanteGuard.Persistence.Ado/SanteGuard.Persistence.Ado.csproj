@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -40,6 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\AdoConfiguration.cs" />
+    <Compile Include="Configuration\AdoConfigurationSectionHandler.cs" />
+    <Compile Include="Data\Extensions\DataModelExtensions.cs" />
+    <Compile Include="Data\Model\DbAssociation.cs" />
     <Compile Include="Data\Model\DbAudit.cs" />
     <Compile Include="Data\Model\DbAuditCode.cs" />
     <Compile Include="Data\Model\DbAuditDetail.cs" />
@@ -57,9 +62,16 @@
     <Compile Include="Data\Model\DbAuditVersion.cs" />
     <Compile Include="Data\Model\DbBaseData.cs" />
     <Compile Include="Data\Model\DbIdentified.cs" />
+    <Compile Include="Data\Model\DbVersionedData.cs" />
+    <Compile Include="Interface\IAdoPersistenceService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AdoAuditPersistenceService.cs" />
     <Compile Include="Services\Persistence\AuditPersistenceService.cs" />
+    <Compile Include="Services\Persistence\BasePersistenceService.cs" />
+    <Compile Include="Services\Persistence\CorePersistenceService.cs" />
+    <Compile Include="Services\Persistence\AuditPersistenceServiceBase.cs" />
+    <Compile Include="Services\Persistence\IdentifiedPersistenceService.cs" />
+    <Compile Include="Services\Persistence\VersionedDataPersistenceService.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Data\Map\ModelMap.xml" />
@@ -69,6 +81,9 @@
   <ItemGroup>
     <PackageReference Include="MARC.HI.EHRS.SVC.Core">
       <Version>2.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="SanteDB.Core.Api">
+      <Version>1.1.0.1</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Plugin">
       <Version>1.1.0.4</Version>

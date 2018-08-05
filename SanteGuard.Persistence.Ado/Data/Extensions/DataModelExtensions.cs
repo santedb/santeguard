@@ -99,7 +99,7 @@ namespace SanteGuard.Persistence.Ado.Data.Extensions
         {
 
             // Is there a classifier?
-            var idpInstance = ApplicationContext.Current.GetService(me.GetType()) as IAdoPersistenceService;
+            var idpInstance = AdoAuditPersistenceService.GetPersister(me.GetType()) as IAdoPersistenceService;
             var cacheService = ApplicationContext.Current.GetService<IDataCachingService>();
 
             IIdentifiedEntity existing = null;
@@ -203,7 +203,7 @@ namespace SanteGuard.Persistence.Ado.Data.Extensions
             String dkey = String.Format("{0}.{1}", me.GetType().FullName, me.Key);
 
             IIdentifiedEntity existing = me.TryGetExisting(context, principal);
-            var idpInstance = ApplicationContext.Current.GetService(me.GetType()) as IAdoPersistenceService;
+            var idpInstance = AdoAuditPersistenceService.GetPersister(me.GetType());
 
             // Existing exists?
             if (existing != null && me.Key.HasValue)

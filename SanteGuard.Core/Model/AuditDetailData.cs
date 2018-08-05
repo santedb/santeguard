@@ -24,8 +24,6 @@ namespace SanteGuard.Model
     {
         // Caused by
         private AuditDetailData m_causedBy = null;
-        // Audit
-        private AuditData m_audit = null;
 
         /// <summary>
         /// Gets or sets the session identifier related to the audit

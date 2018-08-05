@@ -11,6 +11,19 @@ using System.Xml.Serialization;
 namespace SanteGuard.Model
 {
     /// <summary>
+    /// Represents the types of network access point values
+    /// </summary>
+    [XmlType("NetworkAccessPointType", Namespace = "http://santedb.org/santeguard")]
+    public enum NetworkAccessPointType
+    {
+        MachineName = 1,
+        IPAddress = 2,
+        TelephoneNumber = 3,
+        Email = 4,
+        Uri = 5
+    }
+
+    /// <summary>
     /// Represents an actor participant
     /// </summary>
     [XmlType(nameof(AuditActor), Namespace = "http://santedb.org/santeguard")]
@@ -60,7 +73,7 @@ namespace SanteGuard.Model
         /// Gets or sets the access point type
         /// </summary>
         [XmlElement("networkApType"), JsonProperty("networkApType")]
-        public int NetworkAccessPointType { get; set; }
+        public NetworkAccessPointType NetworkAccessPointType { get; set; }
 
         /// <summary>
         /// Gets or sets the node

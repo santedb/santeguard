@@ -44,7 +44,7 @@ namespace SanteGuard.Persistence.Ado.Services
         protected TraceSource m_tracer = new TraceSource(SanteGuardConstants.TraceSourceName + ".Ado");
 
         // Local mapper instance
-        protected ModelMapper m_mapper = AuditPersistenceService.GetMapper();
+        protected ModelMapper m_mapper = AdoAuditPersistenceService.GetMapper();
 
         /// <summary>
         /// The service is insterting data
@@ -135,7 +135,7 @@ namespace SanteGuard.Persistence.Ado.Services
                 }
 
                 // Query object
-                using (var connection = AuditPersistenceService.GetConfiguration().Provider.GetReadonlyConnection())
+                using (var connection = AdoAuditPersistenceService.GetConfiguration().Provider.GetReadonlyConnection())
                     try
                     {
                         connection.Open();
@@ -199,7 +199,7 @@ namespace SanteGuard.Persistence.Ado.Services
             }
 
             // Persist object
-            using (var connection = AuditPersistenceService.GetConfiguration().Provider.GetWriteConnection())
+            using (var connection = AdoAuditPersistenceService.GetConfiguration().Provider.GetWriteConnection())
             {
                 connection.Open();
                 using (IDbTransaction tx = connection.BeginTransaction())
@@ -284,7 +284,7 @@ namespace SanteGuard.Persistence.Ado.Services
             }
 
             // Obsolete object
-            using (var connection = AuditPersistenceService.GetConfiguration().Provider.GetWriteConnection())
+            using (var connection = AdoAuditPersistenceService.GetConfiguration().Provider.GetWriteConnection())
             {
 
                 connection.Open();
@@ -384,7 +384,7 @@ namespace SanteGuard.Persistence.Ado.Services
             }
 
             // Query object
-            using (var connection = AuditPersistenceService.GetConfiguration().Provider.GetReadonlyConnection())
+            using (var connection = AdoAuditPersistenceService.GetConfiguration().Provider.GetReadonlyConnection())
                 try
                 {
                     connection.Open();
@@ -392,7 +392,7 @@ namespace SanteGuard.Persistence.Ado.Services
                     this.m_tracer.TraceEvent(TraceEventType.Verbose, 0, "QUERY {0}", query);
 
                     // Is there an obsoletion item already specified?
-                    if ((count ?? 1000) > 25 && AuditPersistenceService.GetConfiguration().PrepareStatements)
+                    if ((count ?? 1000) > 25 && AdoAuditPersistenceService.GetConfiguration().PrepareStatements)
                         connection.PrepareStatements = true;
                     if (fastQuery)
                     {
@@ -464,7 +464,7 @@ namespace SanteGuard.Persistence.Ado.Services
             }
 
             // Persist object
-            using (var connection = AuditPersistenceService.GetConfiguration().Provider.GetWriteConnection())
+            using (var connection = AdoAuditPersistenceService.GetConfiguration().Provider.GetWriteConnection())
             {
                 connection.Open();
                 using (IDbTransaction tx = connection.BeginTransaction())

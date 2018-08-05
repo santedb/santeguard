@@ -48,11 +48,15 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Shim\DummyPolicyDecisionService.cs" />
+    <Compile Include="Shim\DummySecurityRepositoryService.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ModelMapTest.cs" />
+    <Compile Include="AuditPersistenceTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="data\SANTEGUARD_TEST.FDB">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
