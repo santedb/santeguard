@@ -59,6 +59,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SanteGuardConstants.cs" />
     <Compile Include="Services\IAuditTermLookupService.cs" />
+    <Compile Include="Services\LocalAuditTermLookupService.cs" />
     <Compile Include="Services\Repositories\SanteGuardAuditRepository.cs" />
     <Compile Include="Services\Repositories\SanteGuardDataRepository.cs" />
   </ItemGroup>

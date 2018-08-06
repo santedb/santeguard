@@ -56,6 +56,20 @@ namespace SanteGuard.Core.Model
         }
 
         /// <summary>
+        /// Map code
+        /// </summary>
+        private static CodeValue<T> MapTerm<T>(AuditTerm term)
+        {
+            if (term == null) return null;
+
+            return new CodeValue<T>()
+            {
+                Code = term.Mnemonic,
+                CodeSystem = term.Domain,
+                DisplayName = term.DisplayName
+            };
+        }
+        /// <summary>
         /// Map simple code
         /// </summary>
         private static Nullable<T> MapSimple<T>(object other, bool specified = true) where T : struct
@@ -222,5 +236,24 @@ namespace SanteGuard.Core.Model
             }
             return retVal;
         }
+
+        /// <summary>
+        /// Convert to audit data
+        /// </summary>
+        public static AuditData ToAuditData(this Audit me)
+        {
+            var retVal = new AuditData(me.EventTimestamp.DateTime,
+                (MARC.HI.EHRS.SVC.Auditing.Data.ActionType)MapTerm<AtnaApi.Model.ActionType>(me.ActionCode).StrongCode,
+                (MARC.HI.EHRS.SVC.Auditing.Data.OutcomeIndicator)MapTerm<AtnaApi.Model.OutcomeIndicator>(me.ActionCode).StrongCode,
+                (MARC.HI.EHRS.SVC.Auditing.Data.EventIdentifierType)MapTerm<AtnaApi.Model.EventIdentifierType>(me.ActionCode).StrongCode,
+                new AuditCode(me.EventTypeCodes.FirstOrDefault()?.Mnemonic, me.EventTypeCodes.FirstOrDefault()?.Domain)
+            );
+
+            // TODO: Map other properties
+
+            return retVal;
+        }
+
     }
+
 }
