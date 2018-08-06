@@ -63,6 +63,13 @@ namespace SanteGuard.Test
                     EnterpriseSiteId = "TEST",
                     AuditSourceId = "TEST"
                 },
+                EventTypeCodes = new System.Collections.Generic.List<AuditTerm>()
+                {
+                    new AuditTerm()
+                    {
+                        Mnemonic = "FOO", DisplayName = "BAR", Domain = "FOO CODES"
+                    }
+                },
                 CorrelationToken = Guid.Empty,
                 EventTimestamp = DateTimeOffset.Now,
                 Objects = new System.Collections.Generic.List<AuditObject>()
@@ -79,7 +86,7 @@ namespace SanteGuard.Test
                             new AuditObjectSpecification()
                             {
                                 Specification = "FOOFOO",
-                                SpecificationType = 'N'
+                                SpecificationType = "N"
                             }
                         },
                         Details = new System.Collections.Generic.List<AuditObjectDetail>()

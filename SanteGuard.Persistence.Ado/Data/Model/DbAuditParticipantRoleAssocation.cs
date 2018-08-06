@@ -14,12 +14,11 @@ namespace SanteGuard.Persistence.Ado.Data.Model
     public class DbAuditParticipantRoleAssocation 
     {
 
-      
         /// <summary>
         /// Reference to the association
         /// </summary>
         [Column("assoc_id"), ForeignKey(typeof(DbAuditParticipantAuditAssociation), nameof(DbAuditParticipantAuditAssociation.Key)), PrimaryKey]
-        public Guid ParticipantKey { get; set; }
+        public Guid AssociationKey { get; set; }
 
         /// <summary>
         /// The role 

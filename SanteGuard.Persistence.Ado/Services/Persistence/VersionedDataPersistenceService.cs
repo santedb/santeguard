@@ -117,7 +117,9 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             context.Update(existingObject);
 
             newEntityVersion = context.Insert<TDomain>(newEntityVersion);
-            nonVersionedObect = context.Update<TDomainKey>(nonVersionedObect);
+
+            // Not allowed to update non-versioned object in AR
+            //nonVersionedObect = context.Update<TDomainKey>(nonVersionedObect);
 
             // Pull database generated fields
             data.VersionSequence = newEntityVersion.VersionSequenceId;

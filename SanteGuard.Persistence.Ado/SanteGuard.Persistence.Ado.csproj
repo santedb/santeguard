@@ -66,6 +66,8 @@
     <Compile Include="Interface\IAdoPersistenceService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AdoAuditPersistenceService.cs" />
+    <Compile Include="Services\Persistence\AuditObjectPersistenceService.cs" />
+    <Compile Include="Services\Persistence\AuditParticipationPersistenceService.cs" />
     <Compile Include="Services\Persistence\AuditPersistenceService.cs" />
     <Compile Include="Services\Persistence\BasePersistenceService.cs" />
     <Compile Include="Services\Persistence\CorePersistenceService.cs" />

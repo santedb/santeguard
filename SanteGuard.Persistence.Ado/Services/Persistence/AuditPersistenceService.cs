@@ -88,17 +88,8 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
         /// <returns></returns>
         public override Audit UpdateInternal(DataContext context, Audit data, IPrincipal principal)
         {
-            if (data.ActionCode != null) data.ActionCode = data.ActionCode.EnsureExists(context, principal) as AuditTerm;
-            if (data.AuditSource != null) data.AuditSource = data.AuditSource.EnsureExists(context, principal) as AuditSource;
-            if (data.EventIdCode != null) data.EventIdCode = data.EventIdCode.EnsureExists(context, principal) as AuditTerm;
-            if (data.OutcomeCode != null) data.OutcomeCode = data.OutcomeCode.EnsureExists(context, principal) as AuditTerm;
-            if (data.Session != null) data.Session = data.Session.EnsureExists(context, principal) as AuditSession;
-            data.ActionCodeKey = data.ActionCode?.Key ?? data.ActionCodeKey;
-            data.AuditSourceKey = data.AuditSource?.Key ?? data.AuditSourceKey;
-            data.EventIdCodeKey = data.EventIdCode?.Key ?? data.EventIdCodeKey;
-            data.OutcomeCodeKey = data.OutcomeCode?.Key ?? data.OutcomeCodeKey;
-            data.SessionKey = data.Session?.Key ?? data.SessionKey;
 
+            // Only update versioned data
             var retVal = base.UpdateInternal(context, data, principal);
 
 

@@ -24,7 +24,7 @@ namespace SanteGuard.Model
         /// Gets the spec type
         /// </summary>
         [XmlElement("type"), JsonProperty("type")]
-        public Char SpecificationType { get; set; }
+        public String SpecificationType { get; set; }
 
         /// <summary>
         /// Get the modified on

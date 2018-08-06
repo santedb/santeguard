@@ -124,7 +124,7 @@ namespace SanteGuard.Core.Model
                     RoleCode = o.RoleSpecified ? MapOrCreateCode(o.Role) : null,
                     TypeCode = o.TypeSpecified ? MapOrCreateCode(o.Type) : null,
                     Details = o.ObjectDetail.Select(d=>new AuditObjectDetail() {  DetailKey = d.Type, Value = d.Value }).ToList(),
-                    Specification = !String.IsNullOrEmpty(o.ObjectSpec) ? new List<AuditObjectSpecification>() { new AuditObjectSpecification() { Specification = o.ObjectSpec, SpecificationType = o.ObjectSpecChoice == ObjectDataChoiceType.ParticipantObjectQuery ? 'Q' : 'N' } } : null
+                    Specification = !String.IsNullOrEmpty(o.ObjectSpec) ? new List<AuditObjectSpecification>() { new AuditObjectSpecification() { Specification = o.ObjectSpec, SpecificationType = o.ObjectSpecChoice == ObjectDataChoiceType.ParticipantObjectQuery ? "Q" : "N" } } : null
                 }).ToList();
             }
 
@@ -198,8 +198,8 @@ namespace SanteGuard.Core.Model
                     TypeCode = MapOrCreateCode(o.Type),
                     Details = o.ObjectData.Select(d => new AuditObjectDetail() { DetailKey = d.Key, Value = d.Value }).ToList(),
                     Specification = new List<AuditObjectSpecification>() {
-                        new AuditObjectSpecification() { Specification = o.QueryData, SpecificationType = 'Q' },
-                        new AuditObjectSpecification() { Specification = o.NameData, SpecificationType = 'N' }
+                        new AuditObjectSpecification() { Specification = o.QueryData, SpecificationType = "Q" },
+                        new AuditObjectSpecification() { Specification = o.NameData, SpecificationType = "N" }
                     }.Where(s=>!string.IsNullOrEmpty(s.Specification)).ToList()
                 }).ToList();
             }
