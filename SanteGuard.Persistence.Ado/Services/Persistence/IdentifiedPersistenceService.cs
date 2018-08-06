@@ -33,7 +33,6 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
 
         #region implemented abstract members of LocalDataPersistenceService
 
-
         /// <summary>
         /// Performthe actual insert.
         /// </summary>

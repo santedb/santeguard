@@ -23,6 +23,7 @@ namespace SanteGuard.Services.Repositories
         IRepositoryService<AuditDetailData>,
         IRepositoryService<AuditNode>,
         IRepositoryService<AuditSession>,
+        IRepositoryService<AuditTerm>,
         ISecurityAuditEventSource
     {
 
@@ -49,7 +50,7 @@ namespace SanteGuard.Services.Repositories
         /// <summary>
         /// Find audit actor
         /// </summary>
-        public new IEnumerable<AuditActor> Find(Expression<Func<AuditActor, bool>> query)
+        IEnumerable<AuditActor> IRepositoryService<AuditActor>.Find(Expression<Func<AuditActor, bool>> query)
         {
             int tr = 0;
             return base.Find(query, 0, 100, out tr, Guid.Empty);
@@ -58,7 +59,24 @@ namespace SanteGuard.Services.Repositories
         /// <summary>
         /// Find audit actor
         /// </summary>
-        public new IEnumerable<AuditActor> Find(Expression<Func<AuditActor, bool>> query, int offset, int? count, out int totalResults)
+        IEnumerable<AuditActor> IRepositoryService<AuditActor>.Find(Expression<Func<AuditActor, bool>> query, int offset, int? count, out int totalResults)
+        {
+            return base.Find(query, offset, count, out totalResults, Guid.Empty);
+        }
+
+        /// <summary>
+        /// Find the specified audit term
+        /// </summary>
+        IEnumerable<AuditTerm> IRepositoryService<AuditTerm>.Find(Expression<Func<AuditTerm, bool>> query)
+        {
+            int tr = 0;
+            return base.Find(query, 0, 100, out tr, Guid.Empty);
+        }
+
+        /// <summary>
+        /// Find the specified audit terms
+        /// </summary>
+        IEnumerable<AuditTerm> IRepositoryService<AuditTerm>.Find(Expression<Func<AuditTerm, bool>> query, int offset, int? count, out int totalResults)
         {
             return base.Find(query, offset, count, out totalResults, Guid.Empty);
         }
@@ -66,7 +84,7 @@ namespace SanteGuard.Services.Repositories
         /// <summary>
         /// Get audit actor
         /// </summary>
-        public new AuditActor Get(Guid key)
+        AuditActor IRepositoryService<AuditActor>.Get(Guid key)
         {
             return base.Get<AuditActor>(key, Guid.Empty);
         }
@@ -74,7 +92,7 @@ namespace SanteGuard.Services.Repositories
         /// <summary>
         /// Get audit actor version
         /// </summary>
-        public new AuditActor Get(Guid key, Guid versionKey)
+        AuditActor IRepositoryService<AuditActor>.Get(Guid key, Guid versionKey)
         {
             return base.Get<AuditActor>(key, versionKey);
         }
@@ -82,7 +100,15 @@ namespace SanteGuard.Services.Repositories
         /// <summary>
         /// Insert audit actor
         /// </summary>
-        public new AuditActor Insert(AuditActor data)
+        AuditActor IRepositoryService<AuditActor>.Insert(AuditActor data)
+        {
+            return base.Insert(data);
+        }
+
+        /// <summary>
+        /// Insert audit term
+        /// </summary>
+        AuditTerm IRepositoryService<AuditTerm>.Insert(AuditTerm data)
         {
             return base.Insert(data);
         }
@@ -90,7 +116,7 @@ namespace SanteGuard.Services.Repositories
         /// <summary>
         /// Obsolete audit actor
         /// </summary>
-        public new AuditActor Obsolete(Guid key)
+        AuditActor IRepositoryService<AuditActor>.Obsolete(Guid key)
         {
             return base.Obsolete<AuditActor>(key);
         }
@@ -98,7 +124,15 @@ namespace SanteGuard.Services.Repositories
         /// <summary>
         /// Save audit actor
         /// </summary>
-        public new AuditActor Save(AuditActor data)
+        AuditActor IRepositoryService<AuditActor>.Save(AuditActor data)
+        {
+            return base.Save(data);
+        }
+
+        /// <summary>
+        /// Create or update the audit term
+        /// </summary>
+        AuditTerm IRepositoryService<AuditTerm>.Save(AuditTerm data)
         {
             return base.Save(data);
         }
@@ -236,6 +270,22 @@ namespace SanteGuard.Services.Repositories
         }
 
         /// <summary>
+        /// Get the audit term
+        /// </summary>
+        AuditTerm IRepositoryService<AuditTerm>.Get(Guid key)
+        {
+            return base.Get<AuditTerm>(key, Guid.Empty);
+        }
+
+        /// <summary>
+        /// Get the audit term
+        /// </summary>
+        AuditTerm IRepositoryService<AuditTerm>.Get(Guid key, Guid versionKey)
+        {
+            return base.Get<AuditTerm>(key, versionKey);
+        }
+
+        /// <summary>
         /// Insert the specified audit data
         /// </summary>
         Audit IRepositoryService<Audit>.Insert(Audit data)
@@ -305,6 +355,11 @@ namespace SanteGuard.Services.Repositories
             var retVal = base.Obsolete<AuditSession>(key);
             this.SecurityResourceDeleted?.Invoke(this, new SecurityAuditDataEventArgs(retVal, "obsoleted"));
             return retVal;
+        }
+
+        AuditTerm IRepositoryService<AuditTerm>.Obsolete(Guid key)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
