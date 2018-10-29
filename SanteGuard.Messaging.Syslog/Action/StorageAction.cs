@@ -36,6 +36,7 @@ using static SanteGuard.Messaging.Syslog.Action.MessageUtil;
 using SanteDB.Core.Model.Collection;
 using SanteDB.Core.Model.Security;
 using SanteGuard.Core.Model;
+using SanteDB.Core.Security;
 
 namespace SanteGuard.Messaging.Syslog.Action
 {
@@ -84,7 +85,7 @@ namespace SanteGuard.Messaging.Syslog.Action
                 // Process a result
                 ApplicationContext.Current.GetService<IThreadPoolService>().QueueUserWorkItem((p) =>
                 {
-
+                    AuthenticationContext.Current = new AuthenticationContext(AuthenticationContext.SystemPrincipal);
                     try
                     {
                         var processResult = (ParseAuditResult)p;
