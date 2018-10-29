@@ -10,7 +10,7 @@ namespace SanteGuard.Persistence.Ado.Data.Model
     /// <summary>
     /// Represents an audit node in the database
     /// </summary>
-    [Table("aud_nod_tbl")]
+    [Table("aud_node_tbl")]
     public class DbAuditNode : DbNonVersionedBaseData
     {
         /// <summary>

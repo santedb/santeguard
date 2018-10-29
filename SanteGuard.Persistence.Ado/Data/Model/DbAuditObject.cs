@@ -41,19 +41,19 @@ namespace SanteGuard.Persistence.Ado.Data.Model
         /// <summary>
         /// Gets or sets role code
         /// </summary>
-        [Column("rol_cd_id"), NotNull, ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
+        [Column("rol_cd_id"), ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
         public Guid RoleCodeKey { get; set; }
 
         /// <summary>
         /// Gets or sets the lifecycle
         /// </summary>
-        [Column("lcycl_cd_id"), NotNull, ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
+        [Column("lcycl_cd_id"), ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
         public Guid LifecycleCodeKey { get; set; }
 
         /// <summary>
         /// Gets or sets the id type code
         /// </summary>
-        [Column("id_typ_cd_id"), NotNull, ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
+        [Column("id_typ_cd_id"), ForeignKey(typeof(DbAuditCode), nameof(DbAuditCode.Key))]
         public Guid IdTypeCodeKey { get; set; }
 
     }

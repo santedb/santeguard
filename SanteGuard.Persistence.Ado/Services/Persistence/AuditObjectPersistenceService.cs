@@ -44,7 +44,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             // Audit details
             if (data.Details != null)
                 base.UpdateAssociatedItems<AuditObjectDetail, DbAuditObjectDetail>(
-                    data.Details,
+                    data.Details.Where(o=>!String.IsNullOrEmpty(o.Type) || o.Value.Length > 0),
                     retVal,
                     context,
                     principal);

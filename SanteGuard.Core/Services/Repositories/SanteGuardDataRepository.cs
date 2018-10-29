@@ -24,6 +24,8 @@ namespace SanteGuard.Services.Repositories
         IRepositoryService<AuditNode>,
         IRepositoryService<AuditSession>,
         IRepositoryService<AuditTerm>,
+        IRepositoryService<AuditSource>,
+        IRepositoryService<AuditBundle>,
         ISecurityAuditEventSource
     {
 
@@ -394,6 +396,106 @@ namespace SanteGuard.Services.Repositories
         /// Save the specified session
         /// </summary>
         AuditSession IRepositoryService<AuditSession>.Save(AuditSession data)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Get audit source by key
+        /// </summary>
+        AuditSource IRepositoryService<AuditSource>.Get(Guid key)
+        {
+            return base.Get<AuditSource>(key, Guid.Empty);
+        }
+
+        /// <summary>
+        /// Get audit source version
+        /// </summary>
+        AuditSource IRepositoryService<AuditSource>.Get(Guid key, Guid versionKey)
+        {
+            return base.Get<AuditSource>(key, versionKey);
+
+        }
+
+        /// <summary>
+        /// Find audit source
+        /// </summary>
+        IEnumerable<AuditSource> IRepositoryService<AuditSource>.Find(Expression<Func<AuditSource, bool>> query)
+        {
+            int tr = 0;
+            return this.Find(query, 0, null, out tr, Guid.Empty);
+        }
+
+        /// <summary>
+        /// Total results
+        /// </summary>
+        IEnumerable<AuditSource> IRepositoryService<AuditSource>.Find(Expression<Func<AuditSource, bool>> query, int offset, int? count, out int totalResults)
+        {
+            return this.Find(query, offset, count, out totalResults, Guid.Empty);
+        }
+
+        /// <summary>
+        /// Insert the audit source
+        /// </summary>
+        AuditSource IRepositoryService<AuditSource>.Insert(AuditSource data)
+        {
+            var retVal = base.Insert(data);
+            this.SecurityResourceCreated?.Invoke(this, new SecurityAuditDataEventArgs(data));
+            return retVal;
+        }
+
+        /// <summary>
+        /// Update audit source
+        /// </summary>
+        AuditSource IRepositoryService<AuditSource>.Save(AuditSource data)
+        {
+            var retVal = base.Save(data);
+            this.SecurityAttributesChanged?.Invoke(this, new SecurityAuditDataEventArgs(data));
+            return retVal;
+        }
+
+        /// <summary>
+        /// Obsolete audit source
+        /// </summary>
+        AuditSource IRepositoryService<AuditSource>.Obsolete(Guid key)
+        {
+            throw new NotSupportedException();
+        }
+
+        AuditBundle IRepositoryService<AuditBundle>.Get(Guid key)
+        {
+            throw new NotSupportedException();
+
+        }
+
+        AuditBundle IRepositoryService<AuditBundle>.Get(Guid key, Guid versionKey)
+        {
+            throw new NotSupportedException();
+
+        }
+
+        IEnumerable<AuditBundle> IRepositoryService<AuditBundle>.Find(Expression<Func<AuditBundle, bool>> query)
+        {
+            throw new NotSupportedException();
+
+        }
+
+        IEnumerable<AuditBundle> IRepositoryService<AuditBundle>.Find(Expression<Func<AuditBundle, bool>> query, int offset, int? count, out int totalResults)
+        {
+            throw new NotSupportedException();
+        }
+
+        AuditBundle IRepositoryService<AuditBundle>.Insert(AuditBundle data)
+        {
+            return base.Insert(data);
+        }
+
+        AuditBundle IRepositoryService<AuditBundle>.Save(AuditBundle data)
+        {
+            return base.Save(data);
+        }
+
+        AuditBundle IRepositoryService<AuditBundle>.Obsolete(Guid key)
         {
             throw new NotSupportedException();
         }

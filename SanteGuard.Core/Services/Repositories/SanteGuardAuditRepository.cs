@@ -1,6 +1,7 @@
 ﻿using AtnaApi.Model;
 using MARC.HI.EHRS.SVC.Auditing.Data;
 using MARC.HI.EHRS.SVC.Core;
+using SanteDB.Core.Diagnostics;
 using SanteDB.Core.Model.Query;
 using SanteDB.Core.Services;
 using SanteGuard.Core.Model;
@@ -8,6 +9,7 @@ using SanteGuard.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -20,6 +22,10 @@ namespace SanteGuard.Services.Repositories
     /// </summary>
     public class SanteGuardAuditRepository : IAuditRepositoryService
     {
+
+        // Trace source
+        private TraceSource m_tracer = new TraceSource(SanteGuardConstants.TraceSourceName);
+
         /// <summary>
         /// Find the specified audit data (nb: This functionality is very limited in this repository)
         /// </summary>
@@ -113,6 +119,12 @@ namespace SanteGuard.Services.Repositories
         /// </summary>
         public AuditData Insert(AuditData audit)
         {
+            this.m_tracer.TraceInfo("Persisting internal audit: AC={0}, ET={1}, OC={2}",
+                audit.ActionCode,
+                audit.EventTypeCode.Code,
+                audit.Outcome);
+
+
             var rawAudit = audit.ToAudit();
             return ApplicationContext.Current.GetService<IRepositoryService<Audit>>().Insert(rawAudit).ToAuditData();
         }

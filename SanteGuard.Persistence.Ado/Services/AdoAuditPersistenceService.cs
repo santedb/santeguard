@@ -6,11 +6,12 @@ using SanteDB.Core.Model;
 using SanteDB.Core.Model.Attributes;
 using SanteDB.Core.Model.Interfaces;
 using SanteDB.Core.Model.Map;
+using SanteDB.Core.Security;
 using SanteDB.OrmLite;
+using SanteDB.Persistence.Data.ADO.Services;
 using SanteGuard.Persistence.Ado.Configuration;
 using SanteGuard.Persistence.Ado.Data.Extensions;
 using SanteGuard.Persistence.Ado.Data.Model;
-using SanteGuard.Persistence.Ado.Interface;
 using SanteGuard.Persistence.Ado.Services.Persistence;
 using System;
 using System.Collections;
@@ -186,10 +187,10 @@ namespace SanteGuard.Persistence.Ado.Services
             /// <summary>
             /// Get all the matching TModel object from source
             /// </summary>
-            public IEnumerable GetFromSource(DataContext context, Guid sourceId, decimal? versionSequenceId, IPrincipal principal)
+            public IEnumerable GetFromSource(DataContext context, Guid sourceId, decimal? versionSequenceId)
             {
                 int tr = 0;
-                return this.QueryInternal(context, base.BuildSourceQuery<TModel>(sourceId), Guid.Empty, 0, null, out tr, principal).ToList();
+                return this.QueryInternal(context, base.BuildSourceQuery<TModel>(sourceId), Guid.Empty, 0, null, out tr, AuthenticationContext.Current.Principal).ToList();
             }
         }
 
@@ -204,11 +205,11 @@ namespace SanteGuard.Persistence.Ado.Services
             /// <summary>
             /// Get all the matching TModel object from source
             /// </summary>
-            public IEnumerable GetFromSource(DataContext context, Guid sourceId, decimal? versionSequenceId, IPrincipal principal)
+            public IEnumerable GetFromSource(DataContext context, Guid sourceId, decimal? versionSequenceId)
             {
                 int tr = 0;
                 // TODO: Check that this query is actually building what it is supposed to.
-                return this.QueryInternal(context, base.BuildSourceQuery<TModel>(sourceId, versionSequenceId), Guid.Empty, 0, null, out tr, principal).ToList();
+                return this.QueryInternal(context, base.BuildSourceQuery<TModel>(sourceId, versionSequenceId), Guid.Empty, 0, null, out tr, AuthenticationContext.Current.Principal).ToList();
             }
         }
 
@@ -241,10 +242,10 @@ namespace SanteGuard.Persistence.Ado.Services
             /// <summary>
             /// Get all the matching TModel object from source
             /// </summary>
-            public IEnumerable GetFromSource(DataContext context, Guid sourceId, decimal? versionSequenceId, IPrincipal principal)
+            public IEnumerable GetFromSource(DataContext context, Guid sourceId, decimal? versionSequenceId)
             {
                 int tr = 0;
-                return this.QueryInternal(context, base.BuildSourceQuery<TModel>(sourceId), Guid.Empty, 0, null, out tr, principal).ToList();
+                return this.QueryInternal(context, base.BuildSourceQuery<TModel>(sourceId), Guid.Empty, 0, null, out tr, AuthenticationContext.Current.Principal).ToList();
             }
         }
 
@@ -259,11 +260,11 @@ namespace SanteGuard.Persistence.Ado.Services
             /// <summary>
             /// Get all the matching TModel object from source
             /// </summary>
-            public IEnumerable GetFromSource(DataContext context, Guid sourceId, decimal? versionSequenceId, IPrincipal principal)
+            public IEnumerable GetFromSource(DataContext context, Guid sourceId, decimal? versionSequenceId)
             {
                 int tr = 0;
                 // TODO: Check that this query is actually building what it is supposed to.
-                return this.QueryInternal(context, base.BuildSourceQuery<TModel>(sourceId, versionSequenceId), Guid.Empty, 0, null, out tr, principal).ToList();
+                return this.QueryInternal(context, base.BuildSourceQuery<TModel>(sourceId, versionSequenceId), Guid.Empty, 0, null, out tr, AuthenticationContext.Current.Principal).ToList();
             }
         }
 

@@ -124,7 +124,22 @@ namespace SanteGuard.Test.Shim
             throw new NotImplementedException();
         }
 
+        public SecurityPolicy GetPolicy(string policyOid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SecurityProvenance GetProvenance(Guid provenanceId)
+        {
+            throw new NotImplementedException();
+        }
+
         public SecurityRole GetRole(Guid roleId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SecurityRole GetRole(string roleName)
         {
             throw new NotImplementedException();
         }

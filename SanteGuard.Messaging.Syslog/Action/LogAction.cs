@@ -60,7 +60,7 @@ namespace SanteGuard.Messaging.Syslog.Action
             {
                 try
                 {
-                    using (var writer = File.AppendText((sender as SyslogListenerThread).Configuration.LogFileLocation ?? "messages.txt"))
+                    using (var writer = File.AppendText((sender as SyslogListenerThread)?.Configuration?.LogFileLocation ?? "messages.txt"))
                         writer.WriteLine(" {0}\t{1:yyyy-MM-dd HH:mm:ss}\t<{2}>\t{3}\t{4}\t{5}\t{6}", sender.GetType().Name, DateTime.Now, e.Message.Facility, e.SolicitorEndpoint.Host, e.Message.ProcessId, e.Message.ProcessName, e.Message.Original);
                 }
                 catch (Exception ex)

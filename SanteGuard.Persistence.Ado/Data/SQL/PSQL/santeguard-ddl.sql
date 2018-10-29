@@ -247,7 +247,7 @@ CREATE TABLE aud_ses_tbl
 	rcv_node_id UUID NOT NULL, -- THE ID OF THE RECEIVING node_tbl
 	rcv_ep VARCHAR(256) NOT NULL, -- THE ENDPOINT THE AUDIT WAS RECCEIVED ON
 	snd_node_id UUID NOT NULL, -- THE ID OF THE SENDING node_tbl
-	snt_ep VARCHAR(256) NOT NULL, -- THE SENDING ENDPOINT
+	snd_ep VARCHAR(256) NOT NULL, -- THE SENDING ENDPOINT
 	crt_utc TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, -- THE TIME THAT THE SESSION WAS CREATED
 	crt_usr_id UUID NOT NULL, 
 	obslt_utc TIMESTAMPTZ,
@@ -317,7 +317,7 @@ CREATE TABLE aud_ptcpt_tbl
 	net_ap VARCHAR(256), -- THE IP ADDRESS OF THE PARITICIPANT
 	net_ap_typ INTEGER, 
 	CONSTRAINT pk_aud_ptcpt_tbl PRIMARY KEY (ptcpt_id),
-	CONSTRAINT fk_aud_ptcpt_node_tbl FOREIGN KEY (node_id) REFERENCES aud_node_tbl(node_id),
+	CONSTRAINT fk_aud_ptcpt_node_tbl FOREIGN KEY (node_id) REFERENCES aud_node_tbl(node_id)
 );
 
 -- INDEX: LOOKUP PARTICIPANT BY AUDIT ID, USER ID or node_tbl VERSION
@@ -347,8 +347,7 @@ CREATE TABLE aud_ptcpt_rol_cd_assoc_tbl
 );
 
 -- INDEX: LOOKUP PARTICIPANT ROLE CODE BY PARTICIPANT ID
-CREATE INDEX aud_ptcpt_rol_cd_assoc_ptcpt_idx ON aud_ptcpt_rol_cd_assoc_tbl(ptcpt_id);
-CREATE INDEX aud_ptcpt_rol_cd_assoc_aud_idx ON aud_ptcpt_rol_cd_assoc_tbl(aud_id);
+CREATE INDEX aud_ptcpt_rol_cd_assoc_ptcpt_idx ON aud_ptcpt_rol_cd_assoc_tbl(assoc_id);
 
 
 -- SEQUENCE
@@ -450,8 +449,8 @@ CREATE TABLE aud_dtl_tbl
 	crt_utc TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	caus_by_id UUID, -- THE CAUSE OF THIS ERROR (IF APPLICABLE)
 	sts_cd_id INTEGER NOT NULL DEFAULT 0,
-	CONSTRAINT pk_aud_dtl_tbl PRIMARY KEY (err_id), 
+	CONSTRAINT pk_aud_dtl_tbl PRIMARY KEY (dtl_id), 
 	CONSTRAINT fk_aud_dtl_ses_tbl FOREIGN KEY (ses_id) REFERENCES aud_ses_tbl(ses_id),
-	CONSTRAINT fk_aud_dtl_caus_tbl FOREIGN KEY (caus_by_id) REFERENCES aud_err_tbl(err_id),
+	CONSTRAINT fk_aud_dtl_caus_tbl FOREIGN KEY (caus_by_id) REFERENCES aud_dtl_tbl(dtl_id),
 	CONSTRAINT fk_aud_dtl_sts_tbl FOREIGN KEY (sts_cd_id) REFERENCES aud_sts_cdtbl(cd_id)
 );

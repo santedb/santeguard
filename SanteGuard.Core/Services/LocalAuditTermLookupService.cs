@@ -32,7 +32,7 @@ namespace SanteGuard.Services
         public AuditTerm GetTerm(string code, params string[] codeSystem)
         {
             var repo = ApplicationContext.Current.GetService<IDataPersistenceService<AuditTerm>>();
-            if (repo != null)
+            if (repo == null)
                 throw new InvalidOperationException("Cannot find audit term service");
 
             // CS Expression
@@ -51,7 +51,7 @@ namespace SanteGuard.Services
         public AuditTerm Register(string code, string codeSystem, string displayName)
         {
             var repo = ApplicationContext.Current.GetService<IRepositoryService<AuditTerm>>(); // We want this registration to be audited
-            if (repo != null)
+            if (repo == null)
                 throw new InvalidOperationException("Cannot find audit term repository");
             return repo.Insert(new AuditTerm()
             {

@@ -63,6 +63,8 @@ namespace SanteGuard.Messaging.Syslog
         /// </summary>
         public bool Start()
         {
+            this.IsRunning = true;
+            this.Starting?.Invoke(this, EventArgs.Empty);
             foreach (var ep in this.m_configuration.Endpoints)
             {
                 var sh = new SyslogListenerThread(ep);
@@ -71,6 +73,8 @@ namespace SanteGuard.Messaging.Syslog
                 this.m_traceSource.TraceInformation("Starting Syslog Listener '{0}'...", ep.Name);
                 thdSh.Start();
             }
+            this.Started?.Invoke(this, EventArgs.Empty);
+
             return true;
         }
 
@@ -97,7 +101,7 @@ namespace SanteGuard.Messaging.Syslog
             set;
         }
 
-        public bool IsRunning => throw new NotImplementedException();
+        public bool IsRunning { get; private set; }
 
         #endregion
     }

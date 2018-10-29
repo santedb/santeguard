@@ -9,12 +9,12 @@ using SanteDB.Core.Model.Map;
 using SanteDB.Core.Security;
 using SanteDB.Core.Services;
 using SanteDB.OrmLite;
+using SanteDB.Persistence.Data.ADO.Services;
 using SanteGuard.Configuration;
 using SanteGuard.Model;
 using SanteGuard.Persistence.Ado.Configuration;
 using SanteGuard.Persistence.Ado.Data.Extensions;
 using SanteGuard.Persistence.Ado.Data.Model;
-using SanteGuard.Persistence.Ado.Interface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -73,7 +73,7 @@ namespace SanteGuard.Persistence.Ado.Services
         /// <summary>
         /// The service is retrieving data
         /// </summary>
-        public event EventHandler<PreRetrievalEventArgs> Retrieving;
+        public event EventHandler<PreRetrievalEventArgs<TModel>> Retrieving;
         /// <summary>
         /// The service has retrieved data
         /// </summary>
@@ -126,7 +126,7 @@ namespace SanteGuard.Persistence.Ado.Services
                 sw.Start();
 #endif
 
-                PreRetrievalEventArgs preArgs = new PreRetrievalEventArgs(containerId, principal);
+                PreRetrievalEventArgs<TModel> preArgs = new PreRetrievalEventArgs<TModel>(containerId, principal);
                 this.Retrieving?.Invoke(this, preArgs);
                 if (preArgs.Cancel)
                 {
@@ -374,13 +374,13 @@ namespace SanteGuard.Persistence.Ado.Services
             sw.Start();
 #endif
 
-            PreQueryEventArgs<TModel> preArgs = new PreQueryEventArgs<TModel>(query, authContext);
+            PreQueryEventArgs<TModel> preArgs = new PreQueryEventArgs<TModel>(query, queryId, offset, count, authContext);
             this.Querying?.Invoke(this, preArgs);
             if (preArgs.Cancel)
             {
                 this.m_tracer.TraceEvent(TraceEventType.Warning, 0, "Pre-Event handler indicates abort query {0}", query);
-                totalCount = 0;
-                return null;
+                totalCount = preArgs.OverrideTotalResults.GetValueOrDefault();
+                return preArgs.OverrideResults;
             }
 
             // Query object
@@ -614,7 +614,11 @@ namespace SanteGuard.Persistence.Ado.Services
         private String ObjectToString(TModel data)
         {
             if (data == null) return "null";
-            XmlSerializer xsz = new XmlSerializer(data.GetType());
+            IEnumerable<Type> extraTypes = new Type[] { typeof(TModel) };
+            if (data is AuditBundle)
+                extraTypes = extraTypes.Union((data as AuditBundle).Item.Select(o => o.GetType()));
+
+            XmlSerializer xsz = new XmlSerializer(data.GetType(), extraTypes.ToArray());
             using (MemoryStream ms = new MemoryStream())
             {
                 xsz.Serialize(ms, data);
@@ -695,33 +699,33 @@ namespace SanteGuard.Persistence.Ado.Services
         /// <summary>
         /// Insert the object for generic methods
         /// </summary>
-        object IAdoPersistenceService.Insert(DataContext context, object data, IPrincipal principal)
+        object IAdoPersistenceService.Insert(DataContext context, object data)
         {
-            return this.InsertInternal(context, (TModel)data, principal);
+            return this.InsertInternal(context, (TModel)data, AuthenticationContext.Current.Principal);
         }
 
         /// <summary>
         /// Update the object for generic methods
         /// </summary>
-        object IAdoPersistenceService.Update(DataContext context, object data, IPrincipal principal)
+        object IAdoPersistenceService.Update(DataContext context, object data)
         {
-            return this.UpdateInternal(context, (TModel)data, principal);
+            return this.UpdateInternal(context, (TModel)data,AuthenticationContext.Current.Principal);
         }
 
         /// <summary>
         /// Obsolete the object for generic methods
         /// </summary>
-        object IAdoPersistenceService.Obsolete(DataContext context, object data, IPrincipal principal)
+        object IAdoPersistenceService.Obsolete(DataContext context, object data)
         {
-            return this.ObsoleteInternal(context, (TModel)data, principal);
+            return this.ObsoleteInternal(context, (TModel)data, AuthenticationContext.Current.Principal);
         }
 
         /// <summary>
         /// Get the specified data
         /// </summary>
-        object IAdoPersistenceService.Get(DataContext context, Guid id, IPrincipal principal)
+        object IAdoPersistenceService.Get(DataContext context, Guid id)
         {
-            return this.GetInternal(context, id, principal);
+            return this.GetInternal(context, id, AuthenticationContext.Current.Principal);
         }
 
         /// <summary>
@@ -760,9 +764,9 @@ namespace SanteGuard.Persistence.Ado.Services
         /// Generic to model instance for other callers
         /// </summary>
         /// <returns></returns>
-        object IAdoPersistenceService.ToModelInstance(object domainInstance, DataContext context, IPrincipal principal)
+        object IAdoPersistenceService.ToModelInstance(object domainInstance, DataContext context)
         {
-            return this.ToModelInstance(domainInstance, context, principal);
+            return this.ToModelInstance(domainInstance, context, AuthenticationContext.Current.Principal);
         }
 
         /// <summary>

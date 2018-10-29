@@ -80,7 +80,7 @@ namespace SanteGuard.Messaging.Syslog
             // Perform actions
             foreach (var act in this.m_action)
                 try {
-                    act.HandleInvalidMessage(sender, e);
+                    act.HandleInvalidMessage(this, e);
                 }
                 catch(Exception ex)
                 {

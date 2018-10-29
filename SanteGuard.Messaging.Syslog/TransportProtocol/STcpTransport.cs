@@ -57,12 +57,14 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
             [Category("Server Certificate")]
             [Description("Identifies the location of the server's certificate")]
             public StoreLocation ServerCertificateLocation { get; set; }
+
             /// <summary>
             /// Identifies the store name of the server's certificate
             /// </summary>
             [Category("Server Certificate")]
             [Description("Identifies the store name of the server's certificate")]
             public StoreName ServerCertificateStore { get; set; }
+
             /// <summary>
             /// Identifies the certificate to be used
             /// </summary>
@@ -78,6 +80,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
             [Category("Trusted Client Certificate")]
             [Description("Identifies the location of a certificate used for client authentication")]
             public StoreLocation TrustedCaCertificateLocation { get; set; }
+
             /// <summary>
             /// Identifies the store name of the server's certificate
             /// </summary>
@@ -92,8 +95,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
             //[Editor(typeof(X509CertificateEditor), typeof(UITypeEditor))]
             [TypeConverter(typeof(ExpandableObjectConverter))]
             public X509Certificate2 TrustedCaCertificate { get; set; }
-
-
+            
             /// <summary>
             /// Enabling of the client cert negotiate
             /// </summary>
@@ -134,8 +136,10 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
             KeyValuePair<String, String> certThumb = definition.Attributes.Find(o => o.Key == "x509.cert"),
                 certLocation = definition.Attributes.Find(o => o.Key == "x509.location"),
                 certStore = definition.Attributes.Find(o => o.Key == "x509.store"),
+                certSubject = definition.Attributes.Find(o => o.Key == "x509.subject"),
                 caCertThumb = definition.Attributes.Find(o => o.Key == "client.cacert"),
                 caCertLocation = definition.Attributes.Find(o => o.Key == "client.calocation"),
+                caCertSubject = definition.Attributes.Find(o => o.Key == "client.casubject"),
                 caCertStore = definition.Attributes.Find(o => o.Key == "client.castore");
 
             // Now setup the object 
@@ -149,12 +153,12 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
             };
 
             // Now get the certificates
-            if (!String.IsNullOrEmpty(certThumb.Value))
-                this.m_configuration.ServerCertificate = this.GetCertificateFromStore(certThumb.Value, this.m_configuration.ServerCertificateLocation, this.m_configuration.ServerCertificateStore);
+            if (!String.IsNullOrEmpty(certThumb.Value) || !String.IsNullOrEmpty(certSubject.Value))
+                this.m_configuration.ServerCertificate = this.GetCertificateFromStore(certThumb.Value, certSubject.Value, this.m_configuration.ServerCertificateLocation, this.m_configuration.ServerCertificateStore);
             if (this.m_configuration.EnableClientCertNegotiation)
             {
-                if (!String.IsNullOrEmpty(caCertThumb.Value))
-                    this.m_configuration.TrustedCaCertificate = this.GetCertificateFromStore(caCertThumb.Value, this.m_configuration.TrustedCaCertificateLocation, this.m_configuration.TrustedCaCertificateStore);
+                if (!String.IsNullOrEmpty(caCertThumb.Value) || !String.IsNullOrEmpty(caCertSubject.Value))
+                    this.m_configuration.TrustedCaCertificate = this.GetCertificateFromStore(caCertThumb.Value, caCertSubject.Value, this.m_configuration.TrustedCaCertificateLocation, this.m_configuration.TrustedCaCertificateStore);
             }
 
 
@@ -163,20 +167,34 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
         /// <summary>
         /// Get certificate from store
         /// </summary>
-        private X509Certificate2 GetCertificateFromStore(string certThumb, StoreLocation storeLocation, StoreName storeName)
+        private X509Certificate2 GetCertificateFromStore(string certThumb, string certSubject, StoreLocation storeLocation, StoreName storeName)
         {
             X509Store store = new X509Store(storeName, storeLocation);
             try
             {
                 store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-                var cert = store.Certificates.Find(X509FindType.FindByThumbprint, certThumb, true);
+#if DEBUG
+                this.m_traceSource.TraceInformation("Store has {0} certificates", store.Certificates.Count);
+                foreach (var c in store.Certificates)
+                    if(c.HasPrivateKey)
+                        this.m_traceSource.TraceInformation("\t{0} : {1}", c.Thumbprint, c.Subject);
+#endif
+
+                X509Certificate2Collection cert = null;
+                if(!String.IsNullOrEmpty(certThumb))
+                    cert = store.Certificates.Find(X509FindType.FindByThumbprint, certThumb, false);
+                else
+                    cert = store.Certificates.Find(X509FindType.FindBySubjectDistinguishedName, certSubject, false);
+
                 if (cert.Count == 0)
                     throw new InvalidOperationException("Could not find certificate");
-                return cert[0];
+                var retVal = cert[0];
+                this.m_traceSource.TraceInfo("Will use certificate {0}", retVal.Thumbprint);
+                return retVal;
             }
             catch (Exception e)
             {
-                this.m_traceSource.TraceError("Could get certificate {0} from store {1}. Error was: {2}", certThumb, storeName, e.ToString());
+                this.m_traceSource.TraceError("Could get certificate {0}/{1} from store {2}. Error was: {3}", certThumb, certSubject, storeName, e.ToString());
                 throw;
             }
 

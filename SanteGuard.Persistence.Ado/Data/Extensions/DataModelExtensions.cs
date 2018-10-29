@@ -24,8 +24,8 @@ using SanteDB.Core.Model.Attributes;
 using SanteDB.Core.Model.Interfaces;
 using SanteDB.Core.Services;
 using SanteDB.OrmLite;
+using SanteDB.Persistence.Data.ADO.Services;
 using SanteGuard.Persistence.Ado.Data.Model;
-using SanteGuard.Persistence.Ado.Interface;
 using SanteGuard.Persistence.Ado.Services;
 using System;
 using System.Collections;
@@ -117,7 +117,7 @@ namespace SanteGuard.Persistence.Ado.Data.Extensions
             //        existing = idpInstance.ToModelInstance(dbExisting, context, principal) as IIdentifiedEntity;
             //}
             if (me.Key != Guid.Empty && me.Key != null)
-                existing = idpInstance.Get(context, me.Key.Value, principal) as IIdentifiedEntity;
+                existing = idpInstance.Get(context, me.Key.Value) as IIdentifiedEntity;
 
             var classAtt = me.GetType().GetCustomAttribute<KeyLookupAttribute>();
             if (classAtt != null && existing == null)
@@ -164,7 +164,7 @@ namespace SanteGuard.Persistence.Ado.Data.Extensions
                         if (existCache != null)
                             existing = existCache as IdentifiedData;
                         else
-                            existing = idpInstance.ToModelInstance(dataObject, context, principal) as IIdentifiedEntity;
+                            existing = idpInstance.ToModelInstance(dataObject, context) as IIdentifiedEntity;
                     }
                 }
             }
@@ -213,7 +213,7 @@ namespace SanteGuard.Persistence.Ado.Data.Extensions
                     vMe?.VersionKey != null && vMe?.VersionKey != Guid.Empty)
                 {
                     // Update method
-                    IVersionedEntity updated = idpInstance.Update(context, me, principal) as IVersionedEntity;
+                    IVersionedEntity updated = idpInstance.Update(context, me) as IVersionedEntity;
                     me.Key = updated.Key;
                     if (vMe != null)
                         vMe.VersionKey = (updated as IVersionedEntity).VersionKey;
@@ -223,7 +223,7 @@ namespace SanteGuard.Persistence.Ado.Data.Extensions
             }
             else if (existing == null) // Insert
             {
-                IIdentifiedEntity inserted = idpInstance.Insert(context, me, principal) as IIdentifiedEntity;
+                IIdentifiedEntity inserted = idpInstance.Insert(context, me) as IIdentifiedEntity;
                 me.Key = inserted.Key;
 
                 if (vMe != null)
@@ -328,7 +328,7 @@ namespace SanteGuard.Persistence.Ado.Data.Extensions
 
                     // We want to query based on our PK and version if applicable
                     decimal? versionSequence = (me as IBaseEntityData)?.ObsoletionTime.HasValue == true ? (me as IVersionedEntity)?.VersionSequence : null;
-                    var assoc = assocPersister.GetFromSource(context, me.Key.Value, versionSequence, principal);
+                    var assoc = assocPersister.GetFromSource(context, me.Key.Value, versionSequence);
                     ConstructorInfo ci = null;
                     if (!m_constructors.TryGetValue(pi.PropertyType, out ci))
                     {
@@ -371,7 +371,7 @@ namespace SanteGuard.Persistence.Ado.Data.Extensions
                     object value = null;
                     if (!context.Data.TryGetValue(keyValue.ToString(), out value))
                     {
-                        value = adoPersister.Get(context, (Guid)keyValue, principal);
+                        value = adoPersister.Get(context, (Guid)keyValue);
                         context.AddData(keyValue.ToString(), value);
                     }
                     pid.SetValue(me, value);

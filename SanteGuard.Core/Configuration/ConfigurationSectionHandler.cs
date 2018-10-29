@@ -78,11 +78,14 @@ namespace SanteGuard.Configuration
             else
                 config.MaxSize = 1024;
             // Now process the attributes if any
+
+            config.Attributes = new List<KeyValuePair<string, string>>();
             foreach (XmlNode att in ep.SelectNodes("./*[local-name() = 'attribute']"))
             {
                 if (att.Attributes["name"] == null || att.Attributes["value"] == null)
                     throw new ConfigurationErrorsException("Missing name and/or value on attribute", ep);
                 KeyValuePair<String, String> attValue = new KeyValuePair<string, string>(att.Attributes["name"].Value, att.Attributes["value"].Value);
+                config.Attributes.Add(attValue);
             }
 
             // Handler
