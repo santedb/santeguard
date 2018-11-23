@@ -1,5 +1,6 @@
 ﻿/*
- * Copyright 2012-2017 Mohawk College of Applied Arts and Technology
+ * Copyright 2015-2018 Mohawk College of Applied Arts and Technology
+ *
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you 
  * may not use this file except in compliance with the License. You may 
@@ -13,8 +14,8 @@
  * License for the specific language governing permissions and limitations under 
  * the License.
  * 
- * User: fyfej
- * Date: 2012-6-15
+ * User: justin
+ * Date: 2018-10-27
  */
 using System;
 using System.Collections.Generic;
@@ -60,7 +61,9 @@ namespace SanteGuard.Messaging.Syslog.Action
             {
                 try
                 {
-                    using (var writer = File.AppendText((sender as SyslogListenerThread)?.Configuration?.LogFileLocation ?? "messages.txt"))
+                    String fileName = (sender as SyslogListenerThread)?.Configuration?.LogFileLocation ?? "messages.txt";
+                    this.m_traceSource.TraceVerbose("Logging audit from {0} on endpoint {1} to file {2}", e.SolicitorEndpoint, e.ReceiveEndpoint, fileName);
+                    using (var writer = File.AppendText(fileName))
                         writer.WriteLine(" {0}\t{1:yyyy-MM-dd HH:mm:ss}\t<{2}>\t{3}\t{4}\t{5}\t{6}", sender.GetType().Name, DateTime.Now, e.Message.Facility, e.SolicitorEndpoint.Host, e.Message.ProcessId, e.Message.ProcessName, e.Message.Original);
                 }
                 catch (Exception ex)

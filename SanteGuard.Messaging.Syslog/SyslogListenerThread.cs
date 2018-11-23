@@ -1,5 +1,6 @@
 ﻿/*
- * Copyright 2012-2017 Mohawk College of Applied Arts and Technology
+ * Copyright 2015-2018 Mohawk College of Applied Arts and Technology
+ *
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you 
  * may not use this file except in compliance with the License. You may 
@@ -13,8 +14,8 @@
  * License for the specific language governing permissions and limitations under 
  * the License.
  * 
- * User: fyfej
- * Date: 2012-6-15
+ * User: justin
+ * Date: 2018-10-27
  */
 using System;
 using System.Collections.Generic;
@@ -98,7 +99,7 @@ namespace SanteGuard.Messaging.Syslog
             foreach(var act in this.m_action)
                 try
                 {
-                    act.HandleMessageReceived(sender, e);
+                    act.HandleMessageReceived(this, e);
                 }
                 catch (Exception ex)
                 {
