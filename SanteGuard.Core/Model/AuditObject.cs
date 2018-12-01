@@ -18,12 +18,11 @@
  * Date: 2018-10-27
  */
 using Newtonsoft.Json;
-using System.Xml.Serialization;
-using System;
-using System.Collections;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Attributes;
+using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace SanteGuard.Model
 {

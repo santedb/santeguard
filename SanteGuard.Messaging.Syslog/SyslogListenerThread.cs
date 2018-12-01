@@ -17,17 +17,14 @@
  * User: justin
  * Date: 2018-10-27
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.IO;
-using System.Diagnostics;
+using SanteDB.Core.Diagnostics;
+using SanteGuard.Configuration;
 using SanteGuard.Messaging.Syslog.Action;
 using SanteGuard.Messaging.Syslog.TransportProtocol;
-using SanteGuard.Configuration;
-using SanteDB.Core.Diagnostics;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 
 namespace SanteGuard.Messaging.Syslog
 {

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using MARC.HI.EHRS.SVC.Core;
-using MARC.HI.EHRS.SVC.Core.Services;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SanteDB.Core;
 using SanteDB.Core.Security;
+using SanteDB.Core.Services;
 using SanteGuard.Model;
+using System;
+using System.Linq;
 
 namespace SanteGuard.Test
 {
@@ -27,7 +27,7 @@ namespace SanteGuard.Test
         [TestMethod]
         public void TestCanLookupTerm()
         {
-            var termService = ApplicationContext.Current.GetService<IDataPersistenceService<AuditTerm>>();
+            var termService = ApplicationServiceContext.Current.GetService<IDataPersistenceService<AuditTerm>>();
             Assert.IsNotNull(termService);
 
             // Lookup a term
@@ -43,7 +43,7 @@ namespace SanteGuard.Test
         [TestMethod]
         public void TestCanInsertAudit()
         {
-            var termService = ApplicationContext.Current.GetService<IDataPersistenceService<AuditTerm>>();
+            var termService = ApplicationServiceContext.Current.GetService<IDataPersistenceService<AuditTerm>>();
             Assert.IsNotNull(termService);
 
             AuditTerm actionCode = termService.Query(o => o.Mnemonic == "E" && o.Domain == "ActionType", AuthenticationContext.SystemPrincipal).First(),
@@ -122,9 +122,9 @@ namespace SanteGuard.Test
             };
 
             // Insert
-            var audService = ApplicationContext.Current.GetService<IDataPersistenceService<Audit>>();
+            var audService = ApplicationServiceContext.Current.GetService<IDataPersistenceService<Audit>>();
             Assert.IsNotNull(audService);
-            var inserted = audService.Insert(auditUnderTest, AuthenticationContext.SystemPrincipal, TransactionMode.Commit);
+            var inserted = audService.Insert(auditUnderTest, TransactionMode.Commit, AuthenticationContext.SystemPrincipal);
             Assert.IsTrue(inserted.Key.HasValue);
             Assert.AreEqual(Guid.Empty, inserted.CorrelationToken);
 

@@ -17,21 +17,19 @@
  * User: justin
  * Date: 2018-10-27
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading;
-using System.Diagnostics;
-using System.IO;
-using System.ComponentModel;
-using System.Text.RegularExpressions;
-using System.Net.Security;
+using SanteDB.Core.Diagnostics;
 using SanteGuard.Configuration;
 using SanteGuard.Messaging.Syslog.Exceptions;
-using SanteDB.Core.Diagnostics;
+using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Net;
+using System.Net.Security;
+using System.Net.Sockets;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace SanteGuard.Messaging.Syslog.TransportProtocol
 {
@@ -306,15 +304,15 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
         /// <summary>
         /// Forwrd the message on TCP
         /// </summary>
-        public virtual void Forward(EndpointConfiguration config, byte[] rawMessage)
+        public virtual void Forward(Uri config, byte[] rawMessage)
         {
 
             // Get the IP address
             IPEndPoint endpoint = null;
-            if (config.Address.HostNameType == UriHostNameType.Dns)
-                endpoint = new IPEndPoint(Dns.GetHostEntry(config.Address.Host).AddressList[0], config.Address.Port);
+            if (config.HostNameType == UriHostNameType.Dns)
+                endpoint = new IPEndPoint(Dns.GetHostEntry(config.Host).AddressList[0], config.Port);
             else
-                endpoint = new IPEndPoint(IPAddress.Parse(config.Address.Host), config.Address.Port);
+                endpoint = new IPEndPoint(IPAddress.Parse(config.Host), config.Port);
 
             TcpClient tcpClient = new TcpClient();
             try

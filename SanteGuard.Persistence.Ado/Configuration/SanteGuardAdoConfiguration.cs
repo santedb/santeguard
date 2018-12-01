@@ -17,51 +17,42 @@
  * User: justin
  * Date: 2018-10-27
  */
+using SanteDB.Core;
+using SanteDB.Core.Configuration;
+using SanteDB.Core.Services;
 using SanteDB.OrmLite.Providers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Configuration;
+using System.Xml.Serialization;
 
 namespace SanteGuard.Persistence.Ado.Configuration
 {
     /// <summary>
     /// Configuration section handler
     /// </summary>
-    public class AdoConfiguration
+    [XmlType(nameof(SanteGuardAdoConfiguration), Namespace = "http://santedb.org/configuration/santeguard")]
+    public class SanteGuardAdoConfiguration : SanteDB.OrmLite.Configuration.OrmConfigurationBase, IConfigurationSection
     {
 
         /// <summary>
         /// ADO configuration
         /// </summary>
-        public AdoConfiguration()
+        public SanteGuardAdoConfiguration()
         {
         }
 
         /// <summary>
-        /// Read/write connection string
-        /// </summary>
-        public String ReadWriteConnectionString { get; set; }
-
-        /// <summary>
-        /// Readonly connection string
-        /// </summary>
-        public String ReadonlyConnectionString { get; set; }
-
-        /// <summary>
-        /// Trace SQL enabled
-        /// </summary>
-        public bool TraceSql { get; set; }
-
-        /// <summary>
-        /// Provider type
-        /// </summary>
-        public IDbProvider Provider { get; set; }
-        
-        /// <summary>
         /// True if statements should be prepared
         /// </summary>
+        [XmlAttribute("perpareStatements")]
         public bool PrepareStatements { get; set; }
+
+        /// <summary>
+        /// Resolve connection string
+        /// </summary>
+        protected override string ResolveConnectionString(string connectionStringName)
+        {
+            return ConfigurationManager.ConnectionStrings[connectionStringName]?.ConnectionString;
+        }
     }
 }

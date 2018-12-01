@@ -17,15 +17,16 @@
  * User: justin
  * Date: 2018-10-27
  */
-using MARC.HI.EHRS.SVC.Core;
-using MARC.HI.EHRS.SVC.Core.Services;
+using SanteDB.Core;
 using SanteDB.Core.Diagnostics;
 using SanteDB.Core.Exceptions;
+using SanteDB.Core.Interfaces;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Attributes;
 using SanteDB.Core.Model.Interfaces;
 using SanteDB.Core.Model.Map;
 using SanteDB.Core.Security;
+using SanteDB.Core.Services;
 using SanteDB.OrmLite;
 using SanteDB.Persistence.Data.ADO.Services;
 using SanteGuard.Persistence.Ado.Configuration;
@@ -39,16 +40,19 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SanteGuard.Persistence.Ado.Services
 {
     /// <summary>
     /// Represents the ADO persistence service
     /// </summary>
+    [ServiceProvider("ADO.NET Audit Persistence Daemon")]
     public class AdoAuditPersistenceService : IDaemonService
     {
+        /// <summary>
+        /// Gets the service name
+        /// </summary>
+        public string ServiceName => "ADO.NET Audit Persistence Daemon";
 
         // Tracer
         private static TraceSource s_tracer = new TraceSource(SanteGuardConstants.TraceSourceName);
@@ -60,7 +64,7 @@ namespace SanteGuard.Persistence.Ado.Services
         {
             try
             {
-                s_configuration = ApplicationContext.Current.GetService<IConfigurationManager>().GetSection(SanteGuardConstants.ConfigurationSectionName + ".ado") as AdoConfiguration;
+                s_configuration = ApplicationServiceContext.Current.GetService<IConfigurationManager>().GetSection<SanteGuardAdoConfiguration>();
                 s_mapper = new ModelMapper(typeof(AdoAuditPersistenceService).Assembly.GetManifestResourceStream("SanteGuard.Persistence.Ado.Data.Map.ModelMap.xml"));
                 s_queryBuilder = new QueryBuilder(s_mapper, s_configuration.Provider);
             }
@@ -81,7 +85,7 @@ namespace SanteGuard.Persistence.Ado.Services
         #region Helper Properties
         // Model mapper loaded
         private static ModelMapper s_mapper;
-        private static AdoConfiguration s_configuration;
+        private static SanteGuardAdoConfiguration s_configuration;
         // Cache
         private static Dictionary<Type, IAdoPersistenceService> s_persistenceCache = new Dictionary<Type, IAdoPersistenceService>();
 
@@ -91,7 +95,7 @@ namespace SanteGuard.Persistence.Ado.Services
         /// <summary>
         /// Get configuration
         /// </summary>
-        public static AdoConfiguration GetConfiguration() { return s_configuration; }
+        public static SanteGuardAdoConfiguration GetConfiguration() { return s_configuration; }
 
         /// <summary>
         /// Gets the mode mapper
@@ -241,7 +245,7 @@ namespace SanteGuard.Persistence.Ado.Services
             if(!s_persistenceCache.TryGetValue(type, out retVal))
             {
                 var idt = typeof(IDataPersistenceService<>).MakeGenericType(type);
-                retVal = ApplicationContext.Current.GetService(idt) as IAdoPersistenceService;
+                retVal = ApplicationServiceContext.Current.GetService(idt) as IAdoPersistenceService;
                 if (retVal != null)
                     lock (s_persistenceCache)
                         if(!s_persistenceCache.ContainsKey(type))
@@ -327,7 +331,7 @@ namespace SanteGuard.Persistence.Ado.Services
                 try
                 {
                     s_tracer.TraceEvent(TraceEventType.Information, 0, "Loading {0}...", t.AssemblyQualifiedName);
-                    ApplicationContext.Current.AddServiceProvider(t);
+                    (ApplicationServiceContext.Current as IServiceManager).AddServiceProvider(t);
                 }
                 catch (Exception e)
                 {
@@ -352,7 +356,7 @@ namespace SanteGuard.Persistence.Ado.Services
                     if (modelClassType.IsAbstract || domainClassType.IsAbstract) continue;
 
                     // Already created
-                    if (ApplicationContext.Current.GetService(idpType) != null)
+                    if (ApplicationServiceContext.Current.GetService(idpType) != null)
                         continue;
 
                     s_tracer.TraceEvent(TraceEventType.Verbose, 0, "Creating map {0} > {1}", modelClassType, domainClassType);
@@ -370,7 +374,7 @@ namespace SanteGuard.Persistence.Ado.Services
                         else
                             pclass = typeof(GenericBasePersistenceService<,>);
                         pclass = pclass.MakeGenericType(modelClassType, domainClassType);
-                        ApplicationContext.Current.AddServiceProvider(pclass);
+                        (ApplicationServiceContext.Current as IServiceManager).AddServiceProvider(pclass);
                         // Add to cache since we're here anyways
                         s_persistenceCache.Add(modelClassType, Activator.CreateInstance(pclass) as IAdoPersistenceService);
                     }
@@ -387,7 +391,7 @@ namespace SanteGuard.Persistence.Ado.Services
                             pclass = typeof(GenericIdentityPersistenceService<,>);
 
                         pclass = pclass.MakeGenericType(modelClassType, domainClassType);
-                        ApplicationContext.Current.AddServiceProvider(pclass);
+                        (ApplicationServiceContext.Current as IServiceManager).AddServiceProvider(pclass);
                         s_persistenceCache.Add(modelClassType, Activator.CreateInstance(pclass) as IAdoPersistenceService);
                     }
                     else

@@ -18,11 +18,12 @@
  * Date: 2018-10-27
  */
 using AtnaApi.Model;
-using MARC.HI.EHRS.SVC.Auditing.Data;
-using MARC.HI.EHRS.SVC.Core;
-using MARC.HI.EHRS.SVC.Core.Services;
+using SanteDB.Core;
+using SanteDB.Core.Auditing;
+using SanteDB.Core.Model.Security;
 using SanteDB.Core.Security;
 using SanteDB.Core.Services;
+using SanteGuard.Configuration;
 using SanteGuard.Model;
 using SanteGuard.Services;
 using System;
@@ -30,8 +31,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SanteGuard.Core.Model
 {
@@ -67,7 +66,7 @@ namespace SanteGuard.Core.Model
         {
             if (code == null) return null;
 
-            var auditTermService = ApplicationContext.Current.GetService<IAuditTermLookupService>();
+            var auditTermService = ApplicationServiceContext.Current.GetService<IAuditTermLookupService>();
             if (auditTermService == null)
                 throw new InvalidOperationException("Cannot locate audit term lookup");
 
@@ -116,23 +115,23 @@ namespace SanteGuard.Core.Model
             // Source
             if (me.SourceIdentification != null && me.SourceIdentification.Count > 0)
             {
-                var auditSourcePs = ApplicationContext.Current.GetService<IDataPersistenceService<AuditSource>>();
+                var auditSourcePs = ApplicationServiceContext.Current.GetService<IDataPersistenceService<AuditSource>>();
                 int tr = 0;
-                var currentSources = me.SourceIdentification.Select(o => auditSourcePs.Query(s => s.AuditSourceId == o.AuditSourceID && s.EnterpriseSiteId == o.AuditEnterpriseSiteID, 0, 1, AuthenticationContext.Current.Principal, out tr).FirstOrDefault()).Where(o => o != null).FirstOrDefault();
+                var currentSources = me.SourceIdentification.Select(o => auditSourcePs.Query(s => s.AuditSourceId == o.AuditSourceID && s.EnterpriseSiteId == o.AuditEnterpriseSiteID, 0, 1, out tr, AuthenticationContext.Current.Principal).FirstOrDefault()).Where(o => o != null).FirstOrDefault();
                 if (currentSources == null)
                     currentSources = auditSourcePs.Insert(new AuditSource()
                     {
                         EnterpriseSiteId = me.SourceIdentification.First().AuditEnterpriseSiteID,
                         AuditSourceId = me.SourceIdentification.First().AuditSourceID,
                         SourceType = me.SourceIdentification.First().AuditSourceTypeCode.Select(o => MapOrCreateCode(o)).ToList()
-                    }, AuthenticationContext.Current.Principal, TransactionMode.Commit);
+                    }, TransactionMode.Commit, AuthenticationContext.Current.Principal);
                 retVal.AuditSource = currentSources;
             }
 
             // Participants
             if (me.Actors != null)
             {
-                var actorPs = ApplicationContext.Current.GetService<IDataPersistenceService<AuditActor>>();
+                var actorPs = ApplicationServiceContext.Current.GetService<IDataPersistenceService<AuditActor>>();
                 int tr = 0;
                 retVal.Participants = me.Actors?.Select(a =>
                 {
@@ -144,9 +143,9 @@ namespace SanteGuard.Core.Model
 
                         Guid? sid = null;
                         if (!String.IsNullOrEmpty(a.UserName ?? a.UserIdentifier ?? a.AlternativeUserId))
-                            sid = ApplicationContext.Current.GetService<ISecurityRepositoryService>().GetUser(a.UserName ?? a.UserIdentifier ?? a.AlternativeUserId)?.Key;
+                            sid = ApplicationServiceContext.Current.GetService<ISecurityRepositoryService>().GetUser(a.UserName ?? a.UserIdentifier ?? a.AlternativeUserId)?.Key;
                         else if (!String.IsNullOrEmpty(a.NetworkAccessPointId))
-                            sid = ApplicationContext.Current.GetService<ISecurityRepositoryService>().FindDevices(o => o.Name == a.NetworkAccessPointId).FirstOrDefault()?.Key;
+                            sid = ApplicationServiceContext.Current.GetService<IRepositoryService<SecurityDevice>>().Find(o => o.Name == a.NetworkAccessPointId).FirstOrDefault()?.Key;
 
                         // Create necessary 
                         act = actorPs.Insert(new AuditActor()
@@ -156,7 +155,7 @@ namespace SanteGuard.Core.Model
                             UserIdentifier = a.UserIdentifier,
                             UserName = a.UserName,
                             SecurityIdentifier = sid
-                        }, AuthenticationContext.Current.Principal, TransactionMode.Commit);
+                        }, TransactionMode.Commit, AuthenticationContext.Current.Principal);
                     }
 
                     return new AuditParticipation() { Actor = act, IsRequestor = a.UserIsRequestor, Roles = a.ActorRoleCode.Select(r => MapOrCreateCode(r)).ToList() };
@@ -195,13 +194,13 @@ namespace SanteGuard.Core.Model
             retVal.EventTimestamp = me.Timestamp;
 
             // Source
-            var auditSourcePs = ApplicationContext.Current.GetService<IDataPersistenceService<AuditSource>>();
+            var auditSourcePs = ApplicationServiceContext.Current.GetService<IDataPersistenceService<AuditSource>>();
             var enterpriseMetadata = me.Metadata.FirstOrDefault(o => o.Key == AuditMetadataKey.EnterpriseSiteID)?.Value;
             if (String.IsNullOrEmpty(enterpriseMetadata))
-                enterpriseMetadata = String.Format("{1}^^^&{0}&ISO", ApplicationContext.Current.Configuration.DeviceIdentifier, ApplicationContext.Current.Configuration.DeviceName);
+                enterpriseMetadata = ApplicationServiceContext.Current.GetService<IConfigurationManager>().GetSection<SanteGuardConfiguration>().DefaultEnterpriseSiteID;
 
             int tr = 0;
-            var currentSources = auditSourcePs.Query(s => s.EnterpriseSiteId == enterpriseMetadata, 0, 1, AuthenticationContext.Current.Principal, out tr).FirstOrDefault();
+            var currentSources = auditSourcePs.Query(s => s.EnterpriseSiteId == enterpriseMetadata, 0, 1, out tr, AuthenticationContext.Current.Principal).FirstOrDefault();
             if (currentSources == null)
                 currentSources = auditSourcePs.Insert(new AuditSource()
                 {
@@ -211,13 +210,13 @@ namespace SanteGuard.Core.Model
                     {
                         MapOrCreateCode(AtnaApi.Model.AuditSourceType.ApplicationServerProcess)
                     }
-                }, AuthenticationContext.Current.Principal, TransactionMode.Commit);
+                }, TransactionMode.Commit, AuthenticationContext.Current.Principal);
             retVal.AuditSource = currentSources;
 
             // Participants
             if (me.Actors != null)
             {
-                var actorPs = ApplicationContext.Current.GetService<IDataPersistenceService<AuditActor>>();
+                var actorPs = ApplicationServiceContext.Current.GetService<IDataPersistenceService<AuditActor>>();
                 retVal.Participants = me.Actors.Select(a =>
                 {
                     AuditActor act = actorPs.Query(o => o.UserName == a.UserName && o.NetworkAccessPoint == a.NetworkAccessPointId && o.UserIdentifier == a.UserIdentifier, AuthenticationContext.Current.Principal).FirstOrDefault();
@@ -227,9 +226,9 @@ namespace SanteGuard.Core.Model
 
                         Guid? sid = null;
                         if (!String.IsNullOrEmpty(a.UserName ?? a.UserIdentifier ?? a.AlternativeUserId))
-                            sid = ApplicationContext.Current.GetService<ISecurityRepositoryService>().GetUser(a.UserName ?? a.UserIdentifier ?? a.AlternativeUserId)?.Key;
+                            sid = ApplicationServiceContext.Current.GetService<ISecurityRepositoryService>().GetUser(a.UserName ?? a.UserIdentifier ?? a.AlternativeUserId)?.Key;
                         else if (!String.IsNullOrEmpty(a.NetworkAccessPointId))
-                            sid = ApplicationContext.Current.GetService<ISecurityRepositoryService>().FindDevices(o => o.Name == a.NetworkAccessPointId).FirstOrDefault()?.Key;
+                            sid = ApplicationServiceContext.Current.GetService<IRepositoryService<SecurityDevice>>().Find(o => o.Name == a.NetworkAccessPointId).FirstOrDefault()?.Key;
 
                         // Create necessary 
                         act = actorPs.Insert(new AuditActor()
@@ -239,7 +238,7 @@ namespace SanteGuard.Core.Model
                             UserIdentifier = a.UserIdentifier,
                             UserName = a.UserName,
                             SecurityIdentifier = sid
-                        }, AuthenticationContext.Current.Principal, TransactionMode.Commit);
+                        }, TransactionMode.Commit, AuthenticationContext.Current.Principal);
                     }
 
                     return new AuditParticipation() { Actor = act, IsRequestor = a.UserIsRequestor, Roles = a.ActorRoleCode.Select(r => MapOrCreateCode(r)).ToList() };
@@ -289,9 +288,9 @@ namespace SanteGuard.Core.Model
         public static AuditData ToAuditData(this Audit me)
         {
             var retVal = new AuditData(me.EventTimestamp.DateTime,
-                (MARC.HI.EHRS.SVC.Auditing.Data.ActionType)MapTerm<AtnaApi.Model.ActionType>(me.ActionCode).StrongCode,
-                (MARC.HI.EHRS.SVC.Auditing.Data.OutcomeIndicator)MapTerm<AtnaApi.Model.OutcomeIndicator>(me.ActionCode).StrongCode,
-                (MARC.HI.EHRS.SVC.Auditing.Data.EventIdentifierType)MapTerm<AtnaApi.Model.EventIdentifierType>(me.ActionCode).StrongCode,
+                (SanteDB.Core.Auditing.ActionType)MapTerm<AtnaApi.Model.ActionType>(me.ActionCode).StrongCode,
+                (SanteDB.Core.Auditing.OutcomeIndicator)MapTerm<AtnaApi.Model.OutcomeIndicator>(me.ActionCode).StrongCode,
+                (SanteDB.Core.Auditing.EventIdentifierType)MapTerm<AtnaApi.Model.EventIdentifierType>(me.ActionCode).StrongCode,
                 new AuditCode(me.EventTypeCodes.FirstOrDefault()?.Mnemonic, me.EventTypeCodes.FirstOrDefault()?.Domain)
             );
 

@@ -22,11 +22,7 @@ using SanteGuard.Model;
 using SanteGuard.Persistence.Ado.Data.Extensions;
 using SanteGuard.Persistence.Ado.Data.Model;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SanteGuard.Persistence.Ado.Services.Persistence
 {

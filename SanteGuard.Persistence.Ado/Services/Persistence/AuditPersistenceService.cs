@@ -17,8 +17,7 @@
  * User: justin
  * Date: 2018-10-27
  */
-using MARC.HI.EHRS.SVC.Core;
-using MARC.HI.EHRS.SVC.Core.Services;
+using SanteDB.Core;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Map;
 using SanteDB.Core.Security;
@@ -28,12 +27,7 @@ using SanteGuard.Model;
 using SanteGuard.Persistence.Ado.Data.Extensions;
 using SanteGuard.Persistence.Ado.Data.Model;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SanteGuard.Persistence.Ado.Services.Persistence
 {
@@ -149,7 +143,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
         {
             data.Status = AuditStatusType.Obsolete;
             data.ObsoletionTime = DateTimeOffset.Now;
-            data.ObsoletedByKey = ApplicationContext.Current.GetService<ISecurityRepositoryService>()?.GetUser(principal.Identity.Name)?.Key.Value ??
+            data.ObsoletedByKey = ApplicationServiceContext.Current.GetService<ISecurityRepositoryService>()?.GetUser(principal.Identity.Name)?.Key.Value ??
                 Guid.Parse(AuthenticationContext.AnonymousUserSid);
             return base.UpdateInternal(context, data, principal);
         }

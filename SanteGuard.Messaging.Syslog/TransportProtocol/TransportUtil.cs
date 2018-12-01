@@ -17,15 +17,13 @@
  * User: justin
  * Date: 2018-10-27
  */
+using MARC.Everest.Threading;
+using SanteDB.Core.Diagnostics;
+using SanteGuard.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
 using System.Diagnostics;
-using MARC.Everest.Threading;
-using SanteGuard.Configuration;
-using SanteDB.Core.Diagnostics;
+using System.Reflection;
 
 namespace SanteGuard.Messaging.Syslog.TransportProtocol
 {
@@ -106,11 +104,11 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
         /// <summary>
         /// Forward a raw message to registered forward list
         /// </summary>
-        internal void Forward(List<Configuration.EndpointConfiguration> target, byte[] rawMessage)
+        internal void Forward(List<String> target, byte[] rawMessage)
         {
             if(target != null)
                 foreach (var t in target)
-                    m_wtp.QueueUserWorkItem(DoForwardAudit, new KeyValuePair<EndpointConfiguration, byte[]>(t, rawMessage));
+                    m_wtp.QueueUserWorkItem(DoForwardAudit, new KeyValuePair<String, byte[]>(t, rawMessage));
         }
 
         /// <summary>
@@ -120,10 +118,11 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
         {
             try
             {
-                KeyValuePair<EndpointConfiguration, byte[]> parms = (KeyValuePair<EndpointConfiguration, byte[]>)state;
-                this.m_traceSource.TraceInformation("Forwarding to {0} on {1}...", parms.Key.Name, parms.Key.Address);
-                var transport = CreateTransport(parms.Key.Address.Scheme);
-                transport.Forward(parms.Key, parms.Value);
+                KeyValuePair<String, byte[]> parms = (KeyValuePair<String, byte[]>)state;
+                var address = new Uri(parms.Key);
+                this.m_traceSource.TraceInformation("Forwarding to {0}...", address);
+                var transport = CreateTransport(address.Scheme);
+                transport.Forward(address, parms.Value);
             }
             catch (Exception e)
             {

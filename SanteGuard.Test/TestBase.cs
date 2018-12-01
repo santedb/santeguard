@@ -1,12 +1,14 @@
-﻿using System;
-using System.IO;
-using MARC.HI.EHRS.SVC.Core;
-using MARC.HI.EHRS.SVC.Core.Services;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SanteDB.Core;
+using SanteDB.Core.Data;
+using SanteDB.Core.Interfaces;
 using SanteDB.Core.Model.EntityLoader;
+using SanteDB.Core.Services;
 using SanteGuard.Model;
 using SanteGuard.Persistence.Ado.Services;
 using SanteGuard.Test.Shim;
+using System;
+using System.IO;
 
 namespace SanteGuard.Test
 {
@@ -37,19 +39,18 @@ namespace SanteGuard.Test
                "DataDirectory",
                Path.Combine(context.TestDeploymentDir, string.Empty));
 
-            EntitySource.Current = new EntitySource(new PersistenceServiceEntitySource());
+            EntitySource.Current = new EntitySource(new RepositoryEntitySource());
             var f = typeof(FirebirdSql.Data.FirebirdClient.FirebirdClientFactory).AssemblyQualifiedName;
 
             // Register the AuditAdoPersistenceService
-            var adoPersistenceService = ApplicationContext.Current.GetService<IDataPersistenceService<Audit>>();
-            ApplicationContext.Current.AddServiceProvider(typeof(MARC.HI.EHRS.SVC.Core.Configuration.LocalConfigurationManager));
+            var adoPersistenceService = ApplicationServiceContext.Current.GetService<IDataPersistenceService<Audit>>();
             if (adoPersistenceService == null)
-                ApplicationContext.Current.AddServiceProvider(typeof(AdoAuditPersistenceService));
-            ApplicationContext.Current.AddServiceProvider(typeof(DummySecurityRepositoryService)); // Sec repo service is for get user name implementation
-            ApplicationContext.Current.AddServiceProvider(typeof(DummyPolicyDecisionService));
+                (ApplicationServiceContext.Current as IServiceManager).AddServiceProvider(typeof(AdoAuditPersistenceService));
+            (ApplicationServiceContext.Current as IServiceManager).AddServiceProvider(typeof(DummySecurityRepositoryService)); // Sec repo service is for get user name implementation
+            (ApplicationServiceContext.Current as IServiceManager).AddServiceProvider(typeof(DummyPolicyDecisionService));
 
             // Start the daemon services
-            if (!ApplicationContext.Current.IsRunning)
+            if (!ApplicationServiceContext.Current.IsRunning)
             {
                 //adoPersistenceService.Start();
                 ApplicationContext.Current.Start();

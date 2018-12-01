@@ -17,13 +17,9 @@
  * User: justin
  * Date: 2018-10-27
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net;
-using System.Security.Cryptography.X509Certificates;
 using SanteGuard.Configuration;
+using System;
+using System.Security.Cryptography.X509Certificates;
 
 namespace SanteGuard.Messaging.Syslog.TransportProtocol
 {
@@ -101,7 +97,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
         /// <summary>
         /// Forward to an endpoint
         /// </summary>
-        void Forward(EndpointConfiguration endpoint, byte[] rawMessage);
+        void Forward(Uri endpoint, byte[] rawMessage);
 
         /// <summary>
         /// Start the transport protocol

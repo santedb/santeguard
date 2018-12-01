@@ -17,27 +17,20 @@
  * User: justin
  * Date: 2018-10-27
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using System.Security.Principal;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using SanteGuard.Messaging.Syslog.TransportProtocol;
 using MARC.Everest.Connectors;
-using MARC.HI.EHRS.SVC.Auditing.Data;
-using MARC.HI.EHRS.SVC.Core;
-using MARC.HI.EHRS.SVC.Core.Services;
-using SanteDB.Core.Services;
+using SanteDB.Core;
+using SanteDB.Core.BusinessRules;
 using SanteDB.Core.Diagnostics;
-using SanteGuard.Model;
-using static SanteGuard.Messaging.Syslog.Action.MessageUtil;
-using SanteDB.Core.Model.Collection;
 using SanteDB.Core.Model.Security;
-using SanteGuard.Core.Model;
 using SanteDB.Core.Security;
+using SanteDB.Core.Services;
+using SanteGuard.Core.Model;
+using SanteGuard.Messaging.Syslog.TransportProtocol;
+using SanteGuard.Model;
+using System;
+using System.Diagnostics;
+using System.Linq;
+using static SanteGuard.Messaging.Syslog.Action.MessageUtil;
 
 namespace SanteGuard.Messaging.Syslog.Action
 {
@@ -84,7 +77,7 @@ namespace SanteGuard.Messaging.Syslog.Action
                 AuthenticatedSyslogMessageReceivedEventArgs securedEvent = e as AuthenticatedSyslogMessageReceivedEventArgs;
 
                 // Process a result
-                ApplicationContext.Current.GetService<IThreadPoolService>().QueueUserWorkItem((p) =>
+                ApplicationServiceContext.Current.GetService<IThreadPoolService>().QueueUserWorkItem((p) =>
                 {
                     AuthenticationContext.Current = new AuthenticationContext(AuthenticationContext.SystemPrincipal);
                     try
@@ -107,7 +100,7 @@ namespace SanteGuard.Messaging.Syslog.Action
 
                             // Create or get node
                             int tr = 0;
-                            var senderNode = ApplicationContext.Current.GetService<IRepositoryService<AuditNode>>().Find(o => o.HostName == e.Message.HostName.ToLower(), 0, 1, out tr).FirstOrDefault();
+                            var senderNode = ApplicationServiceContext.Current.GetService<IRepositoryService<AuditNode>>().Find(o => o.HostName == e.Message.HostName.ToLower(), 0, 1, out tr).FirstOrDefault();
                             if (senderNode == null) // Flag alert
                             {
                                 alertStatus = true;
@@ -118,13 +111,13 @@ namespace SanteGuard.Messaging.Syslog.Action
                                     HostName = e.Message.HostName.ToLower(),
                                     Name = e.Message.HostName,
                                     Status = AuditStatusType.New,
-                                    SecurityDeviceKey = ApplicationContext.Current.GetService<IRepositoryService<SecurityDevice>>().Find(o => o.Name == e.Message.HostName, 0, 1, out tr).FirstOrDefault()?.Key.Value
+                                    SecurityDeviceKey = ApplicationServiceContext.Current.GetService<IRepositoryService<SecurityDevice>>().Find(o => o.Name == e.Message.HostName, 0, 1, out tr).FirstOrDefault()?.Key.Value
                                 };
                                 insertBundle.Add(senderNode);
                             }
 
                             var receiverNode = insertBundle.Item.OfType<AuditNode>().FirstOrDefault(o=>o.HostName == Environment.MachineName.ToLower()) ??
-                                ApplicationContext.Current.GetService<IRepositoryService<AuditNode>>().Find(o => o.HostName == Environment.MachineName.ToLower(), 0, 1, out tr).FirstOrDefault();
+                                ApplicationServiceContext.Current.GetService<IRepositoryService<AuditNode>>().Find(o => o.HostName == Environment.MachineName.ToLower(), 0, 1, out tr).FirstOrDefault();
 
                             if (receiverNode == null) // Flag alert
                             {
@@ -136,13 +129,13 @@ namespace SanteGuard.Messaging.Syslog.Action
                                     HostName = Environment.MachineName.ToLower(),
                                     Name = Environment.MachineName,
                                     Status = AuditStatusType.New,
-                                    SecurityDeviceKey = ApplicationContext.Current.GetService<IRepositoryService<SecurityDevice>>().Find(o => o.Name == Environment.MachineName, 0, 1, out tr).FirstOrDefault()?.Key.Value
+                                    SecurityDeviceKey = ApplicationServiceContext.Current.GetService<IRepositoryService<SecurityDevice>>().Find(o => o.Name == Environment.MachineName, 0, 1, out tr).FirstOrDefault()?.Key.Value
                                 };
                                 insertBundle.Add(receiverNode);
                             }
 
                             // Create or get session
-                            var session = ApplicationContext.Current.GetService<IRepositoryService<AuditSession>>().Get(processResult.SourceMessage.SessionId);
+                            var session = ApplicationServiceContext.Current.GetService<IRepositoryService<AuditSession>>().Get(processResult.SourceMessage.SessionId);
                             if (session == null)
                                 insertBundle.Add(new AuditSession()
                                 {
@@ -183,7 +176,7 @@ namespace SanteGuard.Messaging.Syslog.Action
                                 });
 
                         // Batch persistence service
-                        ApplicationContext.Current.GetService<IRepositoryService<AuditBundle>>().Insert(insertBundle);
+                        ApplicationServiceContext.Current.GetService<IRepositoryService<AuditBundle>>().Insert(insertBundle);
 
                     }
                     catch(Exception ex)

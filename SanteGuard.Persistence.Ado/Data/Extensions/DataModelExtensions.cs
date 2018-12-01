@@ -17,8 +17,7 @@
  * User: justin
  * Date: 2018-10-27
  */
-using MARC.HI.EHRS.SVC.Core;
-using MARC.HI.EHRS.SVC.Core.Services;
+using SanteDB.Core;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Attributes;
 using SanteDB.Core.Model.Interfaces;
@@ -32,14 +31,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Security;
-using System.Security.Claims;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Serialization;
 
 namespace SanteGuard.Persistence.Ado.Data.Extensions
@@ -100,14 +93,14 @@ namespace SanteGuard.Persistence.Ado.Data.Extensions
 
             // Is there a classifier?
             var idpInstance = AdoAuditPersistenceService.GetPersister(me.GetType()) as IAdoPersistenceService;
-            var cacheService = ApplicationContext.Current.GetService<IDataCachingService>();
+            var cacheService = ApplicationServiceContext.Current.GetService<IDataCachingService>();
 
             IIdentifiedEntity existing = null;
 
             // Forcing from database load from
             if (forceDatabase && me.Key.HasValue)
                 // HACK: This should really hit the database instead of just clearing the cache
-                ApplicationContext.Current.GetService<IDataCachingService>()?.Remove(me.Key.Value);
+                ApplicationServiceContext.Current.GetService<IDataCachingService>()?.Remove(me.Key.Value);
             //var tableType = AdoPersistenceService.GetMapper().MapModelType(me.GetType());
             //if (me.GetType() != tableType)
             //{
@@ -316,7 +309,7 @@ namespace SanteGuard.Persistence.Ado.Data.Extensions
                     continue;
 
                 // Map model type to domain
-                var adoPersister = ApplicationContext.Current.GetService(pi.PropertyType.StripGeneric()) as IAdoPersistenceService;
+                var adoPersister = ApplicationServiceContext.Current.GetService(pi.PropertyType.StripGeneric()) as IAdoPersistenceService;
 
                 // Loading associations, so what is the associated type?
                 if (typeof(IList).IsAssignableFrom(pi.PropertyType) &&

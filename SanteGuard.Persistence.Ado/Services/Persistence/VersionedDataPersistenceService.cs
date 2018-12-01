@@ -17,20 +17,16 @@
  * User: justin
  * Date: 2018-10-27
  */
-using MARC.HI.EHRS.SVC.Core;
+using SanteDB.Core;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Map;
 using SanteDB.Core.Services;
 using SanteDB.OrmLite;
-using SanteGuard.Persistence.Ado.Data.Extensions;
 using SanteGuard.Persistence.Ado.Data.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SanteGuard.Persistence.Ado.Services.Persistence
 {
@@ -76,7 +72,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             nonVersionedPortion = context.Insert(nonVersionedPortion);
 
             // Ensure created by exists
-            data.CreatedByKey = domainObject.CreatedByKey = ApplicationContext.Current.GetService<ISecurityRepositoryService>().GetUser(principal.Identity.Name).Key.Value;
+            data.CreatedByKey = domainObject.CreatedByKey = ApplicationServiceContext.Current.GetService<ISecurityRepositoryService>().GetUser(principal.Identity.Name).Key.Value;
 
             if (data.CreationTime == DateTimeOffset.MinValue || data.CreationTime.Year < 100)
                 data.CreationTime = DateTimeOffset.Now;
@@ -114,7 +110,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             var storageInstance = this.FromModelInstance(data, context, principal);
 
             // Create a new version
-            var user = ApplicationContext.Current.GetService<ISecurityRepositoryService>().GetUser(principal.Identity.Name).Key;
+            var user = ApplicationServiceContext.Current.GetService<ISecurityRepositoryService>().GetUser(principal.Identity.Name).Key;
             var newEntityVersion = new TDomain();
             newEntityVersion.CopyObjectData(storageInstance);
 

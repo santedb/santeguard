@@ -17,11 +17,10 @@
  * User: justin
  * Date: 2018-10-27
  */
-using MARC.HI.EHRS.SVC.Core;
+using SanteDB.Core;
 using SanteDB.Core.Model;
 using SanteDB.Core.Services;
 using SanteDB.OrmLite;
-using SanteGuard.Persistence.Ado.Data.Extensions;
 using SanteGuard.Persistence.Ado.Data.Model;
 using System;
 using System.Collections.Generic;
@@ -29,8 +28,6 @@ using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SanteGuard.Persistence.Ado.Services.Persistence
 {
@@ -63,7 +60,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             var nvd = data as NonVersionedEntityData;
             if (nvd != null)
             {
-                nvd.UpdatedByKey = nvd.UpdatedBy?.Key ?? nvd.UpdatedByKey ?? ApplicationContext.Current.GetService<ISecurityRepositoryService>().GetUser(principal.Identity.Name)?.Key;
+                nvd.UpdatedByKey = nvd.UpdatedBy?.Key ?? nvd.UpdatedByKey ?? ApplicationServiceContext.Current.GetService<ISecurityRepositoryService>().GetUser(principal.Identity.Name)?.Key;
                 nvd.UpdatedTime = DateTimeOffset.Now;
             }
 
@@ -73,7 +70,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             var domainObject = this.FromModelInstance(data, context, principal) as TDomain;
 
             // Ensure created by exists
-            data.CreatedByKey = domainObject.CreatedByKey = ApplicationContext.Current.GetService<ISecurityRepositoryService>().GetUser(principal.Identity.Name).Key.Value;
+            data.CreatedByKey = domainObject.CreatedByKey = ApplicationServiceContext.Current.GetService<ISecurityRepositoryService>().GetUser(principal.Identity.Name).Key.Value;
             domainObject = context.Insert<TDomain>(domainObject);
             data.CreationTime = (DateTimeOffset)domainObject.CreationTime;
             data.Key = domainObject.Key;
@@ -90,7 +87,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
         {
             var nvd = data as NonVersionedEntityData;
             if (nvd != null)
-                nvd.UpdatedByKey = nvd.UpdatedBy?.Key ?? nvd.UpdatedByKey ?? ApplicationContext.Current.GetService<ISecurityRepositoryService>().GetUser(principal.Identity.Name)?.Key;
+                nvd.UpdatedByKey = nvd.UpdatedBy?.Key ?? nvd.UpdatedByKey ?? ApplicationServiceContext.Current.GetService<ISecurityRepositoryService>().GetUser(principal.Identity.Name)?.Key;
 
             // Check for key
             if (data.Key == Guid.Empty)
@@ -107,7 +104,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             var vobject = domainObject as IDbNonVersionedBaseData;
             if (vobject != null)
             {
-                nvd.UpdatedByKey = vobject.UpdatedByKey = ApplicationContext.Current.GetService<ISecurityRepositoryService>().GetUser(principal.Identity.Name)?.Key;
+                nvd.UpdatedByKey = vobject.UpdatedByKey = ApplicationServiceContext.Current.GetService<ISecurityRepositoryService>().GetUser(principal.Identity.Name)?.Key;
                 nvd.UpdatedTime = vobject.UpdatedTime = DateTimeOffset.Now;
             }
 
@@ -147,7 +144,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
                 throw new KeyNotFoundException(data.Key.ToString());
 
             //data.ObsoletedBy?.EnsureExists(context, principal);
-            data.ObsoletedByKey = currentObject.ObsoletedByKey = ApplicationContext.Current.GetService<ISecurityRepositoryService>().GetUser(principal.Identity.Name)?.Key;
+            data.ObsoletedByKey = currentObject.ObsoletedByKey = ApplicationServiceContext.Current.GetService<ISecurityRepositoryService>().GetUser(principal.Identity.Name)?.Key;
             data.ObsoletionTime = currentObject.ObsoletionTime = currentObject.ObsoletionTime ?? DateTimeOffset.Now;
 
             context.Update(currentObject);

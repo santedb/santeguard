@@ -17,7 +17,7 @@
  * User: justin
  * Date: 2018-10-27
  */
-using MARC.HI.EHRS.SVC.Core;
+using SanteDB.Core;
 using SanteDB.Core.Model;
 using SanteDB.Core.Services;
 using SanteDB.OrmLite;
@@ -29,8 +29,6 @@ using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SanteGuard.Persistence.Ado.Services.Persistence
 {
@@ -148,7 +146,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
         /// </summary>
         public override TModel GetInternal(DataContext context, Guid key, IPrincipal principal)
         {
-            var cacheService = ApplicationContext.Current.GetService<IDataCachingService>();
+            var cacheService = ApplicationServiceContext.Current.GetService<IDataCachingService>();
             var retVal = cacheService?.GetCacheItem<TModel>(key) ??
                     context.GetCacheCommit(key) as TModel;
             if (retVal != null)

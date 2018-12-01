@@ -1,11 +1,11 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SanteDB.Core.Exceptions;
 using SanteDB.Core.Model.Map;
 using SanteGuard.Model;
 using SanteGuard.Persistence.Ado.Data.Model;
+using System;
+using System.Diagnostics;
+using System.Linq;
 
 namespace SanteGuard.Test
 {

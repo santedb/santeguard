@@ -18,10 +18,11 @@
  * Date: 2018-10-27
  */
 using AtnaApi.Model;
-using MARC.HI.EHRS.SVC.Auditing.Data;
-using MARC.HI.EHRS.SVC.Core;
+using SanteDB.Core;
+using SanteDB.Core.Auditing;
 using SanteDB.Core.Diagnostics;
 using SanteDB.Core.Model.Query;
+using SanteDB.Core.Security.Services;
 using SanteDB.Core.Services;
 using SanteGuard.Core.Model;
 using SanteGuard.Model;
@@ -31,16 +32,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SanteGuard.Services.Repositories
 {
     /// <summary>
     /// Represents an implementation of the audit repository classes for SanteGuard
     /// </summary>
+    [ServiceProvider("SanteGuard Enhanced Audit Repository")]
     public class SanteGuardAuditRepository : IAuditRepositoryService
     {
+
+        public string ServiceName => "SanteGuard Enhanced Audit Repository";
 
         // Trace source
         private TraceSource m_tracer = new TraceSource(SanteGuardConstants.TraceSourceName);
@@ -64,7 +66,7 @@ namespace SanteGuard.Services.Repositories
             var inQuery = QueryExpressionBuilder.BuildQuery(query);
             var outQuery = new NameValueCollection();
 
-            var termService = ApplicationContext.Current.GetService<IAuditTermLookupService>();
+            var termService = ApplicationServiceContext.Current.GetService<IAuditTermLookupService>();
 
             // Map query
             foreach(var kv in inQuery)
@@ -119,7 +121,7 @@ namespace SanteGuard.Services.Repositories
             }
 
             var newQuery = QueryExpressionParser.BuildLinqExpression<Audit>(outQuery);
-            return ApplicationContext.Current.GetService<IRepositoryService<Audit>>().Find(newQuery, offset, count, out totalResults)
+            return ApplicationServiceContext.Current.GetService<IRepositoryService<Audit>>().Find(newQuery, offset, count, out totalResults)
                 .Select(o => o.ToAuditData());
         }
 
@@ -130,7 +132,7 @@ namespace SanteGuard.Services.Repositories
         {
             Guid correlationUuid = Guid.Parse(correlationKey.ToString());
             int tr;
-            return ApplicationContext.Current.GetService<IRepositoryService<Audit>>().Find(o => o.CorrelationToken == correlationUuid, 0, 1, out tr).FirstOrDefault()?.ToAuditData();
+            return ApplicationServiceContext.Current.GetService<IRepositoryService<Audit>>().Find(o => o.CorrelationToken == correlationUuid, 0, 1, out tr).FirstOrDefault()?.ToAuditData();
         }
 
         /// <summary>
@@ -145,7 +147,7 @@ namespace SanteGuard.Services.Repositories
 
 
             var rawAudit = audit.ToAudit();
-            return ApplicationContext.Current.GetService<IRepositoryService<Audit>>().Insert(rawAudit).ToAuditData();
+            return ApplicationServiceContext.Current.GetService<IRepositoryService<Audit>>().Insert(rawAudit).ToAuditData();
         }
     }
 }

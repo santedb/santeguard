@@ -17,18 +17,14 @@
  * User: justin
  * Date: 2018-10-27
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using MARC.HI.EHRS.SVC.Core;
-using MARC.HI.EHRS.SVC.Core.Services;
+using SanteDB.Core;
 using SanteDB.Core.Model.Query;
 using SanteDB.Core.Security;
 using SanteDB.Core.Services;
 using SanteGuard.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SanteGuard.Services
 {
@@ -50,7 +46,7 @@ namespace SanteGuard.Services
         /// </summary>
         public AuditTerm GetTerm(string code, params string[] codeSystem)
         {
-            var repo = ApplicationContext.Current.GetService<IDataPersistenceService<AuditTerm>>();
+            var repo = ApplicationServiceContext.Current.GetService<IDataPersistenceService<AuditTerm>>();
             if (repo == null)
                 throw new InvalidOperationException("Cannot find audit term service");
 
@@ -61,7 +57,7 @@ namespace SanteGuard.Services
                 { "domain", codeSystem.ToList() }
             });
             int tr;
-            return repo.Query(expr, 0, 1, AuthenticationContext.Current.Principal, out tr).FirstOrDefault();
+            return repo.Query(expr, 0, 1, out tr, AuthenticationContext.SystemPrincipal).FirstOrDefault();
         }
 
         /// <summary>
@@ -69,7 +65,7 @@ namespace SanteGuard.Services
         /// </summary>
         public AuditTerm Register(string code, string codeSystem, string displayName)
         {
-            var repo = ApplicationContext.Current.GetService<IRepositoryService<AuditTerm>>(); // We want this registration to be audited
+            var repo = ApplicationServiceContext.Current.GetService<IRepositoryService<AuditTerm>>(); // We want this registration to be audited
             if (repo == null)
                 throw new InvalidOperationException("Cannot find audit term repository");
             return repo.Insert(new AuditTerm()

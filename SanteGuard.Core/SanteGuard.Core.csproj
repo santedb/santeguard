@@ -41,9 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\ConfigurationSectionHandler.cs" />
     <Compile Include="Configuration\EndpointConfiguration.cs" />
     <Compile Include="Configuration\SanteGuardConfiguration.cs" />
+    <Compile Include="Configuration\StcpConfigurationElement.cs" />
     <Compile Include="Model\Audit.cs" />
     <Compile Include="Model\AuditBundle.cs" />
     <Compile Include="Model\AuditDetailData.cs" />
@@ -61,27 +61,23 @@
     <Compile Include="SanteGuardConstants.cs" />
     <Compile Include="Services\IAuditTermLookupService.cs" />
     <Compile Include="Services\LocalAuditTermLookupService.cs" />
+    <Compile Include="Services\Repositories\GenericSanteGuardRepository.cs" />
     <Compile Include="Services\Repositories\SanteGuardAuditRepository.cs" />
     <Compile Include="Services\Repositories\SanteGuardDataRepository.cs" />
+    <Compile Include="Services\Repositories\SanteGuardSecurityAttributeRepository.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MARC.HI.EHRS.SVC.Auditing.Core">
-      <Version>2.0.1.8</Version>
-    </PackageReference>
-    <PackageReference Include="MARC.HI.EHRS.SVC.Core">
-      <Version>2.0.3</Version>
-    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>11.0.2</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Core.Api">
-      <Version>1.2.2</Version>
+      <Version>1.9.16</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Core.Model">
-      <Version>1.2.1</Version>
+      <Version>1.9.16</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Plugin">
-      <Version>1.2.0</Version>
+      <Version>1.9.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

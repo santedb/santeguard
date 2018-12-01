@@ -41,8 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\AdoConfiguration.cs" />
-    <Compile Include="Configuration\AdoConfigurationSectionHandler.cs" />
+    <Compile Include="Configuration\SanteGuardAdoConfiguration.cs" />
     <Compile Include="Data\Extensions\DataModelExtensions.cs" />
     <Compile Include="Data\Model\DbAssociation.cs" />
     <Compile Include="Data\Model\DbAudit.cs" />
@@ -81,17 +80,14 @@
     <Content Include="Data\SQL\PSQL\santeguard-ddl.sql" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MARC.HI.EHRS.SVC.Core">
-      <Version>2.0.3</Version>
-    </PackageReference>
     <PackageReference Include="SanteDB.Core.Api">
-      <Version>1.2.2</Version>
+      <Version>1.9.16</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Plugin">
-      <Version>1.2.0</Version>
+      <Version>1.9.0</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Plugin.Data">
-      <Version>1.2.0</Version>
+      <Version>1.9.14</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

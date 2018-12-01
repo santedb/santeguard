@@ -17,16 +17,15 @@
  * User: justin
  * Date: 2018-10-27
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Serialization;
-using System.IO;
-using System.Xml;
+using AtnaApi.Model;
 using MARC.Everest.Connectors;
 using SanteGuard.Messaging.Syslog.ResultDetails;
-using AtnaApi.Model;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace SanteGuard.Messaging.Syslog.Action
 {

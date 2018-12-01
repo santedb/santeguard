@@ -17,17 +17,18 @@
  * User: justin
  * Date: 2018-10-27
  */
+using SanteDB.Core.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Xml.Serialization;
 
 namespace SanteGuard.Configuration
 {
     /// <summary>
     /// Visualizer configuration
     /// </summary>
-    public class SanteGuardConfiguration
+    [XmlType(nameof(SanteGuardConfiguration), Namespace = "http://santedb.org/configuration/santeguard")]
+    public class SanteGuardConfiguration : IConfigurationSection
     {
 
         /// <summary>
@@ -41,8 +42,14 @@ namespace SanteGuard.Configuration
         /// <summary>
         /// Listener configurations
         /// </summary>
+        [XmlArray("endpoints"), XmlArrayItem("add")]
         public List<EndpointConfiguration> Endpoints { get; private set; }
 
+        /// <summary>
+        /// The default entrprise site
+        /// </summary>
+        [XmlElement("defaultEnterpriseSite")]
+        public String DefaultEnterpriseSiteID { get; set; }
 
     }
 }

@@ -17,11 +17,6 @@
  * User: justin
  * Date: 2018-10-27
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MARC.HI.EHRS.SVC.Core.Services;
 using SanteGuard.Messaging.Syslog.TransportProtocol;
 
 namespace SanteGuard.Messaging.Syslog.Action

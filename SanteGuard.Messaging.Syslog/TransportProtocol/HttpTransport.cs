@@ -20,14 +20,11 @@
 using SanteDB.Core.Diagnostics;
 using SanteGuard.Messaging.Syslog.Exceptions;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Xml.Serialization;
 
 namespace SanteGuard.Messaging.Syslog.TransportProtocol
 {
@@ -58,11 +55,11 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
         /// <summary>
         /// Forward a message to the HTTP port specified
         /// </summary>
-        public void Forward(Configuration.EndpointConfiguration endpoint, byte[] rawMessage)
+        public void Forward(Uri endpoint, byte[] rawMessage)
         {
             try
             {
-                WebRequest request = WebRequest.Create(endpoint.Address);
+                WebRequest request = WebRequest.Create(endpoint);
                 String body = Encoding.UTF8.GetString(rawMessage);
 
                 request.Method = "POST";

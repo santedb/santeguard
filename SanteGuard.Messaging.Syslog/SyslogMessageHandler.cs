@@ -17,28 +17,20 @@
  * User: justin
  * Date: 2018-10-27
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MARC.HI.EHRS.SVC.Core.Services;
-using System.Net.Sockets;
-using System.Net;
-using System.Configuration;
-using System.Diagnostics;
-using System.Xml.Serialization;
-using System.IO;
-using System.Xml;
-using System.Globalization;
-using System.Threading;
-using System.Text.RegularExpressions;
+using SanteDB.Core;
+using SanteDB.Core.Services;
 using SanteGuard.Configuration;
-using MARC.HI.EHRS.SVC.Core;
-using SanteGuard.Messaging.Syslog;
+using System;
+using System.Diagnostics;
+using System.Threading;
 
 namespace SanteGuard.Messaging.Syslog
 {
-    public class SyslogMessageHandler : IMessageHandlerService
+    /// <summary>
+    /// Syslog message handler
+    /// </summary>
+    [ServiceProvider("SanteGuard SysLog Message Service")]
+    public class SyslogMessageHandler : IDaemonService
     {
 
         // Trace source
@@ -52,9 +44,12 @@ namespace SanteGuard.Messaging.Syslog
         public event EventHandler Started;
         public event EventHandler Stopped;
 
+        /// <summary>
+        /// Syslog messsage handler
+        /// </summary>
         public SyslogMessageHandler()
         {
-            this.m_configuration = ApplicationContext.Current.GetService<IConfigurationManager>().GetSection(SanteGuardConstants.ConfigurationSectionName) as SanteGuardConfiguration;
+            this.m_configuration = ApplicationServiceContext.Current.GetService<IConfigurationManager>().GetSection<SanteGuardConfiguration>();
         }
 
         #region IMessageHandlerService Members
@@ -103,6 +98,11 @@ namespace SanteGuard.Messaging.Syslog
         }
 
         public bool IsRunning { get; private set; }
+
+        /// <summary>
+        /// Service name
+        /// </summary>
+        public string ServiceName => "SanteGuard SysLog Message Service";
 
         #endregion
     }

@@ -18,9 +18,6 @@
  * Date: 2018-10-27
  */
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace SanteGuard.Messaging.Syslog.Exceptions
 {

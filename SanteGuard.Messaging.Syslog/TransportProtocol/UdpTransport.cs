@@ -17,19 +17,14 @@
  * User: justin
  * Date: 2018-10-27
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net;
-using System.Net.Sockets;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
-using System.ComponentModel;
+using SanteDB.Core.Diagnostics;
 using SanteGuard.Configuration;
 using SanteGuard.Messaging.Syslog.Exceptions;
-using SanteDB.Core.Diagnostics;
+using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
 
 namespace SanteGuard.Messaging.Syslog.TransportProtocol
 {
@@ -151,14 +146,14 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
         /// <summary>
         /// Forward on a UDP protocol
         /// </summary>
-        public void Forward(EndpointConfiguration config, byte[] rawMessage)
+        public void Forward(Uri config, byte[] rawMessage)
         {
             // Get the IP address
             IPEndPoint endpoint = null;
-            if (config.Address.HostNameType == UriHostNameType.Dns)
-                endpoint = new IPEndPoint(Dns.GetHostEntry(config.Address.Host).AddressList[0], config.Address.Port);
+            if (config.HostNameType == UriHostNameType.Dns)
+                endpoint = new IPEndPoint(Dns.GetHostEntry(config.Host).AddressList[0], config.Port);
             else
-                endpoint = new IPEndPoint(IPAddress.Parse(config.Address.Host), config.Address.Port);
+                endpoint = new IPEndPoint(IPAddress.Parse(config.Host), config.Port);
 
             // Client
             UdpClient udpClient = new UdpClient();

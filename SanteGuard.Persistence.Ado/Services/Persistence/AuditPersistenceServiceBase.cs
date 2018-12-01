@@ -17,11 +17,6 @@
  * User: justin
  * Date: 2018-10-27
  */
-using MARC.HI.EHRS.SVC.Core;
-using MARC.HI.EHRS.SVC.Core.Attributes;
-using MARC.HI.EHRS.SVC.Core.Data;
-using MARC.HI.EHRS.SVC.Core.Event;
-using MARC.HI.EHRS.SVC.Core.Services;
 using SanteDB.Core.Exceptions;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Map;
@@ -29,11 +24,8 @@ using SanteDB.Core.Security;
 using SanteDB.Core.Services;
 using SanteDB.OrmLite;
 using SanteDB.Persistence.Data.ADO.Services;
-using SanteGuard.Configuration;
 using SanteGuard.Model;
-using SanteGuard.Persistence.Ado.Configuration;
 using SanteGuard.Persistence.Ado.Data.Extensions;
-using SanteGuard.Persistence.Ado.Data.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -45,18 +37,24 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Principal;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
+using SanteDB.Core.Event;
+using SanteDB.Core;
+using SanteDB.Core.BusinessRules;
+using SanteDB.Persistence.Data.ADO.Data;
 
 namespace SanteGuard.Persistence.Ado.Services
 {
     /// <summary>
     /// Represents an audit persistence service
     /// </summary>
-    [TraceSource(SanteGuardConstants.TraceSourceName + ".Ado")]
     public abstract class AuditPersistenceServiceBase<TModel> : IDataPersistenceService<TModel>, IFastQueryDataPersistenceService<TModel>, IStoredQueryDataPersistenceService<TModel>, IAdoPersistenceService where TModel : IdentifiedData
     {
 
+        /// <summary>
+        /// Gets the service name
+        /// </summary>
+        public string ServiceName => $"ADO.NET SanteGuard Persister for {typeof(TModel).FullName}";
         /// <summary>
         /// Trace source name
         /// </summary>
@@ -68,43 +66,43 @@ namespace SanteGuard.Persistence.Ado.Services
         /// <summary>
         /// The service is insterting data
         /// </summary>
-        public event EventHandler<PrePersistenceEventArgs<TModel>> Inserting;
+        public event EventHandler<DataPersistingEventArgs<TModel>> Inserting;
         /// <summary>
         /// The service has inserted data
         /// </summary>
-        public event EventHandler<PostPersistenceEventArgs<TModel>> Inserted;
+        public event EventHandler<DataPersistedEventArgs<TModel>> Inserted;
         /// <summary>
         /// The service is updating data 
         /// </summary>
-        public event EventHandler<PrePersistenceEventArgs<TModel>> Updating;
+        public event EventHandler<DataPersistingEventArgs<TModel>> Updating;
         /// <summary>
         /// The service has updated data
         /// </summary>
-        public event EventHandler<PostPersistenceEventArgs<TModel>> Updated;
+        public event EventHandler<DataPersistedEventArgs<TModel>> Updated;
         /// <summary>
         /// The service is obsoleting data
         /// </summary>
-        public event EventHandler<PrePersistenceEventArgs<TModel>> Obsoleting;
+        public event EventHandler<DataPersistingEventArgs<TModel>> Obsoleting;
         /// <summary>
         /// The service has obsoleted data
         /// </summary>
-        public event EventHandler<PostPersistenceEventArgs<TModel>> Obsoleted;
+        public event EventHandler<DataPersistedEventArgs<TModel>> Obsoleted;
         /// <summary>
         /// The service is retrieving data
         /// </summary>
-        public event EventHandler<PreRetrievalEventArgs<TModel>> Retrieving;
+        public event EventHandler<DataRetrievingEventArgs<TModel>> Retrieving;
         /// <summary>
         /// The service has retrieved data
         /// </summary>
-        public event EventHandler<PostRetrievalEventArgs<TModel>> Retrieved;
+        public event EventHandler<DataRetrievedEventArgs<TModel>> Retrieved;
         /// <summary>
         /// The service is querying data
         /// </summary>
-        public event EventHandler<PreQueryEventArgs<TModel>> Querying;
+        public event EventHandler<QueryRequestEventArgs<TModel>> Querying;
         /// <summary>
         /// The service has queried data
         /// </summary>
-        public event EventHandler<PostQueryEventArgs<TModel>> Queried;
+        public event EventHandler<QueryResultEventArgs<TModel>> Queried;
 
         /// <summary>
         /// Count the number of objects in the persistence store
@@ -112,10 +110,10 @@ namespace SanteGuard.Persistence.Ado.Services
         /// <param name="query">The query to be secute</param>
         /// <param name="authContext">The authentication context</param>
         /// <returns>The matching records</returns>
-        public int Count(Expression<Func<TModel, bool>> query, IPrincipal authContext)
+        public long Count(Expression<Func<TModel, bool>> query, IPrincipal authContext)
         {
             var tr = 0;
-            this.Query(query, 0, null, authContext, out tr);
+            this.Query(query, 0, 0, out tr, authContext);
             return tr;
         }
 
@@ -127,12 +125,12 @@ namespace SanteGuard.Persistence.Ado.Services
         /// <param name="principal">The security principal to execute as</param>
         /// <param name="loadFast">True if to skip loading of some properties</param>
         /// <returns>The loaded model</returns>
-        public TModel Get<TIdentifier>(MARC.HI.EHRS.SVC.Core.Data.Identifier<TIdentifier> containerId, IPrincipal principal, bool loadFast)
+        public TModel Get(Guid containerId, Guid? containerVersion, bool loadFast, IPrincipal principal)
         {
             // Try the cache if available
-            var guidIdentifier = containerId as Identifier<Guid>;
+            var guidIdentifier = containerId;
 
-            var cacheItem = ApplicationContext.Current.GetService<IDataCachingService>()?.GetCacheItem<TModel>(guidIdentifier.Id) as TModel;
+            var cacheItem = ApplicationServiceContext.Current.GetService<IDataCachingService>()?.GetCacheItem<TModel>(guidIdentifier) as TModel;
             if (loadFast && cacheItem != null)
             {
                 return cacheItem;
@@ -145,11 +143,11 @@ namespace SanteGuard.Persistence.Ado.Services
                 sw.Start();
 #endif
 
-                PreRetrievalEventArgs<TModel> preArgs = new PreRetrievalEventArgs<TModel>(containerId, principal);
+                DataRetrievingEventArgs<TModel> preArgs = new DataRetrievingEventArgs<TModel>(containerId, containerVersion, principal);
                 this.Retrieving?.Invoke(this, preArgs);
                 if (preArgs.Cancel)
                 {
-                    this.m_tracer.TraceEvent(TraceEventType.Warning, 0, "Pre-Event handler indicates abort retrieve {0}", containerId.Id);
+                    this.m_tracer.TraceEvent(TraceEventType.Warning, 0, "Pre-Event handler indicates abort retrieve {0}", containerId);
                     return null;
                 }
 
@@ -168,12 +166,12 @@ namespace SanteGuard.Persistence.Ado.Services
                         else
                             connection.LoadState = LoadState.FullLoad;
 
-                        var result = this.GetInternal(connection, guidIdentifier.Id, principal);
-                        var postData = new PostRetrievalEventArgs<TModel>(result, principal);
+                        var result = this.GetInternal(connection, guidIdentifier, principal);
+                        var postData = new DataRetrievedEventArgs<TModel>(result, principal);
                         this.Retrieved?.Invoke(this, postData);
 
                         foreach (var itm in connection.CacheOnCommit)
-                            ApplicationContext.Current.GetService<IDataCachingService>()?.Add(itm);
+                            ApplicationServiceContext.Current.GetService<IDataCachingService>()?.Add(itm);
 
                         return result;
 
@@ -204,12 +202,12 @@ namespace SanteGuard.Persistence.Ado.Services
         /// <param name="principal">The authentication context</param>
         /// <param name="mode">The transaction control mode</param>
         /// <returns>The inserted data</returns>
-        public TModel Insert(TModel data, IPrincipal principal, TransactionMode mode)
+        public TModel Insert(TModel data, TransactionMode mode, IPrincipal principal)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
-            PrePersistenceEventArgs<TModel> preArgs = new PrePersistenceEventArgs<TModel>(data, principal);
+            DataPersistingEventArgs<TModel> preArgs = new DataPersistingEventArgs<TModel>(data, principal);
             this.Inserting?.Invoke(this, preArgs);
             if (preArgs.Cancel)
             {
@@ -242,15 +240,12 @@ namespace SanteGuard.Persistence.Ado.Services
                         {
                             tx.Commit();
                             foreach (var itm in connection.CacheOnCommit)
-                                ApplicationContext.Current.GetService<IDataCachingService>()?.Add(itm);
+                                ApplicationServiceContext.Current.GetService<IDataCachingService>()?.Add(itm);
                         }
                         else
                             tx.Rollback();
 
-                        var args = new PostPersistenceEventArgs<TModel>(data, principal)
-                        {
-                            Mode = mode
-                        };
+                        var args = new DataPersistedEventArgs<TModel>(data, principal);
 
                         this.Inserted?.Invoke(this, args);
 
@@ -287,14 +282,14 @@ namespace SanteGuard.Persistence.Ado.Services
         /// <param name="principal">The principal to use to obsolete</param>
         /// <param name="mode">The mode of obsoletion</param>
         /// <returns>The obsoleted record</returns>
-        public TModel Obsolete(TModel data, IPrincipal principal, TransactionMode mode)
+        public TModel Obsolete(TModel data, TransactionMode mode, IPrincipal principal)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
             else if (data.Key == Guid.Empty)
                 throw new InvalidOperationException("Data missing key");
 
-            PrePersistenceEventArgs<TModel> preArgs = new PrePersistenceEventArgs<TModel>(data);
+            DataPersistingEventArgs<TModel> preArgs = new DataPersistingEventArgs<TModel>(data, principal);
             this.Obsoleting?.Invoke(this, preArgs);
             if (preArgs.Cancel)
             {
@@ -320,15 +315,12 @@ namespace SanteGuard.Persistence.Ado.Services
                         {
                             tx.Commit();
                             foreach (var itm in connection.CacheOnCommit)
-                                ApplicationContext.Current.GetService<IDataCachingService>()?.Remove(itm.Key.Value);
+                                ApplicationServiceContext.Current.GetService<IDataCachingService>()?.Remove(itm.Key.Value);
                         }
                         else
                             tx.Rollback();
 
-                        var args = new PostPersistenceEventArgs<TModel>(data, principal)
-                        {
-                            Mode = mode
-                        };
+                        var args = new DataPersistedEventArgs<TModel>(data, principal);
 
                         this.Obsoleted?.Invoke(this, args);
 
@@ -367,7 +359,7 @@ namespace SanteGuard.Persistence.Ado.Services
         /// <param name="authContext">The authorization context</param>
         /// <param name="totalCount">The total count</param>
         /// <returns></returns>
-        public IEnumerable<TModel> Query(Expression<Func<TModel, bool>> query, int offset, int? count, IPrincipal authContext, out int totalCount)
+        public IEnumerable<TModel> Query(Expression<Func<TModel, bool>> query, int offset, int? count, out int totalCount, IPrincipal authContext)
         {
             return this.QueryInvoke(query, Guid.Empty, offset, count, authContext, out totalCount, false);
         }
@@ -393,13 +385,13 @@ namespace SanteGuard.Persistence.Ado.Services
             sw.Start();
 #endif
 
-            PreQueryEventArgs<TModel> preArgs = new PreQueryEventArgs<TModel>(query, queryId, offset, count, authContext);
+            QueryRequestEventArgs<TModel> preArgs = new QueryRequestEventArgs<TModel>(query, offset, count, queryId, authContext);
             this.Querying?.Invoke(this, preArgs);
             if (preArgs.Cancel)
             {
                 this.m_tracer.TraceEvent(TraceEventType.Warning, 0, "Pre-Event handler indicates abort query {0}", query);
-                totalCount = preArgs.OverrideTotalResults.GetValueOrDefault();
-                return preArgs.OverrideResults;
+                totalCount = preArgs.TotalResults;
+                return preArgs.Results;
             }
 
             // Query object
@@ -422,7 +414,7 @@ namespace SanteGuard.Persistence.Ado.Services
                         connection.LoadState = LoadState.FullLoad;
 
                     var results = this.QueryInternal(connection, query, queryId, offset, count ?? 1000, out totalCount, authContext, true);
-                    var postData = new PostQueryEventArgs<TModel>(query, results.AsQueryable(), authContext);
+                    var postData = new QueryResultEventArgs<TModel>(query, results.AsQueryable(), offset, count, totalCount, queryId, authContext);
                     this.Queried?.Invoke(this, postData);
 
                     var retVal = postData.Results.ToList();
@@ -431,10 +423,10 @@ namespace SanteGuard.Persistence.Ado.Services
                     foreach (var i in retVal.AsParallel().Where(i => i != null))
                         connection.AddCacheCommit(i);
 
-                    ApplicationContext.Current.GetService<IThreadPoolService>()?.QueueUserWorkItem(o =>
+                    ApplicationServiceContext.Current.GetService<IThreadPoolService>()?.QueueUserWorkItem(o =>
                     {
                         foreach (var itm in (o as IEnumerable<IdentifiedData>))
-                            ApplicationContext.Current.GetService<IDataCachingService>()?.Add(itm);
+                            ApplicationServiceContext.Current.GetService<IDataCachingService>()?.Add(itm);
                     }, connection.CacheOnCommit.ToList());
 
                     this.m_tracer.TraceEvent(TraceEventType.Verbose, 0, "Returning {0}..{1} or {2} results", offset, offset + (count ?? 1000), totalCount);
@@ -467,14 +459,14 @@ namespace SanteGuard.Persistence.Ado.Services
         /// <param name="principal">The principal for authorization</param>
         /// <param name="mode">The mode of operation</param>
         /// <returns>The updated model</returns>
-        public TModel Update(TModel data, IPrincipal principal, TransactionMode mode)
+        public TModel Update(TModel data, TransactionMode mode, IPrincipal principal)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
             else if (data.Key == Guid.Empty)
                 throw new InvalidOperationException("Data missing key");
 
-            PrePersistenceEventArgs<TModel> preArgs = new PrePersistenceEventArgs<TModel>(data, principal);
+            DataPersistingEventArgs<TModel> preArgs = new DataPersistingEventArgs<TModel>(data, principal);
             this.Updating?.Invoke(this, preArgs);
             if (preArgs.Cancel)
             {
@@ -501,16 +493,13 @@ namespace SanteGuard.Persistence.Ado.Services
                         {
                             tx.Commit();
                             foreach (var itm in connection.CacheOnCommit)
-                                ApplicationContext.Current.GetService<IDataCachingService>()?.Add(itm);
+                                ApplicationServiceContext.Current.GetService<IDataCachingService>()?.Add(itm);
 
                         }
                         else
                             tx.Rollback();
 
-                        var args = new PostPersistenceEventArgs<TModel>(data, principal)
-                        {
-                            Mode = mode
-                        };
+                        var args = new DataPersistedEventArgs<TModel>(data, principal);
 
                         this.Updated?.Invoke(this, args);
 
@@ -565,7 +554,7 @@ namespace SanteGuard.Persistence.Ado.Services
         public virtual TModel GetInternal(DataContext context, Guid key, IPrincipal principal)
         {
             int tr = 0;
-            var cacheService = ApplicationContext.Current.GetService<IDataCachingService>();
+            var cacheService = ApplicationServiceContext.Current.GetService<IDataCachingService>();
             var cacheItem = cacheService.GetCacheItem(key) as TModel ?? context.GetCacheCommit(key) as TModel;
             if (cacheItem != null)
             {
@@ -648,6 +637,9 @@ namespace SanteGuard.Persistence.Ado.Services
         /// <summary>
         /// Translates a DB exception to an appropriate SanteDB exception
         /// </summary>
+        /// <summary>
+        /// Translates a DB exception to an appropriate SanteDB exception
+        /// </summary>
         private void TranslateDbException(DbException e)
         {
             if (e.Data["SqlState"] != null)
@@ -655,48 +647,30 @@ namespace SanteGuard.Persistence.Ado.Services
                 switch (e.Data["SqlState"].ToString())
                 {
                     case "O9001": // SanteDB => Data Validation Error
-                        throw new DetectedIssueException(new List<DetectedIssue>() {
-                                        new DetectedIssue()
-                                        {
-                                            Priority = DetectedIssuePriorityType.Error,
-                                            Text = e.Message
-                                        }
-                                    });
+                        throw new DetectedIssueException(
+                            new DetectedIssue(DetectedIssuePriorityType.Error, e.Message, DetectedIssueKeys.InvalidDataIssue));
                     case "O9002": // SanteDB => Codification error
                         throw new DetectedIssueException(new List<DetectedIssue>() {
-                                        new DetectedIssue()
-                                        {
-                                            Priority = DetectedIssuePriorityType.Error,
-                                            Text = e.Message
-                                        },
-                                        new DetectedIssue()
-                                        {
-                                            Priority = DetectedIssuePriorityType.Informational,
-                                            Text = "HINT: Select a code that is from the correct concept set or add the selected code to the concept set"
-                                        }
+                                        new DetectedIssue(DetectedIssuePriorityType.Error, e.Message, DetectedIssueKeys.CodificationIssue),
+                                        new DetectedIssue(DetectedIssuePriorityType.Informational, "HINT: Select a code that is from the correct concept set or add the selected code to the concept set", DetectedIssueKeys.CodificationIssue)
                                     });
                     case "23502": // PGSQL - NOT NULL 
+                        throw new DetectedIssueException(
+                                        new DetectedIssue(DetectedIssuePriorityType.Error, e.Message, DetectedIssueKeys.InvalidDataIssue)
+                                    );
                     case "23503": // PGSQL - FK VIOLATION
+                        throw new DetectedIssueException(
+                                        new DetectedIssue(DetectedIssuePriorityType.Error, e.Message, DetectedIssueKeys.FormalConstraintIssue)
+                                    );
                     case "23505": // PGSQL - UQ VIOLATION
-                        throw new DetectedIssueException(new List<DetectedIssue>() {
-                                        new DetectedIssue() {
-                                            Priority = DetectedIssuePriorityType.Error,
-                                            Text = e.Message
-                                        }
-                                    });
+                        throw new DetectedIssueException(
+                                        new DetectedIssue(DetectedIssuePriorityType.Error, e.Message, DetectedIssueKeys.AlreadyDoneIssue)
+                                    );
                     case "23514": // PGSQL - CK VIOLATION
                         throw new DetectedIssueException(new List<DetectedIssue>()
                         {
-                            new DetectedIssue()
-                            {
-                                Priority = DetectedIssuePriorityType.Error,
-                                Text = e.Message
-                            },
-                            new DetectedIssue()
-                            {
-                                Priority = DetectedIssuePriorityType.Informational,
-                                Text = "HINT: The code you're using may be incorrect for the given context"
-                            }
+                            new DetectedIssue(DetectedIssuePriorityType.Error, e.Message, DetectedIssueKeys.FormalConstraintIssue),
+                            new DetectedIssue(DetectedIssuePriorityType.Informational, "HINT: The code you're using may be incorrect for the given context", DetectedIssueKeys.CodificationIssue)
                         });
                     default:
                         throw new DataPersistenceException(e.Message, e);
@@ -704,12 +678,7 @@ namespace SanteGuard.Persistence.Ado.Services
             }
             else
             {
-                throw new DetectedIssueException(new List<DetectedIssue>() {
-                                        new DetectedIssue() {
-                                            Priority = DetectedIssuePriorityType.Error,
-                                            Text = e.Message
-                                        }
-                                    });
+                throw new DetectedIssueException(new DetectedIssue(DetectedIssuePriorityType.Error, e.Message, DetectedIssueKeys.OtherIssue));
             }
         }
         #endregion 
@@ -752,7 +721,7 @@ namespace SanteGuard.Persistence.Ado.Services
         /// </summary>
         object IDataPersistenceService.Insert(object data)
         {
-            return this.Insert((TModel)data, AuthenticationContext.Current.Principal, TransactionMode.Commit);
+            return this.Insert((TModel)data, TransactionMode.Commit, AuthenticationContext.Current.Principal);
         }
 
         /// <summary>
@@ -760,7 +729,7 @@ namespace SanteGuard.Persistence.Ado.Services
         /// </summary>
         object IDataPersistenceService.Update(object data)
         {
-            return this.Update((TModel)data, AuthenticationContext.Current.Principal, TransactionMode.Commit);
+            return this.Update((TModel)data, TransactionMode.Commit, AuthenticationContext.Current.Principal);
         }
 
         /// <summary>
@@ -768,7 +737,7 @@ namespace SanteGuard.Persistence.Ado.Services
         /// </summary>
         object IDataPersistenceService.Obsolete(object data)
         {
-            return this.Obsolete((TModel)data, AuthenticationContext.Current.Principal, TransactionMode.Commit);
+            return this.Obsolete((TModel)data, TransactionMode.Commit, AuthenticationContext.Current.Principal);
         }
 
         /// <summary>
@@ -776,7 +745,7 @@ namespace SanteGuard.Persistence.Ado.Services
         /// </summary>
         object IDataPersistenceService.Get(Guid id)
         {
-            return this.Get(new Identifier<Guid>(id, Guid.Empty), AuthenticationContext.Current.Principal, false);
+            return this.Get(id, Guid.Empty, false, AuthenticationContext.Current.Principal);
         }
 
         /// <summary>
@@ -793,13 +762,13 @@ namespace SanteGuard.Persistence.Ado.Services
         /// </summary>
         IEnumerable IDataPersistenceService.Query(Expression query, int offset, int? count, out int totalResults)
         {
-            return this.Query((Expression<Func<TModel, bool>>)query, offset, count, AuthenticationContext.Current.Principal, out totalResults);
+            return this.Query((Expression<Func<TModel, bool>>)query, offset, count, out totalResults, AuthenticationContext.Current.Principal);
         }
 
         /// <summary>
         /// Perform an identified query
         /// </summary>
-        public IEnumerable<TModel> Query(Expression<Func<TModel, bool>> query, Guid queryId, int offset, int? count, IPrincipal authContext, out int totalCount)
+        public IEnumerable<TModel> Query(Expression<Func<TModel, bool>> query, Guid queryId, int offset, int? count, out int totalCount, IPrincipal authContext)
         {
             return this.QueryInvoke(query, queryId, offset, count, authContext, out totalCount, false);
         }
@@ -807,7 +776,7 @@ namespace SanteGuard.Persistence.Ado.Services
         /// <summary>
         /// Perform query in a lightweight manner
         /// </summary>
-        public IEnumerable<TModel> QueryFast(Expression<Func<TModel, bool>> query, Guid queryId, int offset, int? count, IPrincipal authContext, out int totalCount)
+        public IEnumerable<TModel> QueryFast(Expression<Func<TModel, bool>> query, Guid queryId, int offset, int? count, out int totalCount, IPrincipal authContext)
         {
             return this.QueryInvoke(query, queryId, offset, count, authContext, out totalCount, true);
 

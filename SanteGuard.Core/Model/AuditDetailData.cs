@@ -17,22 +17,16 @@
  * User: justin
  * Date: 2018-10-27
  */
-using MARC.HI.EHRS.SVC.Auditing.Data;
 using Newtonsoft.Json;
-using SanteDB.Core;
+using SanteDB.Core.BusinessRules;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Attributes;
-using SanteDB.Core.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace SanteGuard.Model
 {
-    
+
     /// <summary>
     /// Represents error data related to the parsing and storage of a santeguard audit
     /// </summary>

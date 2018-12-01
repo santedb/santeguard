@@ -4,16 +4,15 @@ using SanteDB.Core.Security;
 using SanteDB.Core.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SanteGuard.Test.Shim
 {
     public class DummySecurityRepositoryService : ISecurityRepositoryService
     {
+        public string ServiceName => "Summy Security Repository";
+
         public SecurityUser ChangePassword(Guid userId, string password)
         {
             throw new NotImplementedException();

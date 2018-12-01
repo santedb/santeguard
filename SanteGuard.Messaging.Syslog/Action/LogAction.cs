@@ -17,17 +17,10 @@
  * User: justin
  * Date: 2018-10-27
  */
+using SanteDB.Core.Diagnostics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using MARC.HI.EHRS.SVC.Core;
-using MARC.HI.EHRS.SVC.Core.Services;
-using SanteGuard.Configuration;
-using SanteDB.Core.Diagnostics;
 
 namespace SanteGuard.Messaging.Syslog.Action
 {

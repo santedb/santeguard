@@ -17,8 +17,7 @@
  * User: justin
  * Date: 2018-10-28
  */
-using MARC.HI.EHRS.SVC.Core;
-using MARC.HI.EHRS.SVC.Core.Services;
+using SanteDB.Core;
 using SanteDB.Core.Model;
 using SanteDB.Core.Services;
 using SanteDB.OrmLite;
@@ -31,8 +30,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SanteGuard.Persistence.Ado.Services.Persistence
 {
@@ -114,10 +111,10 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             foreach (var itm in data.Item)
             {
                 var idp = typeof(IDataPersistenceService<>).MakeGenericType(new Type[] { itm.GetType() });
-                var svc = ApplicationContext.Current.GetService(idp);
+                var svc = ApplicationServiceContext.Current.GetService(idp);
                 var mi = svc.GetType().GetRuntimeMethod("Obsolete", new Type[] { typeof(DataContext), itm.GetType(), typeof(IPrincipal) });
 
-                itm.CopyObjectData(mi.Invoke(ApplicationContext.Current.GetService(idp), new object[] { context, itm }));
+                itm.CopyObjectData(mi.Invoke(ApplicationServiceContext.Current.GetService(idp), new object[] { context, itm }));
             }
             return data;
         }
