@@ -61,7 +61,7 @@ namespace SanteGuard.Messaging.Syslog.Action
                 }
                 catch (Exception ex)
                 {
-                    this.m_traceSource.TraceError(ex.ToString());
+                    this.m_traceSource.TraceEvent(TraceEventType.Error, ex.HResult, ex.ToString());
                 }
             }
         }
@@ -80,7 +80,7 @@ namespace SanteGuard.Messaging.Syslog.Action
                 }
                 catch (Exception ex)
                 {
-                    this.m_traceSource.TraceError(ex.ToString());
+                    this.m_traceSource.TraceEvent(TraceEventType.Error, ex.HResult, ex.ToString());
                 }
             }
         }

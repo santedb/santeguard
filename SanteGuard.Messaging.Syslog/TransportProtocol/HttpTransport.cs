@@ -71,7 +71,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
             }
             catch (Exception e)
             {
-                this.m_traceSource.TraceError(e.ToString());
+                this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
                 throw;
             }
         }
@@ -148,7 +148,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
                         context.Response.StatusCode = 405;
                         context.Response.StatusDescription = "Method Not Allowed";
 
-                        this.m_traceSource.TraceError(e.ToString());
+                        this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
                     }
                     catch (SyslogMessageException e)
                     {
@@ -161,7 +161,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
                         context.Response.ContentLength64 = errorBytes.Length;
                         context.Response.OutputStream.Write(errorBytes, 0, errorBytes.Length);
 
-                        this.m_traceSource.TraceError(e.ToString());
+                        this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
                     }
                     catch (Exception e)
                     {
@@ -174,7 +174,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
                         context.Response.ContentLength64 = errorBytes.Length;
                         context.Response.OutputStream.Write(errorBytes, 0, errorBytes.Length);
 
-                        this.m_traceSource.TraceError(e.ToString());
+                        this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
                     }
                     context.Response.Close();
 
@@ -182,7 +182,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
             }
             catch(Exception e)
             {
-                this.m_traceSource.TraceError("FATAL: {0}", e.ToString());
+                this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, "FATAL: {0}", e.ToString());
             }
             finally
             {

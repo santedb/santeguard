@@ -49,7 +49,6 @@ namespace SanteGuard.Messaging.Syslog
         /// </summary>
         public SyslogMessageHandler()
         {
-            this.m_configuration = ApplicationServiceContext.Current.GetService<IConfigurationManager>().GetSection<SanteGuardConfiguration>();
         }
 
         #region IMessageHandlerService Members
@@ -61,6 +60,7 @@ namespace SanteGuard.Messaging.Syslog
         {
             this.IsRunning = true;
             this.Starting?.Invoke(this, EventArgs.Empty);
+            this.m_configuration = ApplicationServiceContext.Current.GetService<IConfigurationManager>().GetSection<SanteGuardConfiguration>();
             foreach (var ep in this.m_configuration.Endpoints)
             {
                 var sh = new SyslogListenerThread(ep);

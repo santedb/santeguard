@@ -70,14 +70,14 @@ namespace SanteGuard.Persistence.Ado.Services
             }
             catch(ModelMapValidationException e)
             {
-                s_tracer.TraceError("Model map for ADO persistence is invalid:");
+                s_tracer.TraceEvent(TraceEventType.Error, e.HResult, "Model map for ADO persistence is invalid:");
                 foreach (var i in e.ValidationDetails)
-                    s_tracer.TraceError("{0} : {1} @ {2}", i.Level, i.Message, i.Location);
+                    s_tracer.TraceEvent(TraceEventType.Error, e.HResult, "{0} : {1} @ {2}", i.Level, i.Message, i.Location);
                 throw;
             }
             catch(Exception e)
             {
-                s_tracer.TraceError("Error initializing SanteGuard persistence: {0}", e.Message);
+                s_tracer.TraceEvent(TraceEventType.Error, e.HResult, "Error initializing SanteGuard persistence: {0}", e.Message);
                 throw;
             }
         }

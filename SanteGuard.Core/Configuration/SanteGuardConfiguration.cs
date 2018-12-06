@@ -17,6 +17,7 @@
  * User: justin
  * Date: 2018-10-27
  */
+using Newtonsoft.Json;
 using SanteDB.Core.Configuration;
 using System;
 using System.Collections.Generic;
@@ -42,13 +43,13 @@ namespace SanteGuard.Configuration
         /// <summary>
         /// Listener configurations
         /// </summary>
-        [XmlArray("endpoints"), XmlArrayItem("add")]
-        public List<EndpointConfiguration> Endpoints { get; private set; }
+        [XmlArray("endpoints"), XmlArrayItem("add"), JsonProperty("endpoints")]
+        public List<EndpointConfiguration> Endpoints { get; set; }
 
         /// <summary>
         /// The default entrprise site
         /// </summary>
-        [XmlElement("defaultEnterpriseSite")]
+        [XmlElement("defaultEnterpriseSite"), JsonProperty("defaultEnterpriseSite")]
         public String DefaultEnterpriseSiteID { get; set; }
 
     }

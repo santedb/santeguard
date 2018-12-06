@@ -104,7 +104,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
             }
             catch (Exception e)
             {
-                this.m_traceSource.TraceError(e.ToString());
+                this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
             }
             finally
             {
@@ -143,14 +143,14 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
                         nSessionMessages++;
                         messageData.Append(Encoding.UTF8.GetString(buffer, 0, br));
                     }
-                    catch (TimeoutException)
+                    catch (TimeoutException e)
                     {
-                        this.m_traceSource.TraceError("{0} : Timeout occurred! Killing connection", tcpClient.Client.RemoteEndPoint);
+                        this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, "{0} : Timeout occurred! Killing connection", tcpClient.Client.RemoteEndPoint);
                         throw;
                     }
                     catch (IOException)
                     {
-                        this.m_traceSource.TraceWarning("{0} : No data received on connection", tcpClient.Client.RemoteEndPoint, this.m_configuration.Timeout.Subtract(DateTime.Now.Subtract(startConnection)).TotalSeconds);
+                        this.m_traceSource.TraceEvent(TraceEventType.Warning, 0, "{0} : No data received on connection", tcpClient.Client.RemoteEndPoint, this.m_configuration.Timeout.Subtract(DateTime.Now.Subtract(startConnection)).TotalSeconds);
                     }
 
                     // Check ... Does the message start with a size ?
@@ -205,7 +205,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
             }
             catch (Exception e)
             {
-                this.m_traceSource.TraceError(e.ToString());
+                this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
             }
             finally
             {
@@ -253,11 +253,11 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
             catch (SyslogMessageException e)
             {
                 this.FireInvalidMessageReceived(this, new SyslogMessageReceivedEventArgs(e.FaultingMessage, remoteEndpoint, localEndpoint, DateTime.Now));
-                this.m_traceSource.TraceError(e.Message);
+                this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.Message);
             }
             catch (Exception e)
             {
-                this.m_traceSource.TraceError(e.ToString());
+                this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
             }
         }
 
@@ -327,7 +327,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
             }
             catch (Exception e)
             {
-                this.m_traceSource.TraceError(e.ToString());
+                this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
             }
             finally
             {

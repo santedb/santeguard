@@ -153,7 +153,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
                 }
                 catch (Exception e)
                 {
-                    this.m_tracer.TraceError("Error performing sub-query: {0}", e);
+                    this.m_tracer.TraceEvent(TraceEventType.Error, e.HResult, "Error performing sub-query: {0}", e);
                     throw;
                 }
                 finally

@@ -25,6 +25,7 @@ using SanteGuard.Configuration;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
@@ -123,9 +124,9 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
                     if (cer.Certificate.Thumbprint == this.m_transportConfiguration.TrustedClientCertificates.GetCertificate().Thumbprint)
                         isValid = true;
                 if (!isValid)
-                    this.m_traceSource.TraceError("Certification authority from the supplied certificate doesn't match the expected thumbprint of the CA");
+                    this.m_traceSource.TraceEvent(TraceEventType.Error, 0, "Certification authority from the supplied certificate doesn't match the expected thumbprint of the CA");
                 foreach (var stat in chain.ChainStatus)
-                    this.m_traceSource.TraceWarning("Certificate chain validation error: {0}", stat.StatusInformation);
+                    this.m_traceSource.TraceEvent(TraceEventType.Warning, 0, "Certificate chain validation error: {0}", stat.StatusInformation);
                 isValid &= chain.ChainStatus.Length == 0;
                 return isValid;
             }
@@ -190,11 +191,11 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
                 var auditService = ApplicationServiceContext.Current.GetService(typeof(IAuditDispatchService)) as IAuditDispatchService;
                 if (auditService != null)
                     auditService.SendAudit(ad);
-                this.m_traceSource.TraceError(e.ToString());
+                this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
             }
             catch (Exception e)
             {
-                this.m_traceSource.TraceError(e.ToString());
+                this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
             }
             finally
             {

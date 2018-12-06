@@ -17,7 +17,6 @@
  * User: justin
  * Date: 2018-10-27
  */
-using MARC.Everest.Connectors;
 using SanteDB.Core;
 using SanteDB.Core.BusinessRules;
 using SanteDB.Core.Diagnostics;
@@ -68,7 +67,7 @@ namespace SanteGuard.Messaging.Syslog.Action
             {
                 if (e == null || e.Message == null)
                 {
-                    this.m_traceSource.TraceWarning("Received null SyslogEvent from transport");
+                    this.m_traceSource.TraceEvent(TraceEventType.Warning, 0, "Received null SyslogEvent from transport");
                     return;
                 }
 
@@ -104,7 +103,7 @@ namespace SanteGuard.Messaging.Syslog.Action
                             if (senderNode == null) // Flag alert
                             {
                                 alertStatus = true;
-                                processResult.Details.Add(new ResultDetail(ResultDetailType.Warning, "sender.unknown", null, null));
+                                processResult.Details.Add(new DetectedIssue(DetectedIssuePriorityType.Warning, "sender.unknown", DetectedIssueKeys.SecurityIssue));
                                 senderNode = new AuditNode()
                                 {
                                     Key = Guid.NewGuid(),
@@ -122,7 +121,7 @@ namespace SanteGuard.Messaging.Syslog.Action
                             if (receiverNode == null) // Flag alert
                             {
                                 alertStatus = true;
-                                processResult.Details.Add(new ResultDetail(ResultDetailType.Warning, "receiver.unknown", null, null));
+                                processResult.Details.Add(new DetectedIssue(DetectedIssuePriorityType.Warning, "receiver.unknown", DetectedIssueKeys.SecurityIssue));
                                 receiverNode = new AuditNode()
                                 {
                                     Key = Guid.NewGuid(),
@@ -157,22 +156,20 @@ namespace SanteGuard.Messaging.Syslog.Action
                             audit.Details = processResult.Details?.Select(i => new AuditDetailData()
                             {
                                 Key = Guid.NewGuid(),
-                                Message = i.Message,
-                                StackTrace = i.Exception?.ToString(),
-                                IssueType = (DetectedIssuePriorityType)Enum.Parse(typeof(DetectedIssuePriorityType), i.Type.ToString())
+                                Message = i.Text,
+                                IssueType = (DetectedIssuePriorityType)Enum.Parse(typeof(DetectedIssuePriorityType), i.Priority.ToString())
                             }).ToList();
                             insertBundle.Add(audit);
 
                         }
                         else if (processResult.Details.Count() > 0)
-                            foreach (var i in processResult.Details.Where(o => o.Type != ResultDetailType.Information))
+                            foreach (var i in processResult.Details.Where(o => o.Priority != DetectedIssuePriorityType.Informational))
                                 insertBundle.Add(new AuditDetailData()
                                 {
                                     Key = Guid.NewGuid(),
                                     SourceEntityKey = audit.CorrelationToken,
-                                    Message = i.Message,
-                                    StackTrace = i.Exception.ToString(),
-                                    IssueType = i.Type == ResultDetailType.Error ? DetectedIssuePriorityType.Error : DetectedIssuePriorityType.Warning
+                                    Message = i.Text,
+                                    IssueType = i.Priority == DetectedIssuePriorityType.Error ? DetectedIssuePriorityType.Error : DetectedIssuePriorityType.Warning
                                 });
 
                         // Batch persistence service
@@ -181,14 +178,14 @@ namespace SanteGuard.Messaging.Syslog.Action
                     }
                     catch(Exception ex)
                     {
-                        this.m_traceSource.TraceError("Error persisting audit: {0}", ex);
+                        this.m_traceSource.TraceEvent(TraceEventType.Error, ex.HResult, "Error persisting audit: {0}", ex);
                     }
                 }, MessageUtil.ParseAudit(e.Message));
 
             }
             catch (Exception ex)
             {
-                this.m_traceSource.TraceError(ex.ToString());
+                this.m_traceSource.TraceEvent(TraceEventType.Error, ex.HResult, ex.ToString());
                 throw;
             }
         }

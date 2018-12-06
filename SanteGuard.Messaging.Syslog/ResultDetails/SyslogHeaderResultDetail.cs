@@ -17,7 +17,7 @@
  * User: justin
  * Date: 2018-10-27
  */
-using MARC.Everest.Connectors;
+using SanteDB.Core.BusinessRules;
 using System;
 
 namespace SanteGuard.Messaging.Syslog.ResultDetails
@@ -25,13 +25,13 @@ namespace SanteGuard.Messaging.Syslog.ResultDetails
     /// <summary>
     /// A result detail which represents a syslog header parse error
     /// </summary>
-    public class SyslogHeaderResultDetail : ResultDetail
+    public class SyslogHeaderResultDetail : DetectedIssue
     {
 
         /// <summary>
         /// Creates a new SyslogHeaderResultDetail
         /// </summary>
-        public SyslogHeaderResultDetail(ResultDetailType type, String message, Exception exception) : base(type, message, exception)
+        public SyslogHeaderResultDetail(DetectedIssuePriorityType type, String message, Exception exception) : base(type, message, DetectedIssueKeys.CodificationIssue)
         {
         }
 

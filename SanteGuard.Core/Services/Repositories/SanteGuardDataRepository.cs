@@ -20,7 +20,6 @@
 using SanteDB.Core;
 using SanteDB.Core.Interfaces;
 using SanteDB.Core.Security;
-using SanteDB.Core.Security.Attribute;
 using SanteDB.Core.Services;
 using SanteGuard.Model;
 using System;
@@ -30,7 +29,6 @@ namespace SanteGuard.Services.Repositories
     /// <summary>
     /// SanteGuard Data Repository
     /// </summary>
-    [PolicyPermission(System.Security.Permissions.SecurityAction.Demand, PolicyId = PermissionPolicyIdentifiers.AccessAuditLog)]
     public class SanteGuardDataRepository : IDaemonService
     {
         /// <summary>

@@ -82,7 +82,7 @@ namespace SanteGuard.Messaging.Syslog
                 }
                 catch(Exception ex)
                 {
-                    this.m_traceSource.TraceError("Error executing action {0}: {1}", act, ex.ToString());
+                    this.m_traceSource.TraceEvent(TraceEventType.Error, ex.HResult, "Error executing action {0}: {1}", act, ex.ToString());
                 }
         }
 
@@ -100,7 +100,7 @@ namespace SanteGuard.Messaging.Syslog
                 }
                 catch (Exception ex)
                 {
-                    this.m_traceSource.TraceError("Error executing action {0}: {1}", act, ex.ToString());
+                    this.m_traceSource.TraceEvent(TraceEventType.Error, ex.HResult, "Error executing action {0}: {1}", act, ex.ToString());
                 }
 
         }

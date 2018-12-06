@@ -1,4 +1,5 @@
-﻿using SanteDB.Core.Configuration;
+﻿using Newtonsoft.Json;
+using SanteDB.Core.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +18,13 @@ namespace SanteGuard.Configuration
         /// <summary>
         /// Service certificates
         /// </summary>
-        [XmlElement("serverCertificate")]
+        [XmlElement("serverCertificate"), JsonProperty("serverCertificate")]
         public X509ConfigurationElement ServerCertificate { get; set; }
 
         /// <summary>
         /// Trusted client certificates
         /// </summary>
-        [XmlElement("trustedClientCertificate")]
+        [XmlElement("trustedClientCertificate"), JsonProperty("trustedClientCertificate")]
         public X509ConfigurationElement TrustedClientCertificates { get; set; }
 
     }

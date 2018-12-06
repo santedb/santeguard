@@ -17,8 +17,9 @@
  * User: justin
  * Date: 2018-10-27
  */
-using MARC.Everest.Threading;
+using SanteDB.Core;
 using SanteDB.Core.Diagnostics;
+using SanteDB.Core.Services;
 using SanteGuard.Configuration;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
     /// <summary>
     /// Transport utilities
     /// </summary>
-    internal class TransportUtil : IDisposable
+    internal class TransportUtil 
     {
 
         // Trace source
@@ -56,11 +57,6 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
                 return s_current;
             }
         }
-
-        /// <summary>
-        /// Wait thread pool for sending messages
-        /// </summary>
-        private WaitThreadPool m_wtp = new WaitThreadPool();
 
         /// <summary>
         /// Transport protocols
@@ -108,7 +104,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
         {
             if(target != null)
                 foreach (var t in target)
-                    m_wtp.QueueUserWorkItem(DoForwardAudit, new KeyValuePair<String, byte[]>(t, rawMessage));
+                    ApplicationServiceContext.Current.GetService<IThreadPoolService>().QueueUserWorkItem(DoForwardAudit, new KeyValuePair<String, byte[]>(t, rawMessage));
         }
 
         /// <summary>
@@ -126,21 +122,10 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
             }
             catch (Exception e)
             {
-                this.m_traceSource.TraceError(e.ToString());
+                this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
             }
         }
 
 
-        #region IDisposable Members
-
-        /// <summary>
-        /// Dispose the transport utility class
-        /// </summary>
-        public void Dispose()
-        {
-            this.m_wtp.Dispose();
-        }
-
-        #endregion
     }
 }

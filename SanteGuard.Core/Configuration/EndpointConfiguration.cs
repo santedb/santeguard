@@ -17,6 +17,7 @@
  * User: justin
  * Date: 2018-10-27
  */
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +61,7 @@ namespace SanteGuard.Configuration
         /// <summary>
         /// The address to listen on
         /// </summary>
-        [XmlAttribute("address")]
+        [XmlAttribute("address"), JsonProperty("address")]
         public String AddressXml {
             get => this.Address?.ToString();
             set => this.Address = value == null ? null : new Uri(value);
@@ -69,19 +70,19 @@ namespace SanteGuard.Configuration
         /// <summary>
         /// Get or sets the address
         /// </summary>
-        [XmlIgnore]
+        [XmlIgnore, JsonIgnore]
         public Uri Address { get; set; }
 
         /// <summary>
         /// The name of the audit endpoint
         /// </summary>
-        [XmlAttribute("name")]
+        [XmlAttribute("name"), JsonProperty("name")]
         public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the timeout
         /// </summary>
-        [XmlAttribute("timeout")]
+        [XmlAttribute("timeout"), JsonProperty("timeout")]
         public String TimeoutXml {
             get => this.Timeout.ToString();
             set => this.Timeout = value != null ? TimeSpan.Parse(value) : new TimeSpan(0, 0, 30);
@@ -90,19 +91,19 @@ namespace SanteGuard.Configuration
         /// <summary>
         /// Gets or sets the timeout
         /// </summary>
-        [XmlIgnore]
+        [XmlIgnore, JsonIgnore]
         public TimeSpan Timeout { get; set; }
 
         /// <summary>
         /// Gets the handler of this endpoint
         /// </summary>
-        [XmlArray("actions"), XmlArrayItem("add")]
+        [XmlArray("actions"), XmlArrayItem("add"), JsonProperty("actions")]
         public List<String> ActionXml { get; set; }
 
         /// <summary>
         /// Gets or sets the actions
         /// </summary>
-        [XmlIgnore]
+        [XmlIgnore, JsonIgnore]
         public IEnumerable<Type> Action {
             get => this.ActionXml.Select(o => Type.GetType(o));
         }
@@ -110,7 +111,7 @@ namespace SanteGuard.Configuration
         /// <summary>
         /// Gets or sets the read timeout
         /// </summary>
-        [XmlAttribute("readTimeout")]
+        [XmlAttribute("readTimeout"), JsonProperty("readTimeout")]
         public String ReadTimeoutXml
         {
             get => this.ReadTimeout.ToString();
@@ -120,31 +121,31 @@ namespace SanteGuard.Configuration
         /// <summary>
         /// Read timeout
         /// </summary>
-        [XmlIgnore]
+        [XmlIgnore, JsonIgnore]
         public TimeSpan ReadTimeout { get; set; }
 
         /// <summary>
         /// Maximum message size
         /// </summary>
-        [XmlAttribute("maxMessageSize")]
+        [XmlAttribute("maxMessageSize"), JsonProperty("maxMessageSize")]
         public int MaxSize { get; set; }
 
         /// <summary>
         /// The forwarding addresses
         /// </summary>
-        [XmlArray("forwarding"), XmlArrayItem("add")]
+        [XmlArray("forwarding"), XmlArrayItem("add"), JsonProperty("forward")]
         public List<String> Forward { get; private set; }
 
         /// <summary>
         /// The list of additional attributes
         /// </summary>
-        [XmlElement("stcpConfiguration", typeof(StcpConfigurationElement))]
+        [XmlElement("stcpConfiguration", typeof(StcpConfigurationElement)), JsonProperty("stcpConfiguration")]
         public object TransportConfiguration { get; set; }
 
         /// <summary>
         /// Gets or sets the log file location
         /// </summary>
-        [XmlElement("logFile")]
-        public String LogFileLocation { get; internal set; }
+        [XmlElement("logFile"), JsonProperty("logFile")]
+        public String LogFileLocation { get; set; }
     }
 }

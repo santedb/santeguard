@@ -105,13 +105,13 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
                     {
                         if (this.InvalidMessageReceived != null)
                             this.InvalidMessageReceived.BeginInvoke(this, new SyslogMessageReceivedEventArgs(e.FaultingMessage, new Uri(String.Format("udp://{0}", remote_ep)), this.m_configuration.Address, DateTime.Now), null, null);
-                        this.m_traceSource.TraceError(e.ToString());
+                        this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
                     }
                     catch (Exception e)
                     {
                         if (this.InvalidMessageReceived != null)
                             this.InvalidMessageReceived.BeginInvoke(this, new SyslogMessageReceivedEventArgs(new SyslogMessage(), new Uri(String.Format("udp://{0}", remote_ep)), this.m_configuration.Address, DateTime.Now), null, null);
-                        this.m_traceSource.TraceError(e.ToString());
+                        this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
                     }
 
                 }
@@ -170,7 +170,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
             }
             catch (Exception e)
             {
-                this.m_traceSource.TraceError(e.ToString());
+                this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
             }
             finally
             {

@@ -19,6 +19,7 @@
  */
 using AtnaApi.Model;
 using MARC.Everest.Connectors;
+using SanteDB.Core.BusinessRules;
 using SanteGuard.Messaging.Syslog.ResultDetails;
 using System;
 using System.Collections.Generic;
@@ -49,12 +50,12 @@ namespace SanteGuard.Messaging.Syslog.Action
             /// <summary>
             /// Gets the details of the parse operation
             /// </summary>
-            public List<IResultDetail> Details { get; internal set; }
+            public List<DetectedIssue> Details { get; internal set; }
 
             /// <summary>
             /// Parse result
             /// </summary>
-            public ResultCode Outcome { get; internal set; }
+            public DetectedIssuePriorityType Outcome { get; internal set; }
 
             /// <summary>
             /// Gets the parsed message if applicable
@@ -70,15 +71,15 @@ namespace SanteGuard.Messaging.Syslog.Action
         {
             // Deserialize audit message.
             ParseAuditResult retVal = new ParseAuditResult();
-            List<IResultDetail> details = new List<IResultDetail>();
+            List<DetectedIssue> details = new List<DetectedIssue>();
             retVal.SourceMessage = message;
             try
             {
                 // Is the message invalid?
                 if (String.IsNullOrEmpty(message.Body)) // no body == invalid
                 {
-                    retVal.Outcome = ResultCode.Rejected;
-                    details.Add(new SyslogHeaderResultDetail(ResultDetailType.Error, "Could not parse Syslog header", null));
+                    retVal.Outcome = DetectedIssuePriorityType.Error;
+                    details.Add(new SyslogHeaderResultDetail(DetectedIssuePriorityType.Error, "Could not parse Syslog header", null));
                 }
                 else
                 {
@@ -90,7 +91,7 @@ namespace SanteGuard.Messaging.Syslog.Action
                     StringWriter strWriter = new StringWriter();
                     XmlTextReader xmlTextReader = new XmlTextReader(strReader);
                     retVal.Message = xmlSerializer.Deserialize(xmlTextReader) as AuditMessage;
-                    retVal.Outcome = ResultCode.Accepted;
+                    retVal.Outcome = DetectedIssuePriorityType.Informational;
                 }
             }
             catch (Exception e)
@@ -104,8 +105,8 @@ namespace SanteGuard.Messaging.Syslog.Action
                     ie = ie.InnerException;
                 }
                 // Add result detail
-                details.Add(new Rfc3881ParseResultDetail(ResultDetailType.Error, exceptionBuilder.ToString(), e));
-                retVal.Outcome = ResultCode.Error;
+                details.Add(new Rfc3881ParseResultDetail(DetectedIssuePriorityType.Error, exceptionBuilder.ToString(), e));
+                retVal.Outcome = DetectedIssuePriorityType.Error;
             }
             retVal.Details = details;
             return retVal;
