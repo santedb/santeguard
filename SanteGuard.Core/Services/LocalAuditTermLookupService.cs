@@ -66,7 +66,7 @@ namespace SanteGuard.Services
         public AuditTerm Register(string code, string codeSystem, string displayName)
         {
             var repo = ApplicationServiceContext.Current.GetService<IRepositoryService<AuditTerm>>(); // We want this registration to be audited
-            if (repo != null) 
+            if (repo == null) 
                 throw new InvalidOperationException("Cannot find audit term repository");
             return repo.Insert(new AuditTerm()
             {

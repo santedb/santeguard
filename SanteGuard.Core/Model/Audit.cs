@@ -22,6 +22,7 @@ using SanteDB.Core.Model;
 using SanteDB.Core.Model.Attributes;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml.Serialization;
 
 namespace SanteGuard.Model
@@ -248,5 +249,17 @@ namespace SanteGuard.Model
         /// </summary>
         [AutoLoad, XmlElement("detail"), JsonProperty("detail")]
         public List<AuditDetailData> Details { get; set; }
+
+        /// <summary>
+        /// Represent as a display string
+        /// </summary>
+        public override string ToDisplay()
+        {
+            using (var sw = new StringWriter())
+            {
+                new XmlSerializer(typeof(Audit)).Serialize(sw, this);
+                return sw.ToString();
+            }
+        }
     }
 }

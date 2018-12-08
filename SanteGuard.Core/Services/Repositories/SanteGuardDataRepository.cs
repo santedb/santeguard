@@ -23,6 +23,7 @@ using SanteDB.Core.Security;
 using SanteDB.Core.Services;
 using SanteGuard.Model;
 using System;
+using System.Diagnostics;
 
 namespace SanteGuard.Services.Repositories
 {
@@ -35,6 +36,11 @@ namespace SanteGuard.Services.Repositories
         /// True if the repository is running
         /// </summary>
         public bool IsRunning => false;
+
+        /// <summary>
+        /// Trace source
+        /// </summary>
+        private TraceSource m_traceSource = new TraceSource(SanteGuardConstants.TraceSourceName);
 
         /// <summary>
         /// Service Name
@@ -72,7 +78,10 @@ namespace SanteGuard.Services.Repositories
             ApplicationServiceContext.Current.Stopping += (o, e) => this.m_canStop = true;
 
             foreach (var t in this.m_serviceTypes)
+            {
+                this.m_traceSource.TraceInformation("Adding {0} to context", t.FullName);
                 (ApplicationServiceContext.Current as IServiceManager).AddServiceProvider(t);
+            }
             this.Started?.Invoke(this, EventArgs.Empty);
 
             return true;

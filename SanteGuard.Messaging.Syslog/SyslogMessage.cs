@@ -103,7 +103,7 @@ namespace SanteGuard.Messaging.Syslog
             // Process the message... First remove newlines
             message = message.Replace("\r\n", "");
             // Now regex
-            Regex re = new Regex(@"^\<(\d+)\>(\d+)\s([\dTZ\:\.\-\+]*)\s([\w\.\-\@]*)\s([\w\-\.\@]*)\s([\d\-\@]*)\s([\w\+\-\.\@]*)\s([\w\+\-\.\@]*)(.*)$");
+            Regex re = new Regex(@"^\<(\d+)\>(\d+)\s([\dTZ\:\.\-\+]*)\s([\w\.\-\@\^]*)\s([\w\-\.\@\^]*)\s([\d\-\@\^]*)\s([\w\+\-\.\@\^]*)\s([\w\+\-\.\@\^]*)(.*)$");
             Match match = re.Match(message);
 
             if (match.Success)
@@ -128,7 +128,7 @@ namespace SanteGuard.Messaging.Syslog
             else
             {
                 retVal.Body = message;  
-                throw new SyslogMessageException("Invalid message format", retVal);
+                throw new SyslogMessageException($"Invalid message format {message}", retVal);
             }
 
             return retVal;

@@ -109,6 +109,8 @@ namespace SanteGuard.Core.Model
         /// </summary>
         public static Audit ToAudit(this AuditMessage me)
         {
+            if (me == null)
+                throw new ArgumentNullException("Audit message cannot be null");
             TraceSource traceSource = new TraceSource(SanteGuardConstants.TraceSourceName);
             Audit retVal = new Audit();
             retVal.ActionCode = MapOrCreateCode(me.EventIdentification.ActionCode);
@@ -208,6 +210,7 @@ namespace SanteGuard.Core.Model
                 }).ToList();
             }
 
+            traceSource.TraceInformation("Successfully processed audit: {0}", retVal.ToDisplay());
             return retVal;
         }
 
@@ -324,11 +327,32 @@ namespace SanteGuard.Core.Model
                 new AuditCode(me.EventTypeCodes.FirstOrDefault()?.Mnemonic, me.EventTypeCodes.FirstOrDefault()?.Domain)
             );
 
-            // TODO: Map other properties
+            // Map event
+            retVal.Actors = me.Participants.Select(o => new SanteDB.Core.Auditing.AuditActorData()
+            {
+                ActorRoleCode = o.Roles.Select(r => MapTermToCode(r)).ToList(),
+                UserIsRequestor = o.IsRequestor,
+                UserIdentifier = o.Actor?.UserIdentifier,
+                NetworkAccessPointId = o.Actor?.NetworkAccessPoint,
+                NetworkAccessPointType = (SanteDB.Core.Auditing.NetworkAccessPointType)(int)(o.Actor?.NetworkAccessPointType ?? SanteGuard.Model.NetworkAccessPointType.Uri),
+                UserName = o.Actor?.UserName,
+            }).ToList();
 
+            // TODO: Map additiona fields
+            
             return retVal;
         }
 
+        /// <summary>
+        /// Map term to code
+        /// </summary>
+        private static AuditCode MapTermToCode(AuditTerm r)
+        {
+            return new AuditCode(r.Mnemonic, r.Domain)
+            {
+                DisplayName = r.DisplayName
+            };
+        }
     }
 
 }

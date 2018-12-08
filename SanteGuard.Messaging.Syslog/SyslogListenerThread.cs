@@ -57,6 +57,8 @@ namespace SanteGuard.Messaging.Syslog
         public SyslogListenerThread(EndpointConfiguration config)
         {
             this.m_configuration = config;
+            if (this.m_configuration == null)
+                throw new SanteDB.Core.Exceptions.ConfigurationException("Missing endpoint configuration");
             this.m_protocol = TransportUtil.Current.CreateTransport(config.Address.Scheme);
             this.m_protocol.MessageReceived += new EventHandler<SyslogMessageReceivedEventArgs>(m_protocol_MessageReceived);
             this.m_protocol.InvalidMessageReceived += new EventHandler<SyslogMessageReceivedEventArgs>(m_protocol_InvalidMessageReceived);

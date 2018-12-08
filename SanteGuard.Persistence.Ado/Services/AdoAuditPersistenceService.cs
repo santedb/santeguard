@@ -65,6 +65,8 @@ namespace SanteGuard.Persistence.Ado.Services
             try
             {
                 s_configuration = ApplicationServiceContext.Current.GetService<IConfigurationManager>().GetSection<SanteGuardAdoConfiguration>();
+                if (s_configuration == null)
+                    throw new SanteDB.Core.Exceptions.ConfigurationException("Missing SanteGuardAdoConfiguration");
                 s_mapper = new ModelMapper(typeof(AdoAuditPersistenceService).Assembly.GetManifestResourceStream("SanteGuard.Persistence.Ado.Data.Map.ModelMap.xml"));
                 s_queryBuilder = new QueryBuilder(s_mapper, s_configuration.Provider);
             }
@@ -77,7 +79,7 @@ namespace SanteGuard.Persistence.Ado.Services
             }
             catch(Exception e)
             {
-                s_tracer.TraceEvent(TraceEventType.Error, e.HResult, "Error initializing SanteGuard persistence: {0}", e.Message);
+                s_tracer.TraceEvent(TraceEventType.Error, e.HResult, "Error initializing SanteGuard persistence: {0}", e);
                 throw;
             }
         }
