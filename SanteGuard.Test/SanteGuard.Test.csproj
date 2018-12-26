@@ -73,8 +73,8 @@
     <PackageReference Include="FirebirdSql.Data.FirebirdClient">
       <Version>5.12.1</Version>
     </PackageReference>
-    <PackageReference Include="SanteDB.Plugin">
-      <Version>1.9.0</Version>
+    <PackageReference Include="SanteDB.Server.Plugin">
+      <Version>1.11.0</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
