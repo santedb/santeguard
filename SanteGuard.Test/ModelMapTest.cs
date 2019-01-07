@@ -36,7 +36,7 @@ namespace SanteGuard.Test
         [TestMethod]
         public void TestGenerateMapForSimpleAudit()
         {
-            var mapped = m_mapper.MapModelExpression<Audit, DbAuditVersion>(o => o.Status == AuditStatusType.New);
+            var mapped = m_mapper.MapModelExpression<Audit, DbAuditVersion, bool>(o => o.Status == AuditStatusType.New);
             Assert.AreEqual(mapped, "o => (o.Status == 0)");
         }
 

@@ -20,6 +20,7 @@
 using SanteDB.Core;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Map;
+using SanteDB.Core.Model.Query;
 using SanteDB.Core.Services;
 using SanteDB.OrmLite;
 using SanteGuard.Persistence.Ado.Data.Model;
@@ -150,8 +151,9 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
         /// </summary>
         /// <param name="rawQuery"></param>
         /// <returns></returns>
-        protected override SqlStatement AppendOrderBy(SqlStatement rawQuery)
+        protected override SqlStatement AppendOrderBy(SqlStatement rawQuery, ModelSort<TModel>[] orderBy)
         {
+            rawQuery = base.AppendOrderBy(rawQuery, orderBy);
             return rawQuery.OrderBy<TDomain>(o => o.VersionSequenceId, SortOrderType.OrderByDescending);
         }
 

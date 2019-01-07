@@ -20,6 +20,7 @@
 using SanteDB.Core;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Map;
+using SanteDB.Core.Model.Query;
 using SanteDB.Core.Security;
 using SanteDB.Core.Services;
 using SanteDB.OrmLite;
@@ -42,8 +43,9 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
         /// </summary>
         /// <param name="rawQuery">Append raw query </param>
         /// <returns>The raw query with order by</returns>
-        protected override SqlStatement AppendOrderBy(SqlStatement rawQuery)
+        protected override SqlStatement AppendOrderBy(SqlStatement rawQuery, ModelSort<Audit>[] orderBy)
         {
+            rawQuery = base.AppendOrderBy(rawQuery, orderBy);
             return rawQuery.OrderBy<DbAuditVersion>(o => o.VersionSequenceId, SortOrderType.OrderByDescending);
         }
 

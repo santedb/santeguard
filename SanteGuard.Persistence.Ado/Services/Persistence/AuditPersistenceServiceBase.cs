@@ -42,6 +42,7 @@ using SanteDB.Core.Event;
 using SanteDB.Core;
 using SanteDB.Core.BusinessRules;
 using SanteDB.Persistence.Data.ADO.Data;
+using SanteDB.Core.Model.Query;
 
 namespace SanteGuard.Persistence.Ado.Services
 {
@@ -347,7 +348,7 @@ namespace SanteGuard.Persistence.Ado.Services
         public IEnumerable<TModel> Query(Expression<Func<TModel, bool>> query, IPrincipal authContext)
         {
             var tr = 0;
-            return this.QueryInvoke(query, Guid.Empty, 0, null, authContext, out tr, true);
+            return this.QueryInvoke(query, Guid.Empty, 0, null, authContext, out tr, true, null);
         }
 
         /// <summary>
@@ -359,9 +360,9 @@ namespace SanteGuard.Persistence.Ado.Services
         /// <param name="authContext">The authorization context</param>
         /// <param name="totalCount">The total count</param>
         /// <returns></returns>
-        public IEnumerable<TModel> Query(Expression<Func<TModel, bool>> query, int offset, int? count, out int totalCount, IPrincipal authContext)
+        public IEnumerable<TModel> Query(Expression<Func<TModel, bool>> query, int offset, int? count, out int totalCount, IPrincipal authContext, params ModelSort<TModel>[] orderBy)
         {
-            return this.QueryInvoke(query, Guid.Empty, offset, count, authContext, out totalCount, false);
+            return this.QueryInvoke(query, Guid.Empty, offset, count, authContext, out totalCount, false, orderBy);
         }
 
         /// <summary>
@@ -375,7 +376,7 @@ namespace SanteGuard.Persistence.Ado.Services
         /// <param name="totalCount">The total results matching</param>
         /// <param name="fastQuery">True if fast querying should be performed</param>
         /// <returns>The matching results</returns>
-        protected virtual IEnumerable<TModel> QueryInvoke(Expression<Func<TModel, bool>> query, Guid queryId, int offset, int? count, IPrincipal authContext, out int totalCount, bool fastQuery)
+        protected virtual IEnumerable<TModel> QueryInvoke(Expression<Func<TModel, bool>> query, Guid queryId, int offset, int? count, IPrincipal authContext, out int totalCount, bool fastQuery, ModelSort<TModel>[] orderBy)
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
@@ -413,7 +414,7 @@ namespace SanteGuard.Persistence.Ado.Services
                     else
                         connection.LoadState = LoadState.FullLoad;
 
-                    var results = this.QueryInternal(connection, query, queryId, offset, count ?? 1000, out totalCount, authContext, true);
+                    var results = this.QueryInternal(connection, query, queryId, offset, count ?? 1000, out totalCount, authContext, true, orderBy);
                     var postData = new QueryResultEventArgs<TModel>(query, results.AsQueryable(), offset, count, totalCount, queryId, authContext);
                     this.Queried?.Invoke(this, postData);
 
@@ -567,7 +568,7 @@ namespace SanteGuard.Persistence.Ado.Services
             }
             else
             {
-                cacheItem = this.QueryInternal(context, o => o.Key == key, Guid.Empty, 0, 1, out tr, principal, false)?.FirstOrDefault();
+                cacheItem = this.QueryInternal(context, o => o.Key == key, Guid.Empty, 0, 1, out tr, principal, false, null)?.FirstOrDefault();
                 if (cacheService != null)
                     cacheService.Add(cacheItem);
                 return cacheItem;
@@ -614,7 +615,7 @@ namespace SanteGuard.Persistence.Ado.Services
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="query">Query.</param>
-        public abstract IEnumerable<TModel> QueryInternal(DataContext context, Expression<Func<TModel, bool>> query, Guid queryId, int offset, int? count, out int totalResults, IPrincipal principal, bool countResults = true);
+        public abstract IEnumerable<TModel> QueryInternal(DataContext context, Expression<Func<TModel, bool>> query, Guid queryId, int offset, int? count, out int totalResults, IPrincipal principal, bool countResults, ModelSort<TModel>[] orderBy);
 
         /// <summary>
         /// Convert object to string
@@ -768,9 +769,9 @@ namespace SanteGuard.Persistence.Ado.Services
         /// <summary>
         /// Perform an identified query
         /// </summary>
-        public IEnumerable<TModel> Query(Expression<Func<TModel, bool>> query, Guid queryId, int offset, int? count, out int totalCount, IPrincipal authContext)
+        public IEnumerable<TModel> Query(Expression<Func<TModel, bool>> query, Guid queryId, int offset, int? count, out int totalCount, IPrincipal authContext, params ModelSort<TModel>[] orderBy)
         {
-            return this.QueryInvoke(query, queryId, offset, count, authContext, out totalCount, false);
+            return this.QueryInvoke(query, queryId, offset, count, authContext, out totalCount, false, orderBy);
         }
 
         /// <summary>
@@ -778,7 +779,7 @@ namespace SanteGuard.Persistence.Ado.Services
         /// </summary>
         public IEnumerable<TModel> QueryFast(Expression<Func<TModel, bool>> query, Guid queryId, int offset, int? count, out int totalCount, IPrincipal authContext)
         {
-            return this.QueryInvoke(query, queryId, offset, count, authContext, out totalCount, true);
+            return this.QueryInvoke(query, queryId, offset, count, authContext, out totalCount, true, null);
 
         }
 

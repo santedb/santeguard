@@ -215,7 +215,7 @@ namespace SanteGuard.Persistence.Ado.Services
             public IEnumerable GetFromSource(DataContext context, Guid sourceId, decimal? versionSequenceId)
             {
                 int tr = 0;
-                return this.QueryInternal(context, base.BuildSourceQuery<TModel>(sourceId), Guid.Empty, 0, null, out tr, AuthenticationContext.Current.Principal).ToList();
+                return this.QueryInternal(context, base.BuildSourceQuery<TModel>(sourceId), Guid.Empty, 0, null, out tr, AuthenticationContext.Current.Principal, false, null).ToList();
             }
         }
 
@@ -234,7 +234,7 @@ namespace SanteGuard.Persistence.Ado.Services
             {
                 int tr = 0;
                 // TODO: Check that this query is actually building what it is supposed to.
-                return this.QueryInternal(context, base.BuildSourceQuery<TModel>(sourceId, versionSequenceId), Guid.Empty, 0, null, out tr, AuthenticationContext.Current.Principal).ToList();
+                return this.QueryInternal(context, base.BuildSourceQuery<TModel>(sourceId, versionSequenceId), Guid.Empty, 0, null, out tr, AuthenticationContext.Current.Principal, false, null).ToList();
             }
         }
 
@@ -270,7 +270,7 @@ namespace SanteGuard.Persistence.Ado.Services
             public IEnumerable GetFromSource(DataContext context, Guid sourceId, decimal? versionSequenceId)
             {
                 int tr = 0;
-                return this.QueryInternal(context, base.BuildSourceQuery<TModel>(sourceId), Guid.Empty, 0, null, out tr, AuthenticationContext.Current.Principal).ToList();
+                return this.QueryInternal(context, base.BuildSourceQuery<TModel>(sourceId), Guid.Empty, 0, null, out tr, AuthenticationContext.Current.Principal, false, null).ToList();
             }
         }
 
@@ -289,7 +289,7 @@ namespace SanteGuard.Persistence.Ado.Services
             {
                 int tr = 0;
                 // TODO: Check that this query is actually building what it is supposed to.
-                return this.QueryInternal(context, base.BuildSourceQuery<TModel>(sourceId, versionSequenceId), Guid.Empty, 0, null, out tr, AuthenticationContext.Current.Principal).ToList();
+                return this.QueryInternal(context, base.BuildSourceQuery<TModel>(sourceId, versionSequenceId), Guid.Empty, 0, null, out tr, AuthenticationContext.Current.Principal, false, null).ToList();
             }
         }
 

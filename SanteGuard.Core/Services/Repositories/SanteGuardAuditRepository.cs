@@ -59,7 +59,7 @@ namespace SanteGuard.Services.Repositories
         /// <summary>
         /// Find the specified audits with the specified query 
         /// </summary>
-        public IEnumerable<AuditData> Find(Expression<Func<AuditData, bool>> query, int offset, int? count, out int totalResults)
+        public IEnumerable<AuditData> Find(Expression<Func<AuditData, bool>> query, int offset, int? count, out int totalResults, params ModelSort<AuditData>[] orderBy)
         {
 
             // Convert query to easier format and map common parameters

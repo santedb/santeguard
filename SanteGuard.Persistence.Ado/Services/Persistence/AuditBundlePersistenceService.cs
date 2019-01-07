@@ -19,6 +19,7 @@
  */
 using SanteDB.Core;
 using SanteDB.Core.Model;
+using SanteDB.Core.Model.Query;
 using SanteDB.Core.Services;
 using SanteDB.OrmLite;
 using SanteDB.Persistence.Data.ADO.Services;
@@ -122,7 +123,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
         /// <summary>
         /// Query the specified object
         /// </summary>
-        public override IEnumerable<AuditBundle> QueryInternal(DataContext context, Expression<Func<AuditBundle, bool>> query, Guid queryId, int offset, int? count, out int totalResults, IPrincipal principal, bool countResults = true)
+        public override IEnumerable<AuditBundle> QueryInternal(DataContext context, Expression<Func<AuditBundle, bool>> query, Guid queryId, int offset, int? count, out int totalResults, IPrincipal principal, bool countResults, ModelSort<AuditBundle>[] orderBy)
         {
             totalResults = 0;
             return new List<AuditBundle>().AsQueryable();

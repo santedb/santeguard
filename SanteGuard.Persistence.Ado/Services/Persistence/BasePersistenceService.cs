@@ -19,6 +19,7 @@
  */
 using SanteDB.Core;
 using SanteDB.Core.Model;
+using SanteDB.Core.Model.Query;
 using SanteDB.Core.Services;
 using SanteDB.OrmLite;
 using SanteGuard.Persistence.Ado.Data.Model;
@@ -121,9 +122,9 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
         /// Query the specified object ordering by creation time
         /// </summary>
         /// <returns></returns>
-        public override IEnumerable<TModel> QueryInternal(DataContext context, Expression<Func<TModel, bool>> query, Guid queryId, int offset, int? count, out int totalResults, IPrincipal principal, bool countResults = true)
+        public override IEnumerable<TModel> QueryInternal(DataContext context, Expression<Func<TModel, bool>> query, Guid queryId, int offset, int? count, out int totalResults, IPrincipal principal, bool countResults, ModelSort<TModel>[] orderBy)
         {
-            var qresult = this.QueryInternalEx(context, query, queryId, offset, count, out totalResults, countResults);
+            var qresult = this.QueryInternalEx(context, query, queryId, offset, count, out totalResults, countResults, orderBy);
             return qresult.Select(o => o is Guid ? this.GetInternal(context, (Guid)o, principal) : this.CacheConvert(o, context, principal)).ToList();
         }
 

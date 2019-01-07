@@ -21,6 +21,7 @@ using SanteDB.Core;
 using SanteDB.Core.Diagnostics;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Interfaces;
+using SanteDB.Core.Model.Query;
 using SanteDB.Core.Services;
 using SanteDB.OrmLite;
 using SanteGuard.Persistence.Ado.Data.Extensions;
@@ -49,8 +50,15 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
         /// <summary>
         /// Get the order by function
         /// </summary>
-        protected virtual SqlStatement AppendOrderBy(SqlStatement rawQuery)
+        protected virtual SqlStatement AppendOrderBy(SqlStatement rawQuery, ModelSort<TModel>[] orderBy)
         {
+            if (orderBy != null)
+                foreach (var ob in orderBy)
+                {
+                    var sorter = m_mapper.MapModelExpression<TModel, TDomain, dynamic>(ob.SortProperty, false);
+                    if (sorter != null)
+                        rawQuery = rawQuery.OrderBy(sorter, ob.SortOrder);
+                }
             return rawQuery;
         }
 
@@ -131,10 +139,10 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
         /// <param name="principal"></param>
         /// <param name="countResults"></param>
         /// <returns></returns>
-        public override IEnumerable<TModel> QueryInternal(DataContext context, Expression<Func<TModel, bool>> query, Guid queryId, int offset, int? count, out int totalResults, IPrincipal principal, bool countResults = true)
+        public override IEnumerable<TModel> QueryInternal(DataContext context, Expression<Func<TModel, bool>> query, Guid queryId, int offset, int? count, out int totalResults, IPrincipal principal, bool countResults, ModelSort<TModel>[] orderBy)
         {
             int resultCount = 0;
-            var results = this.QueryInternalEx(context, query, queryId, offset, count, out resultCount, countResults).ToList();
+            var results = this.QueryInternalEx(context, query, queryId, offset, count, out resultCount, countResults, orderBy).ToList();
             totalResults = resultCount;
 
             return results.AsParallel().Select(o =>
@@ -167,7 +175,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
         /// <summary>
         /// Perform the query 
         /// </summary>
-        protected virtual IEnumerable<Object> QueryInternalEx(DataContext context, Expression<Func<TModel, bool>> query, Guid queryId, int offset, int? count, out int totalResults, bool incudeCount = true)
+        protected virtual IEnumerable<Object> QueryInternalEx(DataContext context, Expression<Func<TModel, bool>> query, Guid queryId, int offset, int? count, out int totalResults, bool incudeCount, ModelSort<TModel>[] orderBy)
         {
 #if DEBUG
             Stopwatch sw = new Stopwatch();
@@ -195,7 +203,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
 
                 // Domain query
                 domainQuery = context.CreateSqlStatement<TDomain>().SelectFrom();
-                var expression = m_mapper.MapModelExpression<TModel, TDomain>(query, false);
+                var expression = m_mapper.MapModelExpression<TModel, TDomain, bool>(query, false);
                 if (expression != null)
                 {
                     Type lastJoined = typeof(TDomain);
@@ -213,13 +221,13 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
                 else
                 {
                     m_tracer.TraceEvent(System.Diagnostics.TraceEventType.Verbose, 0, "Will use slow query construction due to complex mapped fields");
-                    domainQuery = AdoAuditPersistenceService.GetQueryBuilder().CreateQuery(query);
+                    domainQuery = AdoAuditPersistenceService.GetQueryBuilder().CreateQuery(query, orderBy);
                 }
 
                 // Count = 0 means we're not actually fetching anything so just hit the db
                 if (count != 0)
                 {
-                    domainQuery = this.AppendOrderBy(domainQuery);
+                    domainQuery = this.AppendOrderBy(domainQuery, orderBy);
 
                     // Query id just get the UUIDs in the db
                     if (queryId != Guid.Empty && count != 0)
