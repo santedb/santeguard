@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SanteGuard.Core", "SanteGua
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SanteGuard.Test", "SanteGuard.Test\SanteGuard.Test.csproj", "{6F3FF3B6-52A9-4C5C-8E3A-2F7BCF8A5DEB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SanteGuard.Messaging.Ami", "SanteGuard.Messaging.Ami\SanteGuard.Messaging.Ami.csproj", "{66ACB4C6-594F-41AE-B33B-652A66635111}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{6F3FF3B6-52A9-4C5C-8E3A-2F7BCF8A5DEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F3FF3B6-52A9-4C5C-8E3A-2F7BCF8A5DEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F3FF3B6-52A9-4C5C-8E3A-2F7BCF8A5DEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66ACB4C6-594F-41AE-B33B-652A66635111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66ACB4C6-594F-41AE-B33B-652A66635111}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66ACB4C6-594F-41AE-B33B-652A66635111}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66ACB4C6-594F-41AE-B33B-652A66635111}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
