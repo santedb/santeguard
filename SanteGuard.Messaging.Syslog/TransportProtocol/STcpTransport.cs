@@ -121,7 +121,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
 
                 bool isValid = false;
                 foreach (var cer in chain.ChainElements)
-                    if (cer.Certificate.Thumbprint == this.m_transportConfiguration.TrustedClientCertificates.GetCertificate().Thumbprint)
+                    if (cer.Certificate.Thumbprint == this.m_transportConfiguration.TrustedClientCertificates.Certificate.Thumbprint)
                         isValid = true;
                 if (!isValid)
                     this.m_traceSource.TraceEvent(TraceEventType.Error, 0, "Certification authority from the supplied certificate doesn't match the expected thumbprint of the CA");
@@ -143,7 +143,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
 
             try
             {
-                stream.AuthenticateAsServer(this.m_transportConfiguration.ServerCertificate.GetCertificate(), this.m_transportConfiguration.TrustedClientCertificates.GetCertificate() != null, System.Security.Authentication.SslProtocols.Tls, true);
+                stream.AuthenticateAsServer(this.m_transportConfiguration.ServerCertificate.Certificate, this.m_transportConfiguration.TrustedClientCertificates.Certificate != null, System.Security.Authentication.SslProtocols.Tls, true);
                 stream.ReadTimeout = (int)this.m_endpointConfiguration.ReadTimeout.TotalMilliseconds;
                 this.ProcessSession(tcpClient, stream);
             }

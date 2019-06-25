@@ -45,7 +45,7 @@ namespace SanteGuard.Services.Repositories
         public string ServiceName => "SanteGuard Enhanced Audit Repository";
 
         // Trace source
-        private TraceSource m_tracer = new TraceSource(SanteGuardConstants.TraceSourceName);
+        private Tracer m_tracer = new Tracer(SanteGuardConstants.TraceSourceName);
 
         /// <summary>
         /// Find the specified audit data (nb: This functionality is very limited in this repository)

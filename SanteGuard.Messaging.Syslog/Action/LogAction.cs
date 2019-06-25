@@ -31,7 +31,7 @@ namespace SanteGuard.Messaging.Syslog.Action
     {
 
         // TRace source
-        private TraceSource m_traceSource = new TraceSource(SanteGuardConstants.TraceSourceName);
+        private Tracer m_traceSource = new Tracer(SanteGuardConstants.TraceSourceName);
 
         // Lock object for file
         private static object m_syncObject = new object();
@@ -61,7 +61,7 @@ namespace SanteGuard.Messaging.Syslog.Action
                 }
                 catch (Exception ex)
                 {
-                    this.m_traceSource.TraceEvent(TraceEventType.Error, ex.HResult, ex.ToString());
+                    this.m_traceSource.TraceError("Error on handling message received: {0}", ex.ToString());
                 }
             }
         }
@@ -80,24 +80,12 @@ namespace SanteGuard.Messaging.Syslog.Action
                 }
                 catch (Exception ex)
                 {
-                    this.m_traceSource.TraceEvent(TraceEventType.Error, ex.HResult, ex.ToString());
+                    this.m_traceSource.TraceError("Error handling invalid message: {0}", ex.ToString());
                 }
             }
         }
 
         #endregion
 
-        #region IUsesHostContext Members
-
-        /// <summary>
-        /// Gets or sets the context
-        /// </summary>
-        public IServiceProvider Context
-        {
-            get;
-            set;
-        }
-
-        #endregion
     }
 }

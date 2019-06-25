@@ -1,4 +1,5 @@
 ﻿using SanteDB.Core.Model.Entities;
+using SanteDB.Core.Model.Roles;
 using SanteDB.Core.Model.Security;
 using SanteDB.Core.Security;
 using SanteDB.Core.Services;
@@ -129,6 +130,11 @@ namespace SanteGuard.Test.Shim
         }
 
         public SecurityProvenance GetProvenance(Guid provenanceId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Provider GetProviderEntity(IIdentity identity)
         {
             throw new NotImplementedException();
         }

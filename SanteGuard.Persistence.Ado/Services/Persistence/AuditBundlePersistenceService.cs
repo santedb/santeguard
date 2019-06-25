@@ -42,6 +42,13 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
         // Progress has changed
         public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
 
+        // Local instance of the persistence service
+        private AdoPersistenceService m_persistenceService;
+
+        public AuditBundlePersistenceService()
+        {
+            this.m_persistenceService = ApplicationServiceContext.Current.GetService<AdoPersistenceService>();
+        }
         /// <summary>
         /// From model instance
         /// </summary>
@@ -60,7 +67,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             if (data.Item == null) return data;
             this.m_tracer.TraceInformation("Audit Bundle has {0} objects...", data.Item.Count);
 
-            if (AdoPersistenceService.GetConfiguration().PrepareStatements)
+            if (this.m_persistenceService.GetConfiguration().PrepareStatements)
                 context.PrepareStatements = true;
             for (int i = 0; i < data.Item.Count; i++)
             {

@@ -320,19 +320,9 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
 
             // Build and see if the query already exists on the stack???
             domainQuery = domainQuery.Build();
-            var cachedQueryResults = context.CacheQuery(domainQuery);
-            if (cachedQueryResults != null)
-            {
-                totalResults = cachedQueryResults.Count();
-                return cachedQueryResults.OfType<TResult>();
-            }
-
             var results = context.Query<TResult>(domainQuery).ToList();
-
             // Cache query result
-            context.AddQuery(domainQuery, results.OfType<Object>());
             return results;
-
         }
 
 
