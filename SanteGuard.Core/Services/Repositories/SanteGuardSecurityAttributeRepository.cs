@@ -1,5 +1,6 @@
 ﻿using SanteDB.Core.Interfaces;
 using SanteDB.Core.Model;
+using SanteDB.Core.Security.Audit;
 using System;
 
 namespace SanteGuard.Services.Repositories
@@ -8,22 +9,10 @@ namespace SanteGuard.Services.Repositories
     /// Represents the generic repository
     /// </summary>
     /// <typeparam name="TResource"></typeparam>
-    public class SanteGuardSecurityAttributeRepository<TResource> : GenericSanteGuardRepository<TResource>, ISecurityAuditEventSource
+    public class SanteGuardSecurityAttributeRepository<TResource> : GenericSanteGuardRepository<TResource>
         where TResource : IdentifiedData
     {
-        /// <summary>
-        /// Security attributes have changed
-        /// </summary>
-        public event EventHandler<SecurityAuditDataEventArgs> SecurityAttributesChanged;
-        /// <summary>
-        /// Security resource was created
-        /// </summary>
-        public event EventHandler<SecurityAuditDataEventArgs> SecurityResourceCreated;
-        /// <summary>
-        /// Security resource was deleted
-        /// </summary>
-        public event EventHandler<SecurityAuditDataEventArgs> SecurityResourceDeleted;
-
+      
         /// <summary>
         /// Insert the security resource
         /// </summary>
@@ -32,7 +21,6 @@ namespace SanteGuard.Services.Repositories
         public override TResource Insert(TResource data)
         {
             var retVal = base.Insert(data);
-            this.SecurityResourceCreated?.Invoke(this, new SecurityAuditDataEventArgs(data));
             return retVal;
         }
 
@@ -42,7 +30,6 @@ namespace SanteGuard.Services.Repositories
         public override TResource Save(TResource data)
         {
             var retVal = base.Save(data);
-            this.SecurityAttributesChanged?.Invoke(this, new SecurityAuditDataEventArgs(data));
             return retVal;
         }
 
@@ -52,9 +39,7 @@ namespace SanteGuard.Services.Repositories
         public override TResource Obsolete(Guid key)
         {
             var retVal = base.Obsolete(key);
-            this.SecurityResourceDeleted?.Invoke(this, new SecurityAuditDataEventArgs(key));
             return retVal;
-
         }
     }
 }

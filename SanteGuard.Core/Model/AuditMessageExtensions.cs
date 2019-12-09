@@ -151,7 +151,6 @@ namespace SanteGuard.Core.Model
             {
                 var actorPs = ApplicationServiceContext.Current.GetService<IDataPersistenceService<AuditActor>>();
                 
-                int tr = 0;
                 retVal.Participants = me.Actors?.Select(a =>
                 {
                     AuditActor act = null;

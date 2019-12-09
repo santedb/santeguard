@@ -1,4 +1,5 @@
 ﻿using SanteDB.Core.Model.Entities;
+using SanteDB.Core.Model.Query;
 using SanteDB.Core.Model.Roles;
 using SanteDB.Core.Model.Security;
 using SanteDB.Core.Security;
@@ -12,7 +13,7 @@ namespace SanteGuard.Test.Shim
 {
     public class DummySecurityRepositoryService : ISecurityRepositoryService
     {
-        public string ServiceName => "Summy Security Repository";
+        public string ServiceName => "Dummy Security Repository";
 
         public SecurityUser ChangePassword(Guid userId, string password)
         {
@@ -75,6 +76,11 @@ namespace SanteGuard.Test.Shim
         }
 
         public IEnumerable<SecurityPolicy> FindPolicies(Expression<Func<SecurityPolicy, bool>> query, int offset, int? count, out int totalResults)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<SecurityProvenance> FindProvenance(Expression<Func<SecurityProvenance, bool>> query, int offset, int? count, out int totalResults, Guid queryId, params ModelSort<SecurityProvenance>[] orderBy)
         {
             throw new NotImplementedException();
         }
@@ -178,6 +184,16 @@ namespace SanteGuard.Test.Shim
             throw new NotImplementedException();
         }
 
+        public void LockApplication(Guid key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LockDevice(Guid key)
+        {
+            throw new NotImplementedException();
+        }
+
         public void LockUser(Guid userId)
         {
             throw new NotImplementedException();
@@ -239,6 +255,16 @@ namespace SanteGuard.Test.Shim
         }
 
         public UserEntity SaveUserEntity(UserEntity userEntity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnlockApplication(Guid key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnlockDevice(Guid key)
         {
             throw new NotImplementedException();
         }

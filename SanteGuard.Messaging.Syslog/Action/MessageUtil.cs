@@ -91,7 +91,7 @@ namespace SanteGuard.Messaging.Syslog.Action
                     StringWriter strWriter = new StringWriter();
                     XmlTextReader xmlTextReader = new XmlTextReader(strReader);
                     retVal.Message = xmlSerializer.Deserialize(xmlTextReader) as AuditMessage;
-                    retVal.Outcome = DetectedIssuePriorityType.Informational;
+                    retVal.Outcome = DetectedIssuePriorityType.Information;
                 }
             }
             catch (Exception e)

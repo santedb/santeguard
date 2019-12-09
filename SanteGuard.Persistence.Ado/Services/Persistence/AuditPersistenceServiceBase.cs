@@ -653,7 +653,7 @@ namespace SanteGuard.Persistence.Ado.Services
                     case "O9002": // SanteDB => Codification error
                         throw new DetectedIssueException(new List<DetectedIssue>() {
                                         new DetectedIssue(DetectedIssuePriorityType.Error, e.Message, DetectedIssueKeys.CodificationIssue),
-                                        new DetectedIssue(DetectedIssuePriorityType.Informational, "HINT: Select a code that is from the correct concept set or add the selected code to the concept set", DetectedIssueKeys.CodificationIssue)
+                                        new DetectedIssue(DetectedIssuePriorityType.Information, "HINT: Select a code that is from the correct concept set or add the selected code to the concept set", DetectedIssueKeys.CodificationIssue)
                                     });
                     case "23502": // PGSQL - NOT NULL 
                         throw new DetectedIssueException(
@@ -671,7 +671,7 @@ namespace SanteGuard.Persistence.Ado.Services
                         throw new DetectedIssueException(new List<DetectedIssue>()
                         {
                             new DetectedIssue(DetectedIssuePriorityType.Error, e.Message, DetectedIssueKeys.FormalConstraintIssue),
-                            new DetectedIssue(DetectedIssuePriorityType.Informational, "HINT: The code you're using may be incorrect for the given context", DetectedIssueKeys.CodificationIssue)
+                            new DetectedIssue(DetectedIssuePriorityType.Information, "HINT: The code you're using may be incorrect for the given context", DetectedIssueKeys.CodificationIssue)
                         });
                     default:
                         throw new DataPersistenceException(e.Message, e);

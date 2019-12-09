@@ -163,7 +163,7 @@ namespace SanteGuard.Messaging.Syslog.Action
 
                         }
                         else if (processResult.Details.Count() > 0)
-                            foreach (var i in processResult.Details.Where(o => o.Priority != DetectedIssuePriorityType.Informational))
+                            foreach (var i in processResult.Details.Where(o => o.Priority != DetectedIssuePriorityType.Information))
                                 insertBundle.Add(new AuditDetailData()
                                 {
                                     Key = Guid.NewGuid(),
