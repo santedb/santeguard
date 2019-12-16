@@ -24,6 +24,17 @@
     <author>Mohawk College of Applied Arts and Technology - mHealth &amp; eHealth Development &amp; Innovation Centre</author>
   </info>
 
+
+  <menuItem context="org.santedb.admin" launch="santedb-admin.sg.index" asset="/org.santedb.sg/views/index.html">
+    <icon>fas fa-user-secret</icon>
+    <text lang="en">SanteGuard</text>
+    <menuItem context="org.santedb.admin" launch="santedb-admin.sg.auditLog" asset="/org.santedb.sg/views/audit/index.html">
+      <icon>fas fa-dungeon</icon>
+      <text lang="en">SG Audit Repository</text>
+    </menuItem>
+    
+  </menuItem>
+
   <strings lang="en">
 
     <string key="org.santedb.sg">SanteGuard</string>
