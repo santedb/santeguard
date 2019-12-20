@@ -28,9 +28,9 @@ echo Will use MSBUILD in %msbuild%
 
 %msbuild%\msbuild.exe santeguard.sln /t:clean /t:restore /t:rebuild /p:configuration=debug /m
 
-FOR /R %cwd% %%G IN (*.nuspec) DO (
+FOR /R "%cwd%" %%G IN (*.nuspec) DO (
 	echo Packing %%~pG
 	pushd %%~pG
-	%nuget% pack -OutputDirectory %localappdata%\NugetStaging -prop Configuration=Debug -symbols
+	%nuget% pack -OutputDirectory "%localappdata%\NugetStaging" -prop Configuration=Debug -symbols
 	popd
 )

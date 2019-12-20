@@ -52,7 +52,7 @@ namespace SanteGuard.Persistence.Ado.Configuration
         /// </summary>
         protected override string ResolveConnectionString(string connectionStringName)
         {
-            return ConfigurationManager.ConnectionStrings[connectionStringName]?.ConnectionString;
+            return ApplicationServiceContext.Current.GetService<IConfigurationManager>().GetConnectionString(connectionStringName)?.Value;
         }
     }
 }

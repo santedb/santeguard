@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using SanteDB.Core.Model;
 
 namespace SanteGuard.Core.Model
 {
@@ -100,8 +101,83 @@ namespace SanteGuard.Core.Model
         /// </summary>
         private static Nullable<T> MapSimple<T>(object other, bool specified = true) where T : struct
         {
-            if (!specified) return null;
-            return new Nullable<T>((T)Enum.Parse(typeof(T), other.ToString()));
+            if (!specified || other == null) return null;
+
+            if (other is AtnaApi.Model.CodeValue<T>)
+            {
+                if (Enum.TryParse<T>((other as AtnaApi.Model.CodeValue<T>).StrongCode.ToString(), out T retVal))
+                    return retVal;
+                else
+                    return null;
+            }
+            else if (Enum.TryParse<T>(other.ToString(), out T retVal))
+                return retVal;
+            else
+                return null;
+        }
+
+        /// <summary>
+        /// Process the audit data
+        /// </summary>
+        public static AuditData ToAuditData(this AuditMessage me)
+        {
+            if (me == null)
+                throw new ArgumentNullException("Audit message cannot be null");
+            TraceSource traceSource = new TraceSource(SanteGuardConstants.TraceSourceName);
+            AuditData retVal = new AuditData();
+            retVal.ActionCode = MapSimple<SanteDB.Core.Auditing.ActionType>(me.EventIdentification.ActionCode).GetValueOrDefault();
+            retVal.EventIdentifier = MapSimple<SanteDB.Core.Auditing.EventIdentifierType>(me.EventIdentification.EventId).GetValueOrDefault();
+            retVal.Outcome = MapSimple<SanteDB.Core.Auditing.OutcomeIndicator>(me.EventIdentification.EventOutcome).GetValueOrDefault();
+            retVal.EventTypeCode = me.EventIdentification.EventType.Select(o => new AuditCode(o.Code, o.CodeSystem) { DisplayName = o.DisplayName }).FirstOrDefault();
+            retVal.Timestamp = me.EventIdentification.EventDateTime;
+
+            // Source
+            if (me.SourceIdentification != null && me.SourceIdentification.Count > 0)
+            {
+                var sourceId = me.SourceIdentification.FirstOrDefault();
+                if (sourceId != null)
+                {
+                    retVal.AddMetadata(AuditMetadataKey.AuditSourceID, sourceId.AuditSourceID);
+                    retVal.AddMetadata(AuditMetadataKey.AuditSourceType, sourceId.AuditSourceTypeCode.FirstOrDefault()?.Code);
+                    retVal.AddMetadata(AuditMetadataKey.EnterpriseSiteID, sourceId.AuditEnterpriseSiteID);
+                }
+            }
+
+            // Participants
+            if (me.Actors != null)
+            {
+
+                retVal.Actors = me.Actors?.Select(a => new SanteDB.Core.Auditing.AuditActorData()
+                {
+                    NetworkAccessPointId = a.NetworkAccessPointId,
+                    NetworkAccessPointType = MapSimple<SanteDB.Core.Auditing.NetworkAccessPointType>(a.NetworkAccessPointType).GetValueOrDefault(),
+                    UserIdentifier = a.UserIdentifier,
+                    UserName = a.UserName,
+                    ActorRoleCode = a.ActorRoleCode.Select(o => new AuditCode(o.Code, o.CodeSystem) { DisplayName = o.DisplayName }).ToList(),
+                    UserIsRequestor = a.UserIsRequestor,
+                    AlternativeUserId = a.AlternativeUserId
+                }).ToList();
+            }
+
+            // Objects 
+            if (me.AuditableObjects != null)
+            {
+                retVal.AuditableObjects = me.AuditableObjects.Select(o => new SanteDB.Core.Auditing.AuditableObject()
+                {
+                    ObjectId = o.ObjectId,
+                    IDTypeCode = MapSimple<SanteDB.Core.Auditing.AuditableObjectIdType>(o.IDTypeCode),
+                    LifecycleType = MapSimple<SanteDB.Core.Auditing.AuditableObjectLifecycle>(o.LifecycleType, o.LifecycleTypeSpecified),
+                    Role = MapSimple<SanteDB.Core.Auditing.AuditableObjectRole>(o.Role, o.RoleSpecified),
+                    Type = MapSimple<SanteDB.Core.Auditing.AuditableObjectType>(o.Type, o.TypeSpecified) ?? SanteDB.Core.Auditing.AuditableObjectType.Other,
+                    CustomIdTypeCode = new AuditCode(o.IDTypeCode.Code, o.IDTypeCode.CodeSystem) { DisplayName = o.IDTypeCode.DisplayName },
+                    ObjectData = o.ObjectDetail.Select(d => new ObjectDataExtension(d.Type, d.Value)).ToList(),
+                    NameData = o.ObjectSpecChoice == ObjectDataChoiceType.ParticipantObjectName ? o.ObjectSpec : null,
+                    QueryData = o.ObjectSpecChoice == ObjectDataChoiceType.ParticipantObjectQuery ? o.ObjectSpec : null
+                }).ToList();
+            }
+
+            traceSource.TraceInformation("Successfully processed audit: {0}", retVal.ToDisplay());
+            return retVal;
         }
 
         /// <summary>
@@ -150,7 +226,7 @@ namespace SanteGuard.Core.Model
             if (me.Actors != null)
             {
                 var actorPs = ApplicationServiceContext.Current.GetService<IDataPersistenceService<AuditActor>>();
-                
+
                 retVal.Participants = me.Actors?.Select(a =>
                 {
                     AuditActor act = null;
@@ -319,12 +395,14 @@ namespace SanteGuard.Core.Model
         /// </summary>
         public static AuditData ToAuditData(this Audit me)
         {
+
             var retVal = new AuditData(me.EventTimestamp.DateTime,
-                (SanteDB.Core.Auditing.ActionType)MapTerm<AtnaApi.Model.ActionType>(me.ActionCode).StrongCode,
-                (SanteDB.Core.Auditing.OutcomeIndicator)MapTerm<AtnaApi.Model.OutcomeIndicator>(me.ActionCode).StrongCode,
-                (SanteDB.Core.Auditing.EventIdentifierType)MapTerm<AtnaApi.Model.EventIdentifierType>(me.ActionCode).StrongCode,
+                (SanteDB.Core.Auditing.ActionType)MapTerm<AtnaApi.Model.ActionType>(me.LoadProperty<AuditTerm>(nameof(Audit.ActionCode))).StrongCode,
+                (SanteDB.Core.Auditing.OutcomeIndicator)MapTerm<AtnaApi.Model.OutcomeIndicator>(me.LoadProperty<AuditTerm>(nameof(Audit.OutcomeCode))).StrongCode,
+                (SanteDB.Core.Auditing.EventIdentifierType)MapTerm<AtnaApi.Model.EventIdentifierType>(me.LoadProperty<AuditTerm>(nameof(me.EventIdCode))).StrongCode,
                 new AuditCode(me.EventTypeCodes.FirstOrDefault()?.Mnemonic, me.EventTypeCodes.FirstOrDefault()?.Domain)
-            );
+            )
+            { Key = me.Key };
 
             // Map event
             retVal.Actors = me.Participants.Select(o => new SanteDB.Core.Auditing.AuditActorData()
@@ -337,8 +415,8 @@ namespace SanteGuard.Core.Model
                 UserName = o.Actor?.UserName,
             }).ToList();
 
-            // TODO: Map additiona fields
-            
+            // TODO: Map additional fields
+
             return retVal;
         }
 

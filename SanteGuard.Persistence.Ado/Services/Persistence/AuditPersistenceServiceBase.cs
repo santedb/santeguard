@@ -223,6 +223,7 @@ namespace SanteGuard.Persistence.Ado.Services
                 using (IDbTransaction tx = connection.BeginTransaction())
                     try
                     {
+                        connection.EstablishProvenance(principal, (data as NonVersionedEntityData)?.CreatedByKey ?? (data as BaseEntityData)?.CreatedByKey);
                         // Disable inserting duplicate classified objects
                         var existing = data.TryGetExisting(connection, principal, true);
                         if (existing != null)
@@ -309,6 +310,7 @@ namespace SanteGuard.Persistence.Ado.Services
                         //connection.Connection.Open();
 
                         this.m_tracer.TraceEvent(TraceEventType.Verbose, 0, "OBSOLETE {0}", data);
+                        connection.EstablishProvenance(principal, (data as NonVersionedEntityData)?.ObsoletedByKey ?? (data as BaseEntityData)?.ObsoletedByKey);
 
                         data = this.ObsoleteInternal(connection, data, principal);
                         connection.AddCacheCommit(data);
@@ -483,6 +485,7 @@ namespace SanteGuard.Persistence.Ado.Services
                     try
                     {
                         //connection.Connection.Open();
+                        connection.EstablishProvenance(principal, (data as NonVersionedEntityData)?.UpdatedByKey ?? (data as BaseEntityData)?.CreatedByKey);
 
                         this.m_tracer.TraceEvent(TraceEventType.Verbose, 0, "UPDATE {0}", data);
 

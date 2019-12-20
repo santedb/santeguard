@@ -39,6 +39,14 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
     {
 
         /// <summary>
+        /// Convert to model instance
+        /// </summary>
+        public override Audit ToModelInstance(object dataInstance, DataContext context, IPrincipal principal)
+        {
+            return base.ToModelInstance(dataInstance, context, principal);
+        }
+
+        /// <summary>
         /// Append order by statement
         /// </summary>
         /// <param name="rawQuery">Append raw query </param>

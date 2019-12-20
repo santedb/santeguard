@@ -84,7 +84,7 @@ namespace SanteGuard.Messaging.Syslog.Action
                 else
                 {
                     string payload = message.Body;
-                    if (message.TypeId.Contains("IHE+DICOM")) // Dicom
+                    if (message.TypeId.Contains("IHE+DICOM") || message.TypeId.Contains("DICOM+RFC3881")) // Dicom
                         payload = AtnaApi.Transport.AuditTransportUtil.ConvertAuditToRFC3881(payload);
                     XmlSerializer xmlSerializer = new XmlSerializer(typeof(AuditMessage));
                     StringReader strReader = new StringReader(payload.Substring(payload.IndexOf("<Audit")));

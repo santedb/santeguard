@@ -71,7 +71,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             var domainObject = this.FromModelInstance(data, context, principal) as TDomain;
 
             // Ensure created by exists
-            data.CreatedByKey = domainObject.CreatedByKey = ApplicationServiceContext.Current.GetService<ISecurityRepositoryService>().GetUser(principal.Identity.Name).Key.Value;
+            data.CreatedByKey = domainObject.CreatedByKey = context.ContextId;
             domainObject = context.Insert<TDomain>(domainObject);
             data.CreationTime = (DateTimeOffset)domainObject.CreationTime;
             data.Key = domainObject.Key;

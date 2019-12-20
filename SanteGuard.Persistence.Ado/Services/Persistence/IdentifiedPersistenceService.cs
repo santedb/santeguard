@@ -61,7 +61,8 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             try
             {
                 var domainObject = this.FromModelInstance(data, context, principal) as TDomain;
-
+                if (domainObject.Key == Guid.Empty)
+                    domainObject.Key = Guid.NewGuid();
                 domainObject = context.Insert<TDomain>(domainObject);
                 data.Key = domainObject.Key;
 

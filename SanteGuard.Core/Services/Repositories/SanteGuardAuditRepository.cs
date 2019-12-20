@@ -132,7 +132,7 @@ namespace SanteGuard.Services.Repositories
         {
             Guid correlationUuid = Guid.Parse(correlationKey.ToString());
             int tr;
-            return ApplicationServiceContext.Current.GetService<IRepositoryService<Audit>>().Find(o => o.CorrelationToken == correlationUuid, 0, 1, out tr).FirstOrDefault()?.ToAuditData();
+            return ApplicationServiceContext.Current.GetService<IRepositoryService<Audit>>().Get(correlationUuid)?.ToAuditData();
         }
 
         /// <summary>

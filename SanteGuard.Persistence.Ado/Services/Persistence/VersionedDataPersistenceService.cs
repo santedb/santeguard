@@ -45,6 +45,10 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
         /// </summary>
         public override TModel InsertInternal(DataContext context, TModel data, IPrincipal principal)
         {
+
+            // Ensure created by exists
+            data.CreatedByKey = context.ContextId;
+
             // first we map the TDataKey entity
             var nonVersionedPortion = m_mapper.MapModelInstance<TModel, TDomainKey>(data);
 
@@ -69,11 +73,11 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
                 domainObject.VersionKey = data.VersionKey.Value;
             }
 
+            
+            
             // Now we want to insert the non versioned portion first
             nonVersionedPortion = context.Insert(nonVersionedPortion);
 
-            // Ensure created by exists
-            data.CreatedByKey = domainObject.CreatedByKey = ApplicationServiceContext.Current.GetService<ISecurityRepositoryService>().GetUser(principal.Identity.Name).Key.Value;
 
             if (data.CreationTime == DateTimeOffset.MinValue || data.CreationTime.Year < 100)
                 data.CreationTime = DateTimeOffset.Now;
@@ -111,7 +115,6 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             var storageInstance = this.FromModelInstance(data, context, principal);
 
             // Create a new version
-            var user = ApplicationServiceContext.Current.GetService<ISecurityRepositoryService>().GetUser(principal.Identity.Name).Key;
             var newEntityVersion = new TDomain();
             newEntityVersion.CopyObjectData(storageInstance);
 
@@ -124,9 +127,9 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             data.VersionSequence = newEntityVersion.VersionSequenceId = null;
             newEntityVersion.Key = data.Key.Value;
             data.PreviousVersionKey = newEntityVersion.ReplacesVersionKey = existingObject.VersionKey;
-            data.CreatedByKey = newEntityVersion.CreatedByKey = user.Value;
+            data.CreatedByKey = newEntityVersion.CreatedByKey = context.ContextId;
             // Obsolete the old version 
-            existingObject.ObsoletedByKey = user;
+            existingObject.ObsoletedByKey = context.ContextId;
             existingObject.ObsoletionTime = DateTimeOffset.Now;
             newEntityVersion.CreationTime = DateTimeOffset.Now;
 
