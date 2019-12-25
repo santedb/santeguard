@@ -1,5 +1,5 @@
 <AppletManifest xmlns="http://santedb.org/applet">
-  <info id="santeguard.sln" version="1.100.*.0">
+  <info id="santeguard.sln" version="1.100.0.0">
     <icon>/org.santedb.core/img/icon.png</icon>
     <name lang="en">SanteGuard Enhanced Audit Repository</name>
     <author>SanteSuite Contributors</author>
