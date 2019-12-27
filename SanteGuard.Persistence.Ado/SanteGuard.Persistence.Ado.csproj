@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SanteGuard.Persistence.Ado</RootNamespace>
     <AssemblyName>SanteGuard.Persistence.Ado</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -81,13 +81,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="SanteDB.Core.Api">
-      <Version>1.102.0</Version>
+      <Version>1.107.0</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.Plugin">
-      <Version>1.102.0</Version>
+      <Version>1.107.0</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Server.Plugin.Data">
-      <Version>1.102.0</Version>
+      <Version>1.107.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
