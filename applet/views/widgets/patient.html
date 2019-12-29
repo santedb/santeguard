@@ -1,11 +1,10 @@
 <div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet"
-oc-lazy-load="{ name: 'SanteGuardPatientAccessController', files: ['/org.santedb.sg/controllers/widgets/patient.js'] }">
-    <sdb:widget name="org.santedb.sg.admin.patient" type="Tab" context="org.santedb.patient.admin" order="10000">
+oc-lazy-load="{ name: 'SanteGuardObjectAccessController', files: ['/org.santedb.sg/controllers/widgets/sg.js'] }">
+    <sdb:widget name="org.santedb.sg.admin.patient" type="Tab" context="org.santedb.patient" order="10000">
         <sdb:icon>fas fa-user-shield</sdb:icon>
         <sdb:description>SanteGaurd Patient Profile Access</sdb:description>
     </sdb:widget>
-
-    <div ng-controller="SanteGuardPatientAccessController">
-    {{custom}}
+    <div>
+        <widget-panels context-name="'org.santedb.dg.objectAudit'" scoped-object="scopedObject"/>
     </div>
 </div>

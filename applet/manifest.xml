@@ -46,5 +46,12 @@
     <string key="ui.config.sg.endpoint.label">Endpoint</string>
     <string key="ui.config.sg.endpoint.help">Indicate the endpoint where clients will send their SYSLOG messages to this DCG instance.</string>
 
+    <string key="ui.audit.log.Read.friendly"><![CDATA[user + " accessed this record from " + ipMachine ]]></string>
+    <string key="ui.audit.log.Query.friendly"><![CDATA["Disclosed in a query result to " + user + " at (" + ipMachine + ")" ]]></string>
+    <string key="ui.audit.log.Create.friendly"><![CDATA[user + " created this record from " + ipMachine ]]></string>
+    <string key="ui.audit.log.Update.friendly"><![CDATA[user + " updated this record from " + ipMachine ]]></string>
+    <string key="ui.audit.log.Execute.friendly"><![CDATA[user + " processed system action from " + ipMachine ]]></string>
+    <string key="org.santedb.sg.admin.audit">Detailed Audit Log</string>
+    <string key="org.santedb.sg.admin.patient">Audit Trail</string>
   </strings>
 </AppletManifest>

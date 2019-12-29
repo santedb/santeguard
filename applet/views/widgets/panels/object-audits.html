@@ -1,0 +1,55 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet" ng-controller="SanteGuardObjectAccessController">
+    <sdb:widget name="org.santedb.sg.admin.audit" headerClass="alert-warning"  type="Panel" size="Medium" order="100" context="org.santedb.dg.objectAudit">
+        <sdb:icon>fas fa-th-list</sdb:icon>
+        <sdb:description>SanteGaurd Object Access Log</sdb:description>
+    </sdb:widget>
+
+    <entity-table id="SanteGuardAccessTable" type="Audit" search-field="actor.uname" i18n-prefix="'ui.model.audit.'"
+        render="{ outcome: 'renderOutcome', event: 'renderEvent', action: 'renderAction',  timestamp : 'renderTimestamp' }"
+        default-query="auditFilter"
+        properties="[ 'action', 'event', 'timestamp', 'outcome' ]"
+        sort="{ action: 'action', event: 'event', outcome: 'outcome', timestamp: 'timestamp' }"
+        button-bar="'#extendedAuditFilter'">
+
+    </entity-table>
+
+    <div id="extendedAuditFilter">
+        <i class="fas fa-filter"></i>
+        
+        <div class="btn-group">
+            <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown" data-target="#auditActionFilter">
+                {{ auditFilter.action || 'ui.model.audit.action' | i18n }}
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" ng-click="auditFilter.action = 'Execute'">{{ 'ui.model.audit.action.execute' | i18n }}</a>
+                <a class="dropdown-item" ng-click="auditFilter.action = 'Create'">{{ 'ui.model.audit.action.create' | i18n }}</a>
+                <a class="dropdown-item" ng-click="auditFilter.action = 'Read'">{{ 'ui.model.audit.action.read' | i18n }}</a>
+                <a class="dropdown-item" ng-click="auditFilter.action = 'Update'">{{ 'ui.model.audit.action.update' | i18n }}</a>
+                <a class="dropdown-item" ng-click="auditFilter.action = 'Delete'">{{ 'ui.model.audit.action.delete' | i18n }}</a>
+            </div>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown" data-target="#auditActionFilter">
+                {{ auditFilter.event || 'ui.model.audit.event' | i18n }}
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" ng-click="auditFilter.event = 'SecurityAlert'">{{ 'ui.model.audit.event.securityAlert' | i18n }}</a>
+                <a class="dropdown-item" ng-click="auditFilter.event = 'UserAuthentication'">{{ 'ui.model.audit.event.userAuthentication' | i18n }}</a>
+                <a class="dropdown-item" ng-click="auditFilter.event = 'Import'">{{ 'ui.model.audit.event.import' | i18n }}</a>
+                <a class="dropdown-item" ng-click="auditFilter.event = 'Export'">{{ 'ui.model.audit.event.export' | i18n }}</a>
+                <a class="dropdown-item" ng-click="auditFilter.event = 'Query'">{{ 'ui.model.audit.event.query' | i18n }}</a>
+            </div>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown" id="auditOutcomeButton">
+                {{ auditFilter.outcome || 'ui.model.audit.outcome' | i18n }}
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" ng-click="auditFilter.outcome = 'Success'">{{ 'ui.model.audit.outcome.success' | i18n }}</a>
+                <a class="dropdown-item" ng-click="auditFilter.outcome = 'MinorFail'">{{ 'ui.model.audit.outcome.warning' | i18n }}</a>
+                <a class="dropdown-item" ng-click="auditFilter.outcome = 'SeriousFail'">{{ 'ui.model.audit.outcome.error' | i18n }}</a>
+                <a class="dropdown-item" ng-click="auditFilter.outcome = 'EpicFail'">{{ 'ui.model.audit.outcome.epic' | i18n }}</a>
+            </div>
+        </div>
+    </div>
+</div>
