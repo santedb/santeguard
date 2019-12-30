@@ -1,0 +1,8 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet">
+    <sdb:widget name="org.santedb.sg.admin.auditStat" headerClass="bg-light"  type="Panel" size="Medium" order="1000" context="org.santedb.dg.objectAudit">
+        <sdb:icon>fas fa-chart-pie</sdb:icon>
+        <sdb:description>SanteGaurd Object Statistics</sdb:description>
+    </sdb:widget>
+
+    <report id="'org.santedb.bi.core.reports.audit.object'" parameters="{ 'object-id' : scopedObject.id }" view="'pie'" />
+</div>
