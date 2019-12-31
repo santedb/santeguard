@@ -18,6 +18,7 @@
  * Date: 2018-10-27
  */
 using SanteDB.Core;
+using SanteDB.Core.Diagnostics;
 using SanteDB.Core.Services;
 using SanteGuard.Configuration;
 using System;
@@ -34,7 +35,7 @@ namespace SanteGuard.Messaging.Syslog
     {
 
         // Trace source
-        private TraceSource m_traceSource = new TraceSource(SanteGuardConstants.TraceSourceName);
+        private Tracer m_traceSource = Tracer.GetTracer(typeof(SyslogMessageHandler));
 
         // Configuration
         private SanteGuardConfiguration m_configuration;
@@ -66,7 +67,7 @@ namespace SanteGuard.Messaging.Syslog
                 var sh = new SyslogListenerThread(ep);
                 Thread thdSh = new Thread(sh.Run);
                 thdSh.IsBackground = true;
-                this.m_traceSource.TraceInformation("Starting Syslog Listener '{0}'...", ep.Name);
+                this.m_traceSource.TraceInfo("Starting Syslog Listener '{0}'...", ep.Name);
                 thdSh.Start();
             }
             this.Started?.Invoke(this, EventArgs.Empty);

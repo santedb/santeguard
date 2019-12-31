@@ -31,7 +31,7 @@ namespace SanteGuard.Messaging.Syslog.Action
     {
 
         // TRace source
-        private Tracer m_traceSource = new Tracer(SanteGuardConstants.TraceSourceName);
+        private Tracer m_traceSource = Tracer.GetTracer(typeof(LogAction));
 
         // Lock object for file
         private static object m_syncObject = new object();

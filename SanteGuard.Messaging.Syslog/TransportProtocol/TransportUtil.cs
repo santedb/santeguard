@@ -35,7 +35,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
     {
 
         // Trace source
-        private TraceSource m_traceSource = new TraceSource(SanteGuardConstants.TraceSourceName);
+        private Tracer m_traceSource = Tracer.GetTracer(typeof(TransportUtil));
 
         // Static
         private static TransportUtil s_current;
@@ -116,13 +116,13 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
             {
                 KeyValuePair<String, byte[]> parms = (KeyValuePair<String, byte[]>)state;
                 var address = new Uri(parms.Key);
-                this.m_traceSource.TraceInformation("Forwarding to {0}...", address);
+                this.m_traceSource.TraceInfo("Forwarding to {0}...", address);
                 var transport = CreateTransport(address.Scheme);
                 transport.Forward(address, parms.Value);
             }
             catch (Exception e)
             {
-                this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
+                this.m_traceSource.TraceError( e.ToString());
             }
         }
 

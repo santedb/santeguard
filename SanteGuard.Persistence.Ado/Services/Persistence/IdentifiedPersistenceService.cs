@@ -70,7 +70,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             }
             catch (DbException ex)
             {
-                this.m_tracer.TraceEvent(System.Diagnostics.TraceEventType.Error, ex.HResult, "Error inserting {0} - {1}", data, ex.Message);
+                this.m_tracer.TraceError("Error inserting {0} - {1}", data, ex.Message);
                 throw;
             }
         }
@@ -100,7 +100,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             }
             catch (DbException ex)
             {
-                this.m_tracer.TraceEvent(System.Diagnostics.TraceEventType.Error, ex.HResult, "Error updating {0} - {1}", data, ex.Message);
+                this.m_tracer.TraceError("Error updating {0} - {1}", data, ex.Message);
                 throw;
             }
 
@@ -129,7 +129,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             }
             catch (DbException ex)
             {
-                this.m_tracer.TraceEvent(System.Diagnostics.TraceEventType.Error, ex.HResult, "Error obsoleting {0} - {1}", data, ex.Message);
+                this.m_tracer.TraceError("Error obsoleting {0} - {1}", data, ex.Message);
                 throw;
             }
 

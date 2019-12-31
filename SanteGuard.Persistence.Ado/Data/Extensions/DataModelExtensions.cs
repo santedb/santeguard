@@ -18,6 +18,7 @@
  * Date: 2018-10-27
  */
 using SanteDB.Core;
+using SanteDB.Core.Diagnostics;
 using SanteDB.Core.Model;
 using SanteDB.Core.Model.Attributes;
 using SanteDB.Core.Model.Interfaces;
@@ -46,7 +47,7 @@ namespace SanteGuard.Persistence.Ado.Data.Extensions
     {
 
         // Trace source
-        private static TraceSource s_traceSource = new TraceSource(SanteGuardConstants.TraceSourceName + ".Ado");
+        private static Tracer s_traceSource = Tracer.GetTracer(typeof(DataModelExtensions));
 
         // Field cache
         private static Dictionary<Type, FieldInfo[]> s_fieldCache = new Dictionary<Type, FieldInfo[]>();
@@ -373,7 +374,7 @@ namespace SanteGuard.Persistence.Ado.Data.Extensions
             }
 #if DEBUG
             sw.Stop();
-            s_traceSource.TraceEvent(TraceEventType.Verbose, 0, "Load associations for {0} took {1} ms", me, sw.ElapsedMilliseconds);
+            s_traceSource.TraceVerbose("Load associations for {0} took {1} ms", me, sw.ElapsedMilliseconds);
 #endif
 
             if (me.LoadState == LoadState.New)

@@ -55,7 +55,7 @@ namespace SanteGuard.Persistence.Ado.Services
         public string ServiceName => "ADO.NET Audit Persistence Daemon";
 
         // Tracer
-        private static TraceSource s_tracer = new TraceSource(SanteGuardConstants.TraceSourceName);
+        private static Tracer s_tracer = Tracer.GetTracer(typeof(AdoAuditPersistenceService));
 
         /// <summary>
         /// STatic ctor loads configuration and mappers
@@ -72,14 +72,14 @@ namespace SanteGuard.Persistence.Ado.Services
             }
             catch(ModelMapValidationException e)
             {
-                s_tracer.TraceEvent(TraceEventType.Error, e.HResult, "Model map for ADO persistence is invalid:");
+                s_tracer.TraceError( "Model map for ADO persistence is invalid:");
                 foreach (var i in e.ValidationDetails)
-                    s_tracer.TraceEvent(TraceEventType.Error, e.HResult, "{0} : {1} @ {2}", i.Level, i.Message, i.Location);
+                    s_tracer.TraceError( "{0} : {1} @ {2}", i.Level, i.Message, i.Location);
                 throw;
             }
             catch(Exception e)
             {
-                s_tracer.TraceEvent(TraceEventType.Error, e.HResult, "Error initializing SanteGuard persistence: {0}", e);
+                s_tracer.TraceError( "Error initializing SanteGuard persistence: {0}", e);
                 throw;
             }
         }
@@ -332,19 +332,19 @@ namespace SanteGuard.Persistence.Ado.Services
             {
                 try
                 {
-                    s_tracer.TraceEvent(TraceEventType.Information, 0, "Loading {0}...", t.AssemblyQualifiedName);
+                    s_tracer.TraceInfo("Loading {0}...", t.AssemblyQualifiedName);
                     (ApplicationServiceContext.Current as IServiceManager).AddServiceProvider(t);
                 }
                 catch (Exception e)
                 {
-                    s_tracer.TraceEvent(TraceEventType.Error, e.HResult, "Error adding service {0} : {1}", t.AssemblyQualifiedName, e);
+                    s_tracer.TraceError( "Error adding service {0} : {1}", t.AssemblyQualifiedName, e);
                 }
             }
 
             // Now iterate through the map file and ensure we have all the mappings, if a class does not exist create it
             try
             {
-                s_tracer.TraceEvent(TraceEventType.Information, 0, "Creating secondary model maps...");
+                s_tracer.TraceInfo("Creating secondary model maps...");
 
                 var map = ModelMap.Load(typeof(AdoAuditPersistenceService).Assembly.GetManifestResourceStream("SanteGuard.Persistence.Ado.Data.Map.ModelMap.xml"));
                 foreach (var itm in map.Class)
@@ -361,7 +361,7 @@ namespace SanteGuard.Persistence.Ado.Services
                     if (ApplicationServiceContext.Current.GetService(idpType) != null)
                         continue;
 
-                    s_tracer.TraceEvent(TraceEventType.Verbose, 0, "Creating map {0} > {1}", modelClassType, domainClassType);
+                    s_tracer.TraceVerbose("Creating map {0} > {1}", modelClassType, domainClassType);
 
 
                     if (modelClassType.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IBaseEntityData)) &&
@@ -397,13 +397,13 @@ namespace SanteGuard.Persistence.Ado.Services
                         s_persistenceCache.Add(modelClassType, Activator.CreateInstance(pclass) as IAdoPersistenceService);
                     }
                     else
-                        s_tracer.TraceEvent(TraceEventType.Warning, 0, "Classmap {0} > {1} cannot be created, ignoring", modelClassType, domainClassType);
+                        s_tracer.TraceWarning("Classmap {0} > {1} cannot be created, ignoring", modelClassType, domainClassType);
 
                 }
             }
             catch (Exception e)
             {
-                s_tracer.TraceEvent(TraceEventType.Error, e.HResult, "Error initializing local persistence: {0}", e);
+                s_tracer.TraceError( "Error initializing local persistence: {0}", e);
                 throw e;
             }
 

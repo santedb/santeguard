@@ -36,7 +36,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
     public class HttpTransport : ITransportProtocol
     {
 
-        private TraceSource m_traceSource = new TraceSource(SanteGuardConstants.TraceSourceName);
+        private Tracer m_traceSource = Tracer.GetTracer(typeof(HttpTransport));
 
         // Http Listener
         private HttpListener m_server = new HttpListener();
@@ -71,7 +71,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
             }
             catch (Exception e)
             {
-                this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
+                this.m_traceSource.TraceError( e.ToString());
                 throw;
             }
         }
@@ -81,7 +81,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
         /// </summary>
         public void Start(Configuration.EndpointConfiguration bind)
         {
-            this.m_traceSource.TraceInformation("Starting HTTP listener {0} on {1}...", bind.Name, bind.Address);
+            this.m_traceSource.TraceInfo("Starting HTTP listener {0} on {1}...", bind.Name, bind.Address);
             if(!HttpListener.IsSupported)
                 throw new InvalidOperationException("Windows XP SP2 or Server 2003 is required to use the HttpListener class.");
 
@@ -148,7 +148,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
                         context.Response.StatusCode = 405;
                         context.Response.StatusDescription = "Method Not Allowed";
 
-                        this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
+                        this.m_traceSource.TraceError( e.ToString());
                     }
                     catch (SyslogMessageException e)
                     {
@@ -161,7 +161,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
                         context.Response.ContentLength64 = errorBytes.Length;
                         context.Response.OutputStream.Write(errorBytes, 0, errorBytes.Length);
 
-                        this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
+                        this.m_traceSource.TraceError( e.ToString());
                     }
                     catch (Exception e)
                     {
@@ -174,7 +174,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
                         context.Response.ContentLength64 = errorBytes.Length;
                         context.Response.OutputStream.Write(errorBytes, 0, errorBytes.Length);
 
-                        this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
+                        this.m_traceSource.TraceError( e.ToString());
                     }
                     context.Response.Close();
 
@@ -182,7 +182,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
             }
             catch(Exception e)
             {
-                this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, "FATAL: {0}", e.ToString());
+                this.m_traceSource.TraceError( "FATAL: {0}", e.ToString());
             }
             finally
             {
@@ -200,7 +200,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
         {
             this.m_run = false;
             this.m_server.Close();
-            this.m_traceSource.TraceInformation("HTTP Stopped");
+            this.m_traceSource.TraceInfo("HTTP Stopped");
         }
 
         /// <summary>

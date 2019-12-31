@@ -43,7 +43,7 @@ namespace SanteGuard.Messaging.Syslog.Action
     {
         #region ISyslogAction Members
 
-        private TraceSource m_traceSource = new TraceSource(SanteGuardConstants.TraceSourceName);
+        private Tracer m_traceSource = Tracer.GetTracer(typeof(StorageAction));
 
         /// <summary>
         /// Handle a message being received by the message handler
@@ -70,7 +70,7 @@ namespace SanteGuard.Messaging.Syslog.Action
             {
                 if (e == null || e.Message == null)
                 {
-                    this.m_traceSource.TraceEvent(TraceEventType.Warning, 0, "Received null SyslogEvent from transport");
+                    this.m_traceSource.TraceWarning("Received null SyslogEvent from transport");
                     return;
                 }
 
@@ -198,14 +198,14 @@ namespace SanteGuard.Messaging.Syslog.Action
                     }
                     catch(Exception ex)
                     {
-                        this.m_traceSource.TraceEvent(TraceEventType.Error, ex.HResult, "Error persisting audit: {0}", ex);
+                        this.m_traceSource.TraceError( "Error persisting audit: {0}", ex);
                     }
                 }, MessageUtil.ParseAudit(e.Message));
 
             }
             catch (Exception ex)
             {
-                this.m_traceSource.TraceEvent(TraceEventType.Error, ex.HResult, ex.ToString());
+                this.m_traceSource.TraceError( ex.ToString());
                 throw;
             }
         }

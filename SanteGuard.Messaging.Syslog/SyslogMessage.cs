@@ -118,7 +118,7 @@ namespace SanteGuard.Messaging.Syslog
                     retVal.ProcessName = match.Groups[5].Value;
                     retVal.ProcessId = match.Groups[6].Value;
                     retVal.TypeId = match.Groups[7].Value;
-                    retVal.Body = match.Groups[9].Value;
+                    retVal.Body = match.Groups[9].Value.Trim();
                 }
                 catch(Exception e)
                 {

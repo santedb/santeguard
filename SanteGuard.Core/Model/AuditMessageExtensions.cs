@@ -32,6 +32,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using SanteDB.Core.Model;
+using SanteDB.Core.Diagnostics;
 
 namespace SanteGuard.Core.Model
 {
@@ -123,7 +124,7 @@ namespace SanteGuard.Core.Model
         {
             if (me == null)
                 throw new ArgumentNullException("Audit message cannot be null");
-            TraceSource traceSource = new TraceSource(SanteGuardConstants.TraceSourceName);
+            Tracer traceSource = Tracer.GetTracer(typeof(AuditMessageExtensions));
             AuditData retVal = new AuditData();
             retVal.ActionCode = MapSimple<SanteDB.Core.Auditing.ActionType>(me.EventIdentification.ActionCode).GetValueOrDefault();
             retVal.EventIdentifier = MapSimple<SanteDB.Core.Auditing.EventIdentifierType>(me.EventIdentification.EventId).GetValueOrDefault();
@@ -176,7 +177,7 @@ namespace SanteGuard.Core.Model
                 }).ToList();
             }
 
-            traceSource.TraceInformation("Successfully processed audit: {0}", retVal.ToDisplay());
+            traceSource.TraceInfo("Successfully processed audit: {0}", retVal.ToDisplay());
             return retVal;
         }
 
@@ -187,7 +188,7 @@ namespace SanteGuard.Core.Model
         {
             if (me == null)
                 throw new ArgumentNullException("Audit message cannot be null");
-            TraceSource traceSource = new TraceSource(SanteGuardConstants.TraceSourceName);
+            Tracer traceSource = Tracer.GetTracer(typeof(AuditMessageExtensions));
             Audit retVal = new Audit();
             retVal.ActionCode = MapOrCreateCode(me.EventIdentification.ActionCode);
             retVal.EventIdCode = MapOrCreateCode(me.EventIdentification.EventId);
@@ -285,7 +286,7 @@ namespace SanteGuard.Core.Model
                 }).ToList();
             }
 
-            traceSource.TraceInformation("Successfully processed audit: {0}", retVal.ToDisplay());
+            traceSource.TraceInfo("Successfully processed audit: {0}", retVal.ToDisplay());
             return retVal;
         }
 

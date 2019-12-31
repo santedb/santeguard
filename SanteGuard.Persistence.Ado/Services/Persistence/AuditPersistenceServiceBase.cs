@@ -43,6 +43,7 @@ using SanteDB.Core;
 using SanteDB.Core.BusinessRules;
 using SanteDB.Persistence.Data.ADO.Data;
 using SanteDB.Core.Model.Query;
+using SanteDB.Core.Diagnostics;
 
 namespace SanteGuard.Persistence.Ado.Services
 {
@@ -59,7 +60,7 @@ namespace SanteGuard.Persistence.Ado.Services
         /// <summary>
         /// Trace source name
         /// </summary>
-        protected TraceSource m_tracer = new TraceSource(SanteGuardConstants.TraceSourceName + ".Ado");
+        protected Tracer m_tracer = Tracer.GetTracer(typeof(AuditPersistenceServiceBase<TModel>));
 
         // Local mapper instance
         protected ModelMapper m_mapper = AdoAuditPersistenceService.GetMapper();
@@ -148,7 +149,7 @@ namespace SanteGuard.Persistence.Ado.Services
                 this.Retrieving?.Invoke(this, preArgs);
                 if (preArgs.Cancel)
                 {
-                    this.m_tracer.TraceEvent(TraceEventType.Warning, 0, "Pre-Event handler indicates abort retrieve {0}", containerId);
+                    this.m_tracer.TraceWarning("Pre-Event handler indicates abort retrieve {0}", containerId);
                     return null;
                 }
 
@@ -157,7 +158,7 @@ namespace SanteGuard.Persistence.Ado.Services
                     try
                     {
                         connection.Open();
-                        this.m_tracer.TraceEvent(TraceEventType.Verbose, 0, "GET {0}", containerId);
+                        this.m_tracer.TraceVerbose("GET {0}", containerId);
 
                         if (loadFast)
                         {
@@ -183,14 +184,14 @@ namespace SanteGuard.Persistence.Ado.Services
                     }
                     catch (Exception e)
                     {
-                        this.m_tracer.TraceEvent(TraceEventType.Error, 0, "Error : {0}", e);
+                        this.m_tracer.TraceError("Error : {0}", e);
                         throw;
                     }
                     finally
                     {
 #if DEBUG
                         sw.Stop();
-                        this.m_tracer.TraceEvent(TraceEventType.Verbose, 0, "Retrieve took {0} ms", sw.ElapsedMilliseconds);
+                        this.m_tracer.TraceVerbose("Retrieve took {0} ms", sw.ElapsedMilliseconds);
 #endif
                     }
             }
@@ -212,7 +213,7 @@ namespace SanteGuard.Persistence.Ado.Services
             this.Inserting?.Invoke(this, preArgs);
             if (preArgs.Cancel)
             {
-                this.m_tracer.TraceEvent(TraceEventType.Warning, 0, "Pre-Event handler indicates abort insert for {0}", data);
+                this.m_tracer.TraceWarning("Pre-Event handler indicates abort insert for {0}", data);
                 return data;
             }
 
@@ -232,7 +233,7 @@ namespace SanteGuard.Persistence.Ado.Services
                         }
                         else
                         {
-                            this.m_tracer.TraceEvent(TraceEventType.Verbose, 0, "INSERT {0}", data);
+                            this.m_tracer.TraceVerbose("INSERT {0}", data);
                             data = this.InsertInternal(connection, data, principal);
                             connection.AddCacheCommit(data);
                         }
@@ -258,9 +259,9 @@ namespace SanteGuard.Persistence.Ado.Services
                     {
 
 #if DEBUG
-                        this.m_tracer.TraceEvent(TraceEventType.Error, 0, "Error : {0} -- {1}", e, this.ObjectToString(data));
+                        this.m_tracer.TraceError("Error : {0} -- {1}", e, this.ObjectToString(data));
 #else
-                            this.m_tracer.TraceEvent(TraceEventType.Error, 0, "Error : {0}", e.Message);
+                            this.m_tracer.TraceError("Error : {0}", e.Message);
 #endif
                         tx?.Rollback();
 
@@ -269,7 +270,7 @@ namespace SanteGuard.Persistence.Ado.Services
                     }
                     catch (Exception e)
                     {
-                        this.m_tracer.TraceEvent(TraceEventType.Error, 0, "Error : {0} -- {1}", e, this.ObjectToString(data));
+                        this.m_tracer.TraceError("Error : {0} -- {1}", e, this.ObjectToString(data));
 
                         tx?.Rollback();
                         throw new DataPersistenceException(e.Message, e);
@@ -295,7 +296,7 @@ namespace SanteGuard.Persistence.Ado.Services
             this.Obsoleting?.Invoke(this, preArgs);
             if (preArgs.Cancel)
             {
-                this.m_tracer.TraceEvent(TraceEventType.Warning, 0, "Pre-Event handler indicates abort for {0}", data);
+                this.m_tracer.TraceWarning("Pre-Event handler indicates abort for {0}", data);
                 return data;
             }
 
@@ -309,7 +310,7 @@ namespace SanteGuard.Persistence.Ado.Services
                     {
                         //connection.Connection.Open();
 
-                        this.m_tracer.TraceEvent(TraceEventType.Verbose, 0, "OBSOLETE {0}", data);
+                        this.m_tracer.TraceVerbose("OBSOLETE {0}", data);
                         connection.EstablishProvenance(principal, (data as NonVersionedEntityData)?.ObsoletedByKey ?? (data as BaseEntityData)?.ObsoletedByKey);
 
                         data = this.ObsoleteInternal(connection, data, principal);
@@ -331,7 +332,7 @@ namespace SanteGuard.Persistence.Ado.Services
                     }
                     catch (Exception e)
                     {
-                        this.m_tracer.TraceEvent(TraceEventType.Error, 0, "Error : {0}", e);
+                        this.m_tracer.TraceError("Error : {0}", e);
                         tx?.Rollback();
                         throw new DataPersistenceException(e.Message, e);
                     }
@@ -392,7 +393,7 @@ namespace SanteGuard.Persistence.Ado.Services
             this.Querying?.Invoke(this, preArgs);
             if (preArgs.Cancel)
             {
-                this.m_tracer.TraceEvent(TraceEventType.Warning, 0, "Pre-Event handler indicates abort query {0}", query);
+                this.m_tracer.TraceWarning("Pre-Event handler indicates abort query {0}", query);
                 totalCount = preArgs.TotalResults;
                 return preArgs.Results;
             }
@@ -403,7 +404,7 @@ namespace SanteGuard.Persistence.Ado.Services
                 {
                     connection.Open();
 
-                    this.m_tracer.TraceEvent(TraceEventType.Verbose, 0, "QUERY {0}", query);
+                    this.m_tracer.TraceVerbose("QUERY {0}", query);
 
                     // Is there an obsoletion item already specified?
                     if ((count ?? 1000) > 25 && AdoAuditPersistenceService.GetConfiguration().PrepareStatements)
@@ -432,7 +433,7 @@ namespace SanteGuard.Persistence.Ado.Services
                             ApplicationServiceContext.Current.GetService<IDataCachingService>()?.Add(itm);
                     }, connection.CacheOnCommit.ToList());
 
-                    this.m_tracer.TraceEvent(TraceEventType.Verbose, 0, "Returning {0}..{1} or {2} results", offset, offset + (count ?? 1000), totalCount);
+                    this.m_tracer.TraceVerbose("Returning {0}..{1} or {2} results", offset, offset + (count ?? 1000), totalCount);
 
                     return retVal;
 
@@ -443,14 +444,14 @@ namespace SanteGuard.Persistence.Ado.Services
                 }
                 catch (Exception e)
                 {
-                    this.m_tracer.TraceEvent(TraceEventType.Error, 0, "Error : {0}", e);
+                    this.m_tracer.TraceError("Error : {0}", e);
                     throw;
                 }
                 finally
                 {
 #if DEBUG
                     sw.Stop();
-                    this.m_tracer.TraceEvent(TraceEventType.Verbose, 0, "Query {0} took {1} ms", query, sw.ElapsedMilliseconds);
+                    this.m_tracer.TraceVerbose("Query {0} took {1} ms", query, sw.ElapsedMilliseconds);
 #endif
                 }
         }
@@ -473,7 +474,7 @@ namespace SanteGuard.Persistence.Ado.Services
             this.Updating?.Invoke(this, preArgs);
             if (preArgs.Cancel)
             {
-                this.m_tracer.TraceEvent(TraceEventType.Warning, 0, "Pre-Event handler indicates abort update for {0}", data);
+                this.m_tracer.TraceWarning("Pre-Event handler indicates abort update for {0}", data);
                 return data;
             }
 
@@ -487,7 +488,7 @@ namespace SanteGuard.Persistence.Ado.Services
                         //connection.Connection.Open();
                         connection.EstablishProvenance(principal, (data as NonVersionedEntityData)?.UpdatedByKey ?? (data as BaseEntityData)?.CreatedByKey);
 
-                        this.m_tracer.TraceEvent(TraceEventType.Verbose, 0, "UPDATE {0}", data);
+                        this.m_tracer.TraceVerbose("UPDATE {0}", data);
 
                         data = this.UpdateInternal(connection, data, principal);
                         connection.AddCacheCommit(data);
@@ -513,9 +514,9 @@ namespace SanteGuard.Persistence.Ado.Services
                     {
 
 #if DEBUG
-                        this.m_tracer.TraceEvent(TraceEventType.Error, 0, "Error : {0} -- {1}", e, this.ObjectToString(data));
+                        this.m_tracer.TraceError("Error : {0} -- {1}", e, this.ObjectToString(data));
 #else
-                            this.m_tracer.TraceEvent(TraceEventType.Error, 0, "Error : {0}", e.Message);
+                            this.m_tracer.TraceError("Error : {0}", e.Message);
 #endif
                         tx?.Rollback();
 
@@ -526,9 +527,9 @@ namespace SanteGuard.Persistence.Ado.Services
                     {
 
 #if DEBUG
-                        this.m_tracer.TraceEvent(TraceEventType.Error, 0, "Error : {0} -- {1}", e, this.ObjectToString(data));
+                        this.m_tracer.TraceError("Error : {0} -- {1}", e, this.ObjectToString(data));
 #else
-                        this.m_tracer.TraceEvent(TraceEventType.Error, 0, "Error : {0}", e.Message);
+                        this.m_tracer.TraceError("Error : {0}", e.Message);
 #endif
                         tx?.Rollback();
 

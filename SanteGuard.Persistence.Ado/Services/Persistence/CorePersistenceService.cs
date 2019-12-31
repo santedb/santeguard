@@ -72,7 +72,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             var dInstance = (dataInstance as CompositeResult)?.Values.OfType<TDomain>().FirstOrDefault() ?? dataInstance as TDomain;
             var retVal = this.m_mapper.MapDomainInstance<TDomain, TModel>(dInstance);
             retVal.LoadAssociations(context, principal);
-            this.m_tracer.TraceEvent(System.Diagnostics.TraceEventType.Verbose, 0, "Model instance {0} created", dataInstance);
+            this.m_tracer.TraceVerbose("Model instance {0} created", dataInstance);
 
             return retVal;
         }
@@ -161,7 +161,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
                 }
                 catch (Exception e)
                 {
-                    this.m_tracer.TraceEvent(TraceEventType.Error, e.HResult, "Error performing sub-query: {0}", e);
+                    this.m_tracer.TraceError( "Error performing sub-query: {0}", e);
                     throw;
                 }
                 finally
@@ -220,7 +220,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
                 }
                 else
                 {
-                    m_tracer.TraceEvent(System.Diagnostics.TraceEventType.Verbose, 0, "Will use slow query construction due to complex mapped fields");
+                    m_tracer.TraceVerbose("Will use slow query construction due to complex mapped fields");
                     domainQuery = AdoAuditPersistenceService.GetQueryBuilder().CreateQuery(query, orderBy);
                 }
 
@@ -299,7 +299,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             catch (Exception ex)
             {
                 if (domainQuery != null)
-                    this.m_tracer.TraceEvent(TraceEventType.Error, ex.HResult, context.GetQueryLiteral(domainQuery.Build()));
+                    this.m_tracer.TraceError( context.GetQueryLiteral(domainQuery.Build()));
                 context.Dispose(); // No longer important
 
                 throw;
@@ -402,7 +402,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             var persistenceService = ApplicationServiceContext.Current.GetService<IDataPersistenceService<TAssociation>>() as AuditPersistenceServiceBase<TAssociation>;
             if (persistenceService == null)
             {
-                this.m_tracer.TraceEvent(System.Diagnostics.TraceEventType.Information, 0, "Missing persister for type {0}", typeof(TAssociation).Name);
+                this.m_tracer.TraceInfo("Missing persister for type {0}", typeof(TAssociation).Name);
                 return;
             }
             // Ensure the source key is set

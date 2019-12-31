@@ -35,7 +35,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
     public class UdpTransport : ITransportProtocol
     {
 
-        private TraceSource m_traceSource = new TraceSource(SanteGuardConstants.TraceSourceName);
+        private Tracer m_traceSource = Tracer.GetTracer(typeof(UdpTransport));
 
         // Socket
         private Socket m_udpSocket = null;
@@ -75,7 +75,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
 
             // Bind the socket
             this.m_udpSocket.Bind(endpoint);
-            this.m_traceSource.TraceInformation("UDP transport bound to {0}", endpoint);
+            this.m_traceSource.TraceInfo("UDP transport bound to {0}", endpoint);
 
             // Run
             try
@@ -105,13 +105,13 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
                     {
                         if (this.InvalidMessageReceived != null)
                             this.InvalidMessageReceived.BeginInvoke(this, new SyslogMessageReceivedEventArgs(e.FaultingMessage, new Uri(String.Format("udp://{0}", remote_ep)), this.m_configuration.Address, DateTime.Now), null, null);
-                        this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
+                        this.m_traceSource.TraceError( e.ToString());
                     }
                     catch (Exception e)
                     {
                         if (this.InvalidMessageReceived != null)
                             this.InvalidMessageReceived.BeginInvoke(this, new SyslogMessageReceivedEventArgs(new SyslogMessage(), new Uri(String.Format("udp://{0}", remote_ep)), this.m_configuration.Address, DateTime.Now), null, null);
-                        this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
+                        this.m_traceSource.TraceError( e.ToString());
                     }
 
                 }
@@ -170,7 +170,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
             }
             catch (Exception e)
             {
-                this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
+                this.m_traceSource.TraceError( e.ToString());
             }
             finally
             {

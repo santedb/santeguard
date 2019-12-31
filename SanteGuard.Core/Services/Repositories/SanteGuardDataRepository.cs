@@ -18,6 +18,7 @@
  * Date: 2018-10-27
  */
 using SanteDB.Core;
+using SanteDB.Core.Diagnostics;
 using SanteDB.Core.Interfaces;
 using SanteDB.Core.Security;
 using SanteDB.Core.Services;
@@ -40,7 +41,7 @@ namespace SanteGuard.Services.Repositories
         /// <summary>
         /// Trace source
         /// </summary>
-        private TraceSource m_traceSource = new TraceSource(SanteGuardConstants.TraceSourceName);
+        private Tracer m_traceSource = Tracer.GetTracer(typeof(SanteGuardDataRepository));
 
         /// <summary>
         /// Service Name
@@ -79,7 +80,7 @@ namespace SanteGuard.Services.Repositories
 
             foreach (var t in this.m_serviceTypes)
             {
-                this.m_traceSource.TraceInformation("Adding {0} to context", t.FullName);
+                this.m_traceSource.TraceInfo("Adding {0} to context", t.FullName);
                 (ApplicationServiceContext.Current as IServiceManager).AddServiceProvider(t);
             }
             this.Started?.Invoke(this, EventArgs.Empty);

@@ -81,7 +81,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
 
             this.m_listener = new TcpListener(endpoint);
             this.m_listener.Start();
-            this.m_traceSource.TraceInformation("STCP Transport bound to {0}", endpoint);
+            this.m_traceSource.TraceInfo("STCP Transport bound to {0}", endpoint);
 
             // Setup certificate
             if ((this.m_endpointConfiguration.TransportConfiguration as StcpConfigurationElement)?.ServerCertificate == null)
@@ -124,9 +124,9 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
                     if (cer.Certificate.Thumbprint == this.m_transportConfiguration.TrustedClientCertificates.Certificate.Thumbprint)
                         isValid = true;
                 if (!isValid)
-                    this.m_traceSource.TraceEvent(TraceEventType.Error, 0, "Certification authority from the supplied certificate doesn't match the expected thumbprint of the CA");
+                    this.m_traceSource.TraceError("Certification authority from the supplied certificate doesn't match the expected thumbprint of the CA");
                 foreach (var stat in chain.ChainStatus)
-                    this.m_traceSource.TraceEvent(TraceEventType.Warning, 0, "Certificate chain validation error: {0}", stat.StatusInformation);
+                    this.m_traceSource.TraceWarning("Certificate chain validation error: {0}", stat.StatusInformation);
                 isValid &= chain.ChainStatus.Length == 0;
                 return isValid;
             }
@@ -191,11 +191,11 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
                 var auditService = ApplicationServiceContext.Current.GetService(typeof(IAuditDispatchService)) as IAuditDispatchService;
                 if (auditService != null)
                     auditService.SendAudit(ad);
-                this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
+                this.m_traceSource.TraceError( e.ToString());
             }
             catch (Exception e)
             {
-                this.m_traceSource.TraceEvent(TraceEventType.Error, e.HResult, e.ToString());
+                this.m_traceSource.TraceError( e.ToString());
             }
             finally
             {

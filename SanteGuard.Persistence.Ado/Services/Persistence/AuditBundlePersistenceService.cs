@@ -65,7 +65,7 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
         {
 
             if (data.Item == null) return data;
-            this.m_tracer.TraceInformation("Audit Bundle has {0} objects...", data.Item.Count);
+            this.m_tracer.TraceInfo("Audit Bundle has {0} objects...", data.Item.Count);
 
             if (this.m_persistenceService.GetConfiguration().PrepareStatements)
                 context.PrepareStatements = true;
@@ -81,18 +81,18 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
                         throw new InvalidOperationException($"Cannot find persister for {itm.GetType()}");
                     if (itm.TryGetExisting(context, principal, true) != null)
                     {
-                        this.m_tracer.TraceInformation("Will update {0} object from bundle...", itm);
+                        this.m_tracer.TraceInfo("Will update {0} object from bundle...", itm);
                         data.Item[i] = svc.Update(context, itm) as IdentifiedData;
                     }
                     else
                     {
-                        this.m_tracer.TraceInformation("Will insert {0} object from bundle...", itm);
+                        this.m_tracer.TraceInfo("Will insert {0} object from bundle...", itm);
                         data.Item[i] = svc.Insert(context, itm) as IdentifiedData;
                     }
                 }
                 catch (TargetInvocationException e)
                 {
-                    this.m_tracer.TraceEvent(System.Diagnostics.TraceEventType.Error, e.HResult, "Error inserting bundle: {0}", e);
+                    this.m_tracer.TraceError( "Error inserting bundle: {0}", e);
                     throw e.InnerException;
                 }
                 catch (Exception e)
