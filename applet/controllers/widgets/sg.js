@@ -25,10 +25,13 @@ angular.module('santedb').controller('SanteGuardObjectAccessController', ["$scop
             'object.id' : EmptyGuid 
         };
 
+    
+
     $scope.$watch("scopedObject", function(n,o) {
         if(n) {
+            
             $scope.auditFilter = {
-                'object.id' : n.id
+                'object.id' : n.id,
             };
         }
     });

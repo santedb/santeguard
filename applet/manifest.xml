@@ -18,10 +18,10 @@
  - Date: 2018-7-23
  -->
 <AppletManifest xmlns="http://santedb.org/applet">
-  <info id="org.santedb.sg" version="1.0.0.0">
+  <info id="org.santedb.sg" version="1.115.0.0">
     <icon>/org.santedb.core/img/icon.png</icon>
     <name lang="en">SanteGuard Audit Repository</name>
-    <author>Mohawk College of Applied Arts and Technology - mHealth &amp; eHealth Development &amp; Innovation Centre</author>
+    <author>SanteSuite Community Partners (see: santesuite.org)</author>
   </info>
 
   <strings lang="en">

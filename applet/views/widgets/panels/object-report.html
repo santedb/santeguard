@@ -3,6 +3,15 @@
         <sdb:icon>fas fa-chart-pie</sdb:icon>
         <sdb:description>SanteGaurd Object Statistics</sdb:description>
     </sdb:widget>
-
-    <report id="'org.santedb.bi.core.reports.audit.object'" parameters="{ 'object-id' : scopedObject.id }" view="'pie'" />
+   
+    <div class="container-fluid" ng-show="scopedObject.id">
+        <div class="row">
+            <div class="col-6">
+                <report-view id="'org.santedb.bi.core.reports.audit.object'" parameters="{ 'object-id' : scopedObject.id }" view="'user'" />
+            </div>
+            <div class="col-6">
+                <report-view id="'org.santedb.bi.core.reports.audit.object'" parameters="{ 'object-id' : scopedObject.id }" view="'time'" />
+            </div>
+        </div>
+    </div>
 </div>
