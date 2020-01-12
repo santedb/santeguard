@@ -7,10 +7,10 @@
     <div class="container-fluid" ng-show="scopedObject.id">
         <div class="row">
             <div class="col-6">
-                <report-view id="'org.santedb.bi.core.reports.audit.object'" parameters="{ 'object-id' : scopedObject.id }" view="'user'" />
+                <report-view id="'org.santedb.bi.core.reports.audit.object'" parameters="{ 'object-id' : scopedObject.id }" view="'user'" legend="true" />
             </div>
             <div class="col-6">
-                <report-view id="'org.santedb.bi.core.reports.audit.object'" parameters="{ 'object-id' : scopedObject.id }" view="'time'" />
+                <report-view id="'org.santedb.bi.core.reports.audit.object'" parameters="{ 'object-id' : scopedObject.id }" view="'time'"  legend="true" />
             </div>
         </div>
     </div>
