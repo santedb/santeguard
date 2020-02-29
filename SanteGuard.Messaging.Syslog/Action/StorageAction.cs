@@ -110,7 +110,7 @@ namespace SanteGuard.Messaging.Syslog.Action
                                 if (senderNode == null) // Flag alert
                                 {
                                     alertStatus = true;
-                                    processResult.Details.Add(new DetectedIssue(DetectedIssuePriorityType.Warning, "sender.unknown", DetectedIssueKeys.SecurityIssue));
+                                    processResult.Details.Add(new DetectedIssue(DetectedIssuePriorityType.Warning, "sender.unknown", $"The sender {e.Message.HostName} is unknown", DetectedIssueKeys.SecurityIssue));
                                     senderNode = new AuditNode()
                                     {
                                         Key = Guid.NewGuid(),
@@ -128,7 +128,7 @@ namespace SanteGuard.Messaging.Syslog.Action
                                 if (receiverNode == null) // Flag alert
                                 {
                                     alertStatus = true;
-                                    processResult.Details.Add(new DetectedIssue(DetectedIssuePriorityType.Warning, "receiver.unknown", DetectedIssueKeys.SecurityIssue));
+                                    processResult.Details.Add(new DetectedIssue(DetectedIssuePriorityType.Warning, "receiver.unknown", $"The receiver {Environment.MachineName} is not registered to receive messages", DetectedIssueKeys.SecurityIssue));
                                     receiverNode = new AuditNode()
                                     {
                                         Key = Guid.NewGuid(),

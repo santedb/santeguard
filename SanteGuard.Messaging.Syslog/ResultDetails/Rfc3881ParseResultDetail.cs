@@ -32,7 +32,7 @@ namespace SanteGuard.Messaging.Syslog.ResultDetails
         /// Creates a new SyslogHeaderResultDetail
         /// </summary>
         public Rfc3881ParseResultDetail(DetectedIssuePriorityType type, String message, Exception exception)
-            : base(type, message, DetectedIssueKeys.OtherIssue)
+            : base(type, "messaging.rfc3881", message, DetectedIssueKeys.OtherIssue)
         {
         }
 

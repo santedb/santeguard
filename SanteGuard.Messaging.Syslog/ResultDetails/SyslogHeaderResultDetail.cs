@@ -31,7 +31,7 @@ namespace SanteGuard.Messaging.Syslog.ResultDetails
         /// <summary>
         /// Creates a new SyslogHeaderResultDetail
         /// </summary>
-        public SyslogHeaderResultDetail(DetectedIssuePriorityType type, String message, Exception exception) : base(type, message, DetectedIssueKeys.CodificationIssue)
+        public SyslogHeaderResultDetail(DetectedIssuePriorityType type, String message, Exception exception) : base(type, "messaging.syslog", message, DetectedIssueKeys.CodificationIssue)
         {
         }
 
