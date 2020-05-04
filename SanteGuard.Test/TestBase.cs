@@ -4,6 +4,7 @@ using SanteDB.Core.Data;
 using SanteDB.Core.Interfaces;
 using SanteDB.Core.Model.EntityLoader;
 using SanteDB.Core.Services;
+using SanteDB.Core.TestFramework;
 using SanteGuard.Model;
 using SanteGuard.Persistence.Ado.Services;
 using SanteGuard.Test.Shim;
@@ -12,7 +13,7 @@ using System.IO;
 
 namespace SanteGuard.Test
 {
-    [DeploymentItem(@"Data\santeguard_test.fdb")]
+    [DeploymentItem(@"santeguard_test.fdb")]
     [DeploymentItem(@"fbclient.dll")]
     [DeploymentItem(@"firebird.conf")]
     [DeploymentItem(@"firebird.msg")]
@@ -34,6 +35,14 @@ namespace SanteGuard.Test
         {
 
             if (m_started) return;
+
+            // Init test context if needed
+            if (ApplicationServiceContext.Current == null)
+            {
+                // Initialize
+                TestApplicationContext.TestAssembly = typeof(TestBase).Assembly;
+                TestApplicationContext.Initialize(context.DeploymentDirectory);
+            }
 
             AppDomain.CurrentDomain.SetData(
                "DataDirectory",
