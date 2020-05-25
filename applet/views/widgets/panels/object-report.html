@@ -3,7 +3,11 @@
         <sdb:icon>fas fa-chart-pie</sdb:icon>
         <sdb:description>SanteGaurd Object Statistics</sdb:description>
     </sdb:widget>
-   
+    
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> {{ 'org.santedb.sg.admin.auditStat.help' | i18n }}
+    </div>
+
     <div class="container-fluid" ng-show="scopedObject.id">
         <div class="row">
             <div class="col-6">

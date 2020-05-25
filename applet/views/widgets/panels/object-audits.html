@@ -4,6 +4,9 @@
         <sdb:description>SanteGaurd Object Access Log</sdb:description>
     </sdb:widget>
 
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> {{ 'org.santedb.sg.admin.audit.help' | i18n }}
+    </div>
     <entity-table id="SanteGuardAccessTable" type="Audit" search-field="actor.uname" i18n-prefix="'ui.model.audit.'"
         render="{ outcome: 'renderOutcome', event: 'renderEvent', action: 'renderAction',  timestamp : 'renderTimestamp' }"
         default-query="auditFilter"

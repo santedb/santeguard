@@ -18,7 +18,7 @@
  - Date: 2018-7-23
  -->
 <AppletManifest xmlns="http://santedb.org/applet">
-  <info id="org.santedb.sg" version="2.0.6.0">
+  <info id="org.santedb.sg" version="2.0.13.0">
     <icon>/org.santedb.core/img/icon.png</icon>
     <name lang="en">SanteGuard Audit Repository</name>
     <author>SanteSuite Community Partners (see: santesuite.org)</author>
@@ -41,9 +41,12 @@
     <string key="ui.audit.log.Update.friendly"><![CDATA[user + " updated this record (source machine: " + ipMachine + ")" ]]></string>
     <string key="ui.audit.log.Execute.friendly"><![CDATA[user + " processed system action (source machine: " + ipMachine + ")" ]]></string>
     <string key="org.santedb.sg.admin.audit">Detailed Audit Log</string>
+    <string key="org.santedb.sg.admin.audit.help">This panel shows a detailed log of all times this object was accessed.</string>
     <string key="org.santedb.sg.admin.patient">Audit Trail</string>
     <string key="org.santedb.sg.admin.user.profile">Audit Trail</string>
-    <string key="org.santedb.sg.user.activityLog">Activity Log</string>
+    <string key="org.santedb.sg.user.activityLog">My Activity</string>
+    <string key="org.santedb.sg.user.admin.activityLog">User Activity</string>
     <string key="org.santedb.sg.admin.auditStat">Access Patterns</string>
+    <string key="org.santedb.sg.admin.auditStat.help">This panel shows a summary of all the times this object was accessed.</string>
   </strings>
 </AppletManifest>

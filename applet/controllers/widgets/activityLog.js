@@ -76,7 +76,7 @@ angular.module('santedb').controller('SanteGuardActivityLogController', ["$scope
         return $scope.$eval(friendlyMessage, { 
             user: user,
             ipMachine: ipMachine
-        });
+        }) ;
     }
 
     
