@@ -18,7 +18,6 @@
  * Date: 2018-10-27
  */
 using AtnaApi.Model;
-using MARC.Everest.Connectors;
 using SanteDB.Core.BusinessRules;
 using SanteGuard.Messaging.Syslog.ResultDetails;
 using System;
