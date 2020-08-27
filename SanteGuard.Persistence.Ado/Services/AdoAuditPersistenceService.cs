@@ -66,7 +66,7 @@ namespace SanteGuard.Persistence.Ado.Services
             {
                 s_configuration = ApplicationServiceContext.Current.GetService<IConfigurationManager>().GetSection<SanteGuardAdoConfiguration>();
                 if (s_configuration == null)
-                    throw new SanteDB.Core.Exceptions.ConfigurationException("Missing SanteGuardAdoConfiguration");
+                    throw new InvalidOperationException("Missing SanteGuardAdoConfiguration");
                 s_mapper = new ModelMapper(typeof(AdoAuditPersistenceService).Assembly.GetManifestResourceStream("SanteGuard.Persistence.Ado.Data.Map.ModelMap.xml"));
                 s_queryBuilder = new QueryBuilder(s_mapper, s_configuration.Provider);
             }

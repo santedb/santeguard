@@ -45,6 +45,17 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
         // Local instance of the persistence service
         private AdoPersistenceService m_persistenceService;
 
+        /// <summary>
+        /// Bundles don't really ever exist
+        /// </summary>
+        public override bool Exists(DataContext context, Guid key)
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Bundle persistence
+        /// </summary>
         public AuditBundlePersistenceService()
         {
             this.m_persistenceService = ApplicationServiceContext.Current.GetService<AdoPersistenceService>();

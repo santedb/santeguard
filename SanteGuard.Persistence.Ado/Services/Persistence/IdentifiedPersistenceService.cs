@@ -49,6 +49,14 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
         where TDomain : class, IDbIdentified, new()
     {
 
+        /// <summary>
+        /// Returns true if the object exists
+        /// </summary>
+        public override bool Exists(DataContext context, Guid key)
+        {
+            return context.Any<TDomain>(o => o.Key == key);
+        }
+
         #region implemented abstract members of LocalDataPersistenceService
 
         /// <summary>

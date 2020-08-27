@@ -107,6 +107,11 @@ namespace SanteGuard.Persistence.Ado.Services
         public event EventHandler<QueryResultEventArgs<TModel>> Queried;
 
         /// <summary>
+        /// Returns true if the object exists
+        /// </summary>
+        public abstract bool Exists(DataContext context, Guid key);
+
+        /// <summary>
         /// Count the number of objects in the persistence store
         /// </summary>
         /// <param name="query">The query to be secute</param>
