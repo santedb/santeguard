@@ -83,6 +83,8 @@ angular.module('santedb').controller('SanteGuardObjectAccessController', ["$scop
 
 
         var requestor = audit.actor.find((a) => a.isReq);
+        if(!requestor)
+            requestor = {};
         var user = requestor.uname;
         var ipMachine = requestor.apId;
         var action = audit.action;
