@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SanteDB.Core.Configuration;
+using SanteDB.Core.Security.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
