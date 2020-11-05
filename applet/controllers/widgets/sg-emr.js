@@ -18,20 +18,48 @@
  * User: Justin Fyfe
  * Date: 2019-9-27
  */
-angular.module('santedb').controller('SanteGuardObjectAccessController', ["$scope", "$rootScope", function($scope, $rootScope) {
+angular.module('santedb').controller('SanteGuardEmrObjectAccessController', ["$scope", "$rootScope", function($scope, $rootScope) {
 
-    $scope.auditFilter = {
-            _noexec : true,
-            'object.id' : EmptyGuid 
-        };
+  
+    $scope.history = [];
 
-    
+
+    /**
+     * @summary Fetches the edit history of the object
+     * @param {*} objectId The identifier of the object to fetch history for
+     */
+    async function fetchHistory(objectId) {
+        try {
+            var er = await SanteDB.resources.entityRelationship.findAsync({ 
+                "relationshipType": "97730a52-7e30-4dcd-94cd-fd532d111578", // MDM
+                "target" : objectId // Where this is the target
+            }, "reverseRelationship");
+
+            var auditBundle = null;
+            if(er.resource) // there was an MDM reroute
+                auditBundle = await SanteDB.resources.audit.findAsync({
+                    "object.id" : [ er.resource[0].holder, er.resource[0].target ],
+                    "action" : "!Execute"
+                });
+            else 
+                auditBundle = await SanteDB.resources.audit.findAsync({
+                    "object.id" : objectId,
+                    "action" : "!Execute"
+                });
+
+            $scope.history = auditBundle.resource;
+            $scope.$apply();
+        }
+        catch(e) {
+            console.warn(e);
+        }
+    }
 
     $scope.$watch("scopedObject", function(n,o) {
         if(n) {
-            $scope.auditFilter = {
-                'object.id' : n.id,
-            };
+            
+            // Set the contents of the view
+            fetchHistory(n.id);
         }
     });
 
