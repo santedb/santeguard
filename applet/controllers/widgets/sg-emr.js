@@ -39,12 +39,12 @@ angular.module('santedb').controller('SanteGuardEmrObjectAccessController', ["$s
             if(er.resource) // there was an MDM reroute
                 auditBundle = await SanteDB.resources.audit.findAsync({
                     "object.id" : [ er.resource[0].holder, er.resource[0].target ],
-                    "action" : "!Execute"
+                    "action" : [ "!Execute", "!Read" ]
                 });
             else 
                 auditBundle = await SanteDB.resources.audit.findAsync({
                     "object.id" : objectId,
-                    "action" : "!Execute"
+                    "action" : [ "!Execute", "!Read" ]
                 });
 
             $scope.history = auditBundle.resource;

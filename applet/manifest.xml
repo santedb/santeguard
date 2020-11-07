@@ -50,5 +50,11 @@
     <string key="org.santedb.sg.admin.auditStat.help">This panel shows a summary of all the times this object was accessed.</string>
 
     <string key="org.santedb.sg.emr.patient">Access Log / History</string>
+
+    <string key="ui.sg.action.Read">viewed this record</string>
+    <string key="ui.sg.action.Create">created this record</string>
+    <string key="ui.sg.action.Update">updated this record</string>
+    <string key="ui.sg.action.Delete">deleted this record</string>
+    <string key="ui.sg.on">at timestamp</string>
   </strings>
 </AppletManifest>
