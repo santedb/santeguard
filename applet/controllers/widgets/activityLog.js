@@ -20,6 +20,62 @@
  */
 angular.module('santedb').controller('SanteGuardActivityLogController', ["$scope", "$rootScope", function($scope, $rootScope) {
 
+      
+    $scope.history = [];
+
+
+    /**
+     * @summary Fetches the edit history of the object
+     * @param {*} objectId The identifier of the object to fetch history for
+     */
+    async function fetchHistory(objectId, userName) {
+        try {
+            
+            var auditBundle = null;
+            auditBundle = await SanteDB.resources.audit.findAsync({
+                "actor.uname" : userName,
+                "action" : [ "!Read" ],
+                "object.id" : objectId
+            });
+
+            $scope.history = auditBundle.resource.map(function(aud) {
+                var retVal = {};
+
+                retVal.requestor = aud.actor.find(o=>o.isReq);
+                retVal.action = aud.action;
+                retVal.event = aud.event;
+                retVal.accessPoint = aud.actor.filter(o=>!o.isReq);
+                retVal.outcome = aud.outcome;
+                retVal.timestamp = aud.timestamp;
+                retVal.type = aud.type; 
+                retVal.object = aud.object;
+                retVal.id = aud.id;
+                return retVal;
+            });
+            $scope.$apply();
+        }
+        catch(e) {
+            console.warn(e);
+        }
+    }
+
+    $scope.$watch("scopedObject", function(n,o) {
+        if(n) {
+            
+            var userName = n.userName;
+            if(!userName && n.securityUserModel)
+                userName = n.securityUserModel.userName;
+            if(!userName && n.entity)
+                userName = n.entity.userName;
+
+            // Set the contents of the view
+            if(userName)
+                fetchHistory(null, userName);
+            else 
+                fetchHistory([ n.id, n.securityUser ]);
+        }
+    });
+
     // Render the outcome
     $scope.renderOutcome = function (audit) {
         switch (audit.outcome) {
@@ -67,6 +123,8 @@ angular.module('santedb').controller('SanteGuardActivityLogController', ["$scope
 
 
         var requestor = audit.actor.find((a) => a.isReq);
+        if(!requestor)
+            requestor = {};
         var user = requestor.uname;
         var ipMachine = requestor.apId;
         var action = audit.action;
@@ -76,9 +134,10 @@ angular.module('santedb').controller('SanteGuardActivityLogController', ["$scope
         return $scope.$eval(friendlyMessage, { 
             user: user,
             ipMachine: ipMachine
-        }) ;
+        });
     }
 
+    
     
 
 }]);

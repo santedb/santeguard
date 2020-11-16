@@ -6,13 +6,23 @@ oc-lazy-load="{ name: 'SanteGuardActivityLogController', files: ['/org.santedb.s
         <sdb:description>SanteGaurd Activity Log</sdb:description>
     </sdb:widget>
     <div ng-controller="SanteGuardActivityLogController">
-        <entity-table id="SanteGuardActivityLog" type="Audit" search-field="object.id" i18n-prefix="'ui.model.audit.'"
-            render="{ outcome: 'renderOutcome', event: 'renderEvent', action: 'renderAction',  timestamp : 'renderTimestamp' }"
-            default-query="{ 'actor.uname' : scopedObject.securityUserModel.userName }"
-            properties="[ 'action', 'event', 'timestamp', 'outcome' ]"
-            sort="{ action: 'action', event: 'event', outcome: 'outcome', timestamp: 'timestamp' }"
-            button-bar="'#extendedAuditFilter'">
-
-    </entity-table>
+        <p>{{ 'ui.sg.activity.info' | i18n}}</p>
+        <div class="card m-0" ng-class="{ 'border-success': hist.outcome == 'Success', 'border-warning' : hist.outcome == 'MinorFail' , 'border-danger' : hist.outcome == 'SeriousFail' || hist.outcome == 'EpicFail' }" ng-repeat="hist in history track by $index">
+            <div class="card-header" ng-class="{ 'bg-success': hist.outcome == 'Success', 'bg-warning' : hist.outcome == 'MinorFail' , 'bg-danger' : hist.outcome == 'SeriousFail' || hist.outcome == 'EpicFail' }">
+                <i class="fas" ng-class="{ 'fa-shield-alt' : hist.event == 'SecurityAlert', 'fa-lock' : hist.event == 'UserAuthentication', 'fa-search' : hist.event == 'Query', 'fa-user-shield': hist.event == 'EmergencyOverrideStarted', 'fa-database' : hist.event == 'Import' }" ></i> {{ hist.type.display || hist.type }}
+            </div>
+            <div class="card-body text-dark">
+                <i class="fas fa-user"></i> {{ hist.requestor.uname }} {{ 'ui.sg.accessPoint' | i18n }} <span class="text-muted" ng-repeat="ap in hist.accessPoint"><i class="fas fa-laptop"></i> {{ ap.uname }} (<i class="fas fa-wifi"></i> {{ ap.apId }})</span>
+                <span class="text-dark"> {{ 'ui.sg.on' | i18n }} <i class="fas fa-clock"></i> {{ hist.timestamp | extDate: 'F' }}</span>
+                <span ng-switch="hist.outcome" class="d-inline">
+                    <span class="badge badge-success" ng-switch-when="Success"><i class="fas fa-check"></i> {{ 'ui.sg.action.success' | i18n }} </span>
+                    <span class="badge badge-warning" ng-switch-when="MinorFail"><i class="fas fa-exclamation-circle"></i> {{ 'ui.sg.action.minorFail' | i18n }} </span>
+                    <span class="badge badge-danger" ng-switch-default="true"><i class="fas fa-exclamation-circle"></i> {{ 'ui.sg.action.majorFail' | i18n }} </span>
+                </span>
+            </div>
+            <div class="card-footer bg-light text-right text-dark">
+                <small>TRACKING ID: {{ hist.id }}</small>
+            </div>
+        </div>
     </div>
 </div>

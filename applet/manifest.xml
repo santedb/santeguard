@@ -56,5 +56,12 @@
     <string key="ui.sg.action.Update">updated this record</string>
     <string key="ui.sg.action.Delete">deleted this record</string>
     <string key="ui.sg.on">at timestamp</string>
+    <string key="ui.sg.accessPoint">on device</string>
+    <string key="ui.sg.action.success">Success</string>
+    <string key="ui.sg.action.minorFail">Warning</string>
+    <string key="ui.sg.action.majorFail">Failure</string>
+    <string key="ui.sg.action.epicFail">Major Failure</string>
+    <string key="ui.sg.action.join"> was </string>
+    <string key="ui.sg.activity.info">This tab shows activities where your user account was used to access a system function. You can use this information to see the history of your user account over time</string> 
   </strings>
 </AppletManifest>
