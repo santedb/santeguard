@@ -10,7 +10,7 @@
 
         <div class="card m-0" ng-class="{ 'border-info' : hist.action == 'Read' , 'border-danger' : hist.action == 'Delete', 'border-success' : hist.action == 'Create' || hist.action == 'Update' }" ng-repeat="hist in history">
             <div class="card-body">
-                <p class="card-text"><strong class="text-info"><i class="fas fa-user"></i> {{ hist.actor[0].uname }}</strong> {{ 'ui.sg.action.' + hist.action | i18n }} {{ 'ui.sg.on' | i18n }} <i class="fas fa-clock"></i> {{ hist.timestamp | extDate: 'F' }}</p>
+                <p class="card-text"><strong class="text-info"><i class="fas fa-user"></i> {{ hist.requestor.uname }}</strong> {{ 'ui.sg.action.' + hist.action | i18n }} {{ 'ui.sg.on' | i18n }} <i class="fas fa-clock"></i> {{ hist.timestamp | extDate: 'F' }}</p>
             </div>
         </div>
 

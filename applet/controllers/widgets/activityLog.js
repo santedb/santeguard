@@ -35,7 +35,9 @@ angular.module('santedb').controller('SanteGuardActivityLogController', ["$scope
             auditBundle = await SanteDB.resources.audit.findAsync({
                 "actor.uname" : userName,
                 "action" : [ "!Read" ],
-                "object.id" : objectId
+                "object.id" : objectId,
+                "event":"!Query",
+                _count: 10
             });
 
             $scope.history = auditBundle.resource.map(function(aud) {

@@ -47,7 +47,10 @@ angular.module('santedb').controller('SanteGuardEmrObjectAccessController', ["$s
                     "action" : [ "!Execute", "!Read" ]
                 });
 
-            $scope.history = auditBundle.resource;
+            $scope.history = auditBundle.resource.map(function(a) {
+                a.requestor = a.actor.find(o=>o.isReq);
+                return a;
+            });
             $scope.$apply();
         }
         catch(e) {
