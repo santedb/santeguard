@@ -2,6 +2,8 @@
     <sdb:widget name="org.santedb.sg.admin.audit" headerClass="alert-warning"  type="Panel" size="Medium" order="100" context="org.santedb.dg.objectAudit">
         <sdb:icon>fas fa-th-list</sdb:icon>
         <sdb:description>SanteGaurd Object Access Log</sdb:description>
+        <sdb:guard>!scopedObject.tag || scopedObject.tag["$upstream"] != "true"</sdb:guard>
+
     </sdb:widget>
 
     <div class="alert alert-info">

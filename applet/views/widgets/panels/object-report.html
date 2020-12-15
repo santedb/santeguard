@@ -2,6 +2,8 @@
     <sdb:widget name="org.santedb.sg.admin.auditStat" headerClass="bg-light"  type="Panel" size="Medium" order="1000" context="org.santedb.dg.objectAudit">
         <sdb:icon>fas fa-chart-pie</sdb:icon>
         <sdb:description>SanteGaurd Object Statistics</sdb:description>
+        <sdb:guard>!scopedObject.tag || scopedObject.tag["$upstream"] != "true"</sdb:guard>
+
     </sdb:widget>
     
     <div class="alert alert-info">
