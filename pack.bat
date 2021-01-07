@@ -4,7 +4,7 @@
 	FOR /D %%G IN (.\*) DO (
 		PUSHD %%G
 		IF EXIST "manifest.xml" (
-			pakman --compile --optimize --source=.\ --output=..\bin\org.santedb.sg.pak --keyFile=..\..\keys\community.santesuite.net.pfx --keyPassword=..\..\keys\community.santesuite.net.pass --embedcert --install
+			pakman --compile --optimize --source=.\ --output=..\bin\org.santedb.sg.pak --keyFile=..\..\keys\community.santesuite.net.pfx --keyPassword=..\..\keys\community.santesuite.net.pass --embedcert --install --publish --publish-server=https://packages.santesuite.net
 		)
 		POPD
 	)
