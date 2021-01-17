@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
@@ -121,7 +122,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
 
                 bool isValid = false;
                 foreach (var cer in chain.ChainElements)
-                    if (cer.Certificate.Thumbprint == this.m_transportConfiguration.TrustedClientCertificates.Certificate.Thumbprint)
+                    if (this.m_transportConfiguration.TrustedClientCertificates.Any(c=>cer.Certificate.Thumbprint == c.Certificate.Thumbprint))
                         isValid = true;
                 if (!isValid)
                     this.m_traceSource.TraceError("Certification authority from the supplied certificate doesn't match the expected thumbprint of the CA");
@@ -143,7 +144,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
 
             try
             {
-                stream.AuthenticateAsServer(this.m_transportConfiguration.ServerCertificate.Certificate, this.m_transportConfiguration.TrustedClientCertificates.Certificate != null, System.Security.Authentication.SslProtocols.Tls, true);
+                stream.AuthenticateAsServer(this.m_transportConfiguration.ServerCertificate.Certificate, this.m_transportConfiguration.TrustedClientCertificates?.Any() == true, System.Security.Authentication.SslProtocols.Tls, true);
                 stream.ReadTimeout = (int)this.m_endpointConfiguration.ReadTimeout.TotalMilliseconds;
                 this.ProcessSession(tcpClient, stream);
             }

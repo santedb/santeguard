@@ -39,7 +39,7 @@ namespace SanteGuard.Services.Repositories
     /// Represents an implementation of the audit repository classes for SanteGuard
     /// </summary>
     [ServiceProvider("SanteGuard Enhanced Audit Repository")]
-    public class SanteGuardAuditRepository : IAuditRepositoryService
+    public class SanteGuardAuditRepository : IRepositoryService<AuditData>
     {
 
         public string ServiceName => "SanteGuard Enhanced Audit Repository";
@@ -128,11 +128,9 @@ namespace SanteGuard.Services.Repositories
         /// <summary>
         /// Get the specified audit
         /// </summary>
-        public AuditData Get(object correlationKey)
+        public AuditData Get(Guid correlationKey)
         {
-            Guid correlationUuid = Guid.Parse(correlationKey.ToString());
-            int tr;
-            return ApplicationServiceContext.Current.GetService<IRepositoryService<Audit>>().Get(correlationUuid)?.ToAuditData();
+            return ApplicationServiceContext.Current.GetService<IRepositoryService<Audit>>().Get(correlationKey)?.ToAuditData();
         }
 
         /// <summary>
@@ -148,6 +146,30 @@ namespace SanteGuard.Services.Repositories
 
             var rawAudit = audit.ToAudit();
             return ApplicationServiceContext.Current.GetService<IRepositoryService<Audit>>().Insert(rawAudit).ToAuditData();
+        }
+
+        /// <summary>
+        /// Get the specified version of the audit 
+        /// </summary>
+        public AuditData Get(Guid key, Guid versionKey)
+        {
+            return ApplicationServiceContext.Current.GetService<IRepositoryService<Audit>>().Get(key, versionKey).ToAuditData();
+        }
+
+        /// <summary>
+        /// Save (insert or update) the audit
+        /// </summary>
+        public AuditData Save(AuditData data)
+        {
+            throw new NotSupportedException("Updating security audits is not supported on this service interface");
+        }
+
+        /// <summary>
+        /// Obsolete the specified audit key
+        /// </summary>
+        public AuditData Obsolete(Guid key)
+        {
+            throw new NotSupportedException("Obsoleting security audits is not supported on this service interface");
         }
     }
 }

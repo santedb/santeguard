@@ -47,12 +47,6 @@ namespace SanteGuard.Persistence.Ado.Configuration
         [XmlAttribute("perpareStatements")]
         public bool PrepareStatements { get; set; }
 
-        /// <summary>
-        /// Resolve connection string
-        /// </summary>
-        protected override string ResolveConnectionString(string connectionStringName)
-        {
-            return ApplicationServiceContext.Current.GetService<IConfigurationManager>().GetConnectionString(connectionStringName)?.Value;
-        }
+       
     }
 }

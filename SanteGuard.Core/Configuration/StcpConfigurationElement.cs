@@ -25,8 +25,8 @@ namespace SanteGuard.Configuration
         /// <summary>
         /// Trusted client certificates
         /// </summary>
-        [XmlElement("trustedClientCertificate"), JsonProperty("trustedClientCertificate")]
-        public X509ConfigurationElement TrustedClientCertificates { get; set; }
+        [XmlArray("trustedClientCertificates"), XmlArrayItem("add"), JsonProperty("trustedClientCertificates")]
+        public List<X509ConfigurationElement> TrustedClientCertificates { get; set; }
 
     }
 }
