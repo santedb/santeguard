@@ -19,11 +19,13 @@
  */
 using SanteDB.Core;
 using SanteDB.Core.Diagnostics;
+using SanteDB.Core.Interfaces;
 using SanteDB.Core.Services;
 using SanteGuard.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 
 namespace SanteGuard.Messaging.Syslog.TransportProtocol
@@ -70,15 +72,28 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
         {
 
             // Get all assemblies which have a transport protocol
-            foreach(var asm in Array.FindAll(AppDomain.CurrentDomain.GetAssemblies(), a=>Array.Exists(a.GetTypes(), t=>t.GetInterface(typeof(ITransportProtocol).FullName) != null)))
-                foreach (var typ in Array.FindAll(asm.GetTypes(), t => t.GetInterface(typeof(ITransportProtocol).FullName) != null))
+            m_prots = ApplicationServiceContext.Current.GetService<IServiceManager>().GetAllTypes()
+                .Where(t =>
                 {
-                    ConstructorInfo ci = typ.GetConstructor(Type.EmptyTypes);
-                    if (ci == null)
-                        throw new InvalidOperationException(String.Format("Cannot find parameterless constructor for type '{0}'", typ.AssemblyQualifiedName));
-                    ITransportProtocol tp = ci.Invoke(null) as ITransportProtocol;
-                    m_prots.Add(tp.ProtocolName, typ);
-                }
+                    try
+                    {
+                        return typeof(ITransportProtocol).IsAssignableFrom(t);
+                    }
+                    catch { return false; } // HACK: Mono hates doing this for some reason with some of the MSFT assemblies in .NET CORE
+                }).Select(typ =>
+                {
+                    try
+                    {
+                        ConstructorInfo ci = typ.GetConstructor(Type.EmptyTypes);
+                        if (ci == null)
+                            throw new InvalidOperationException(String.Format("Cannot find parameterless constructor for type '{0}'", typ.AssemblyQualifiedName));
+                        return ci.Invoke(null) as ITransportProtocol;
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                }).OfType<ITransportProtocol>().ToDictionary(o=>o.ProtocolName, o=>o.GetType());
         }
 
         /// <summary>

@@ -9,6 +9,11 @@ namespace SanteGuard.Test.Shim
     {
         public string ServiceName => "Dummy Policy Service";
 
+        public void ClearCache(IPrincipal principal)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public PolicyDecision GetPolicyDecision(IPrincipal principal, object securable)
         {
             var retVal = new PolicyDecision(securable, new System.Collections.Generic.List<PolicyDecisionDetail>() {
