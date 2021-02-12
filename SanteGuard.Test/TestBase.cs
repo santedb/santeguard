@@ -53,16 +53,18 @@ namespace SanteGuard.Test
 
             // Register the AuditAdoPersistenceService
             var adoPersistenceService = ApplicationServiceContext.Current.GetService<IDataPersistenceService<Audit>>();
+            var smgr = ApplicationServiceContext.Current.GetService<IServiceManager>();
+
             if (adoPersistenceService == null)
-                (ApplicationServiceContext.Current as IServiceManager).AddServiceProvider(typeof(AdoAuditPersistenceService));
-            (ApplicationServiceContext.Current as IServiceManager).AddServiceProvider(typeof(DummySecurityRepositoryService)); // Sec repo service is for get user name implementation
-            (ApplicationServiceContext.Current as IServiceManager).AddServiceProvider(typeof(DummyPolicyDecisionService));
+                smgr.AddServiceProvider(typeof(AdoAuditPersistenceService));
+            smgr.AddServiceProvider(typeof(DummySecurityRepositoryService)); // Sec repo service is for get user name implementation
+            smgr.AddServiceProvider(typeof(DummyPolicyDecisionService));
 
             // Start the daemon services
-            if (!ApplicationServiceContext.Current.IsRunning)
+            if (!TestApplicationContext.Current.IsRunning)
             {
                 //adoPersistenceService.Start();
-                ApplicationContext.Current.Start();
+                TestApplicationContext.Current.Start();
             }
             m_started = true;
         }
