@@ -1,6 +1,7 @@
 ﻿using SanteDB.Core.Model.Security;
 using SanteDB.Core.Security;
 using SanteDB.Core.Security.Services;
+using System.Collections.Generic;
 using System.Security.Principal;
 
 namespace SanteGuard.Test.Shim
@@ -12,6 +13,11 @@ namespace SanteGuard.Test.Shim
         public void ClearCache(IPrincipal principal)
         {
             throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<IPolicyInstance> GetEffectivePolicySet(IPrincipal securable)
+        {
+            return new List<IPolicyInstance>();
         }
 
         public PolicyDecision GetPolicyDecision(IPrincipal principal, object securable)

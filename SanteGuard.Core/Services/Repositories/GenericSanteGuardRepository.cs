@@ -1,6 +1,7 @@
 ﻿using SanteDB.Core.Model;
 using SanteDB.Core.Security;
 using SanteDB.Core.Services.Impl;
+using SanteDB.Server.Core.Services.Impl;
 
 namespace SanteGuard.Services.Repositories
 {

@@ -224,75 +224,49 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
                     domainQuery = AdoAuditPersistenceService.GetQueryBuilder().CreateQuery(query, orderBy);
                 }
 
+
+                var retVal = this.DomainQueryInternal<TQueryReturn>(context, domainQuery);
+                this.AppendOrderBy(retVal.Statement, orderBy);
+
                 // Count = 0 means we're not actually fetching anything so just hit the db
                 if (count != 0)
                 {
-                    domainQuery = this.AppendOrderBy(domainQuery, orderBy);
 
-                    // Query id just get the UUIDs in the db
-                    if (queryId != Guid.Empty && count != 0)
+                    // Stateful query identifier = We need to add query results
+                    if (queryId != Guid.Empty && ApplicationServiceContext.Current.GetService<IQueryPersistenceService>() != null)
                     {
-                        ColumnMapping pkColumn = null;
-                        if (typeof(CompositeResult).IsAssignableFrom(typeof(TQueryReturn)))
-                        {
-                            foreach (var p in typeof(TQueryReturn).GenericTypeArguments.Select(o => AdoAuditPersistenceService.GetMapper().MapModelType(o)))
-                                if (!typeof(IDbVersionedData).IsAssignableFrom(p))
-                                {
-                                    pkColumn = TableMapping.Get(p).Columns.SingleOrDefault(o => o.IsPrimaryKey);
-                                    break;
-                                }
-                        }
-                        else
-                            pkColumn = TableMapping.Get(typeof(TQueryReturn)).Columns.SingleOrDefault(o => o.IsPrimaryKey);
+                        // Create on a separate thread the query results
+                        var keys = retVal.Keys<Guid>().ToArray();
+                        totalResults = keys.Length;
+                        this.m_queryPersistence?.RegisterQuerySet(queryId, keys, query, totalResults);
 
-                        var keyQuery = AdoAuditPersistenceService.GetQueryBuilder().CreateQuery(query, pkColumn).Build();
-
-                        var resultKeys = context.Query<Guid>(keyQuery.Build());
-
-                        //ApplicationServiceContext.Current.GetService<IThreadPoolService>().QueueNonPooledWorkItem(a => this.m_queryPersistence?.RegisterQuerySet(queryId.ToString(), resultKeys.Select(o => new Identifier<Guid>(o)).ToArray(), query), null);
-                        // Another check
-                        this.m_queryPersistence?.RegisterQuerySet(queryId, resultKeys.Take(1000).ToArray(), query, resultKeys.Count());
-
-                        ApplicationServiceContext.Current.GetService<IThreadPoolService>().QueueNonPooledWorkItem(o =>
-                        {
-                            int ofs = 1000;
-                            var rkeys = o as Guid[];
-                            while (ofs < rkeys.Length)
-                            {
-                                this.m_queryPersistence?.AddResults(queryId, rkeys.Skip(ofs).Take(1000).ToArray());
-                                ofs += 1000;
-                            }
-                        }, resultKeys.ToArray());
-
-                        if (incudeCount)
-                            totalResults = (int)resultKeys.Count();
-                        else
-                            totalResults = 0;
-
-                        var retVal = resultKeys.Skip(offset);
-                        if (count.HasValue)
-                            retVal = retVal.Take(count.Value);
-                        return retVal.OfType<Object>();
                     }
-                    else if (incudeCount)
+                    else if (count.HasValue && !AdoAuditPersistenceService.GetConfiguration().UseFuzzyTotals) // Get an exact total
                     {
-                        totalResults = context.Count(domainQuery);
-                        if (totalResults == 0)
-                            return new List<Object>();
+                        totalResults = retVal.Count();
                     }
                     else
                         totalResults = 0;
 
-                    if (offset > 0)
-                        domainQuery.Offset(offset);
+                    // Fuzzy totals - This will only fetch COUNT + 1 as the total results
                     if (count.HasValue)
-                        domainQuery.Limit(count.Value);
+                    {
+                        if ((AdoAuditPersistenceService.GetConfiguration().UseFuzzyTotals) && totalResults == 0)
+                        {
+                            var fuzzResults = retVal.Skip(offset).Take(count.Value + 1).OfType<Object>().ToList();
+                            totalResults = offset + fuzzResults.Count();
+                            return fuzzResults.Take(count.Value);
+                        }
+                        else
+                            return retVal.Skip(offset).Take(count.Value).OfType<Object>();
+                    }
+                    else
+                        return retVal.Skip(offset).OfType<Object>();
 
-                    return this.DomainQueryInternal<TQueryReturn>(context, domainQuery, ref totalResults).OfType<Object>();
                 }
                 else
                 {
-                    totalResults = context.Count(domainQuery);
+                    totalResults = retVal.Count();
                     return new List<Object>();
                 }
             }
@@ -315,14 +289,12 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
         /// <summary>
         /// Perform a domain query
         /// </summary>
-        protected IEnumerable<TResult> DomainQueryInternal<TResult>(DataContext context, SqlStatement domainQuery, ref int totalResults)
+        protected OrmResultSet<TResult> DomainQueryInternal<TResult>(DataContext context, SqlStatement domainQuery)
         {
 
             // Build and see if the query already exists on the stack???
             domainQuery = domainQuery.Build();
-            var results = context.Query<TResult>(domainQuery).ToList();
-            // Cache query result
-            return results;
+            return context.Query<TResult>(domainQuery);
         }
 
 
