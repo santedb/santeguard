@@ -12,6 +12,13 @@ namespace SanteGuard.Services.Repositories
         where TResource : IdentifiedData
     {
 
+        /// <summary>
+        /// CTOR for guard service
+        /// </summary>
+        public GenericSanteGuardRepository() : base (null)
+        {
+
+        }
         protected override string ReadPolicy => PermissionPolicyIdentifiers.AccessAuditLog;
         protected override string QueryPolicy => PermissionPolicyIdentifiers.AccessAuditLog;
         protected override string AlterPolicy => PermissionPolicyIdentifiers.UnrestrictedAdministration;

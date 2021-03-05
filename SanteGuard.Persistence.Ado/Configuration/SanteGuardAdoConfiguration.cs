@@ -51,6 +51,6 @@ namespace SanteGuard.Persistence.Ado.Configuration
         /// True if fuzzy totals should be used
         /// </summary>
         [XmlAttribute("useFuzzyTotals")]
-        public bool UseFuzzyTotals { get; internal set; }
+        public bool UseFuzzyTotals { get; set; }
     }
 }
