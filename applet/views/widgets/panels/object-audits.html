@@ -6,12 +6,20 @@
 
     </sdb:widget>
 
+    <div class="row" ng-if="!scopedObject">
+        <div class="col">
+            <p class="m-auto"><i class="fas fa-circle-notch fa-spin"></i> {{ 'ui.wait' | i18n }}</p>
+        </div>
+    </div>
+    <div ng-if="scopedObject">
     <div class="alert alert-info">
         <i class="fas fa-info-circle"></i> {{ 'org.santedb.sg.admin.audit.help' | i18n }}
     </div>
+    {{ scopedObject }}
+
     <entity-table id="SanteGuardAccessTable" type="Audit" search-field="actor.uname" i18n-prefix="'ui.model.audit.'"
         render="{ outcome: 'renderOutcome', event: 'renderEvent', action: 'renderAction',  timestamp : 'renderTimestamp' }"
-        default-query="auditFilter"
+        default-query="{ 'object.id' : scopedObject.id }"
         properties="[ 'action', 'event', 'timestamp', 'outcome' ]"
         sort="{ action: 'action', event: 'event', outcome: 'outcome', timestamp: 'timestamp' }"
         button-bar="'#extendedAuditFilter'">
@@ -57,4 +65,5 @@
             </div>
         </div>
     </div>
+</div>
 </div>

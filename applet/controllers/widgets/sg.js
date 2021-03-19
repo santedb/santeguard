@@ -27,10 +27,10 @@ angular.module('santedb').controller('SanteGuardObjectAccessController', ["$scop
 
     
 
-    $scope.$watch("scopedObject", function(n,o) {
+    $scope.$watch("scopedObject.id", function(n,o) {
         if(n) {
             $scope.auditFilter = {
-                'object.id' : n.id,
+                'object.id' : n,
             };
         }
     });

@@ -10,6 +10,12 @@
         <i class="fas fa-info-circle"></i> {{ 'org.santedb.sg.admin.auditStat.help' | i18n }}
     </div>
 
+    <div class="row" ng-if="!scopedObject">
+        <div class="col">
+            <p class="m-auto"><i class="fas fa-circle-notch fa-spin"></i> {{ 'ui.wait' | i18n }}</p>
+        </div>
+    </div>
+    <div ng-if="scopedObject">
     <div class="container-fluid" ng-show="scopedObject.id">
         <div class="row">
             <div class="col-6">
@@ -19,5 +25,6 @@
                 <report-view id="'org.santedb.bi.core.reports.audit.object'" parameters="{ 'object-id' : scopedObject.id }" view="'time'"  legend="true" />
             </div>
         </div>
+    </div>
     </div>
 </div>
