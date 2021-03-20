@@ -49,6 +49,9 @@
     <string key="org.santedb.sg.admin.auditStat">Access Patterns</string>
     <string key="org.santedb.sg.admin.auditStat.help">This panel shows a summary of all the times this object was accessed.</string>
     <string key="org.santedb.sg.admin.role.profile">Audit Trail</string>
+    <string key="org.santedb.sg.admin.device.profile">Audit Trail</string>
+    <string key="org.santedb.sg.admin.application.profile">Audit Trail</string>
+    <string key="org.santedb.sg.admin.policy.profile">Audit Trail</string>
     <string key="org.santedb.sg.emr.patient">Access Log / History</string>
 
     <string key="ui.sg.action.Read">viewed this record</string>
