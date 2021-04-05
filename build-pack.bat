@@ -17,11 +17,16 @@ set nuget="%cwd%\.nuget\nuget.exe"
 echo Will use NUGET in %nuget%
 echo Will use MSBUILD in %msbuild%
 
-%msbuild%\msbuild.exe santeguard.sln /t:clean /t:restore /t:rebuild /p:configuration=debug /m
+if [%1] == [] (
+	%msbuild%\msbuild.exe santeguard.sln /t:clean /t:restore /t:rebuild /p:configuration=debug /m
+) else (
+	%msbuild%\msbuild.exe santeguard.sln /t:clean /t:restore /p:VersionNumber=%1 /m
+	%msbuild%\msbuild.exe santeguard.sln /t:rebuild /p:configuration=debug /p:VersionNumber=%1 /m
+)
 
 FOR /R "%cwd%" %%G IN (*.nuspec) DO (
 	echo Packing %%~pG
 	pushd %%~pG
-	%nuget% pack -OutputDirectory "%localappdata%\NugetStaging" -prop Configuration=Debug -symbols
+	%nuget% pack -OutputDirectory "%localappdata%\NugetStaging" -prop Configuration=Debug -prop VersionNumber=%1 -symbols
 	popd
 )

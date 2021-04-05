@@ -42,8 +42,8 @@ echo Will use NUGET in %nuget%
 echo Will use MSBUILD in %msbuild%
 
 if exist "%nuget%" (
-	%msbuild%\msbuild santeguard.sln /t:restore
-	%msbuild%\msbuild santeguard.sln /t:clean /t:rebuild /p:configuration=Release /m:1
+	%msbuild%\msbuild santeguard.sln /t:restore  /p:VersionNumber=%1
+	%msbuild%\msbuild santeguard.sln /t:clean /t:rebuild /p:configuration=Release /p:VersionNumber=%1 /m:1
 
 	FOR /R "%cwd%" %%G IN (*.nuspec) DO (
 		echo Packing %%~pG
