@@ -15,9 +15,8 @@
     <div class="alert alert-info">
         <i class="fas fa-info-circle"></i> {{ 'org.santedb.sg.admin.audit.help' | i18n }}
     </div>
-    {{ scopedObject }}
 
-    <entity-table id="SanteGuardAccessTable" type="Audit" search-field="actor.uname" i18n-prefix="'ui.model.audit.'"
+    <entity-table ng-if="scopedObject.id" id="SanteGuardAccessTable" type="Audit" search-field="actor.uname" i18n-prefix="'ui.model.audit.'"
         render="{ outcome: 'renderOutcome', event: 'renderEvent', action: 'renderAction',  timestamp : 'renderTimestamp' }"
         default-query="{ 'object.id' : scopedObject.id }"
         properties="[ 'action', 'event', 'timestamp', 'outcome' ]"

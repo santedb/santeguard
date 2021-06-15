@@ -214,7 +214,7 @@ namespace SanteGuard.Persistence.Ado.Services
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
-            DataPersistingEventArgs<TModel> preArgs = new DataPersistingEventArgs<TModel>(data, principal);
+            DataPersistingEventArgs<TModel> preArgs = new DataPersistingEventArgs<TModel>(data, mode, principal);
             this.Inserting?.Invoke(this, preArgs);
             if (preArgs.Cancel)
             {
@@ -253,7 +253,7 @@ namespace SanteGuard.Persistence.Ado.Services
                         else
                             tx.Rollback();
 
-                        var args = new DataPersistedEventArgs<TModel>(data, principal);
+                        var args = new DataPersistedEventArgs<TModel>(data, mode, principal);
 
                         this.Inserted?.Invoke(this, args);
 
@@ -297,7 +297,7 @@ namespace SanteGuard.Persistence.Ado.Services
             else if (data.Key == Guid.Empty)
                 throw new InvalidOperationException("Data missing key");
 
-            DataPersistingEventArgs<TModel> preArgs = new DataPersistingEventArgs<TModel>(data, principal);
+            DataPersistingEventArgs<TModel> preArgs = new DataPersistingEventArgs<TModel>(data, mode, principal);
             this.Obsoleting?.Invoke(this, preArgs);
             if (preArgs.Cancel)
             {
@@ -329,7 +329,7 @@ namespace SanteGuard.Persistence.Ado.Services
                         else
                             tx.Rollback();
 
-                        var args = new DataPersistedEventArgs<TModel>(data, principal);
+                        var args = new DataPersistedEventArgs<TModel>(data, mode, principal);
 
                         this.Obsoleted?.Invoke(this, args);
 
@@ -475,7 +475,7 @@ namespace SanteGuard.Persistence.Ado.Services
             else if (data.Key == Guid.Empty)
                 throw new InvalidOperationException("Data missing key");
 
-            DataPersistingEventArgs<TModel> preArgs = new DataPersistingEventArgs<TModel>(data, principal);
+            DataPersistingEventArgs<TModel> preArgs = new DataPersistingEventArgs<TModel>(data, mode, principal);
             this.Updating?.Invoke(this, preArgs);
             if (preArgs.Cancel)
             {
@@ -509,7 +509,7 @@ namespace SanteGuard.Persistence.Ado.Services
                         else
                             tx.Rollback();
 
-                        var args = new DataPersistedEventArgs<TModel>(data, principal);
+                        var args = new DataPersistedEventArgs<TModel>(data, mode, principal);
 
                         this.Updated?.Invoke(this, args);
 
