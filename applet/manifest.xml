@@ -18,53 +18,12 @@
  - Date: 2018-7-23
  -->
 <AppletManifest xmlns="http://santedb.org/applet">
-  <info id="org.santedb.sg" version="2.1.3.0">
+  <info id="org.santedb.sg" version="2.1.50.0">
     <icon>/org.santedb.core/img/icon.png</icon>
     <name lang="en">SanteGuard Audit Repository</name>
     <author>SanteSuite Community Partners (see: santesuite.org)</author>
   </info>
 
-  <strings lang="en">
+  <strings lang="en" extern="locales/en/strings.xml"/>
 
-    <string key="org.santedb.sg">SanteGuard</string>
-
-    <!-- Configuration  -->
-    <string key="ui.config.sg.noConfig">There was no configuration or service to send/receive SYSLOG messages. This panel has been disabled</string>
-    <string key="ui.config.sg.esite.label">Default Site ID</string>
-    <string key="ui.config.sg.esite.help">This disconnected gateway will use the default enterprise site ID if none is supplied</string>
-    <string key="ui.config.sg.endpoint.label">Endpoint</string>
-    <string key="ui.config.sg.endpoint.help">Indicate the endpoint where clients will send their SYSLOG messages to this DCG instance.</string>
-
-    <string key="ui.audit.log.Read.friendly"><![CDATA[user + " accessed this record (source machine: " + ipMachine + ")" ]]></string>
-    <string key="ui.audit.log.Query.friendly"><![CDATA["Disclosed in a query result to " + user + "(source machine: " + ipMachine + ")" ]]></string>
-    <string key="ui.audit.log.Create.friendly"><![CDATA[user + " created this record (source machine: " + ipMachine + ")" ]]></string>
-    <string key="ui.audit.log.Update.friendly"><![CDATA[user + " updated this record (source machine: " + ipMachine + ")" ]]></string>
-    <string key="ui.audit.log.Execute.friendly"><![CDATA[user + " processed system action (source machine: " + ipMachine + ")" ]]></string>
-    <string key="org.santedb.sg.admin.audit">Detailed Audit Log</string>
-    <string key="org.santedb.sg.admin.audit.help">This panel shows a detailed log of all times this object was accessed.</string>
-    <string key="org.santedb.sg.admin.patient">Audit Trail</string>
-    <string key="org.santedb.sg.admin.user.profile">Audit Trail</string>
-    <string key="org.santedb.sg.user.activityLog">My Activity</string>
-    <string key="org.santedb.sg.user.admin.activityLog">User Activity</string>
-    <string key="org.santedb.sg.admin.auditStat">Access Patterns</string>
-    <string key="org.santedb.sg.admin.auditStat.help">This panel shows a summary of all the times this object was accessed.</string>
-    <string key="org.santedb.sg.admin.role.profile">Audit Trail</string>
-    <string key="org.santedb.sg.admin.device.profile">Audit Trail</string>
-    <string key="org.santedb.sg.admin.application.profile">Audit Trail</string>
-    <string key="org.santedb.sg.admin.policy.profile">Audit Trail</string>
-    <string key="org.santedb.sg.emr.patient">Access Log / History</string>
-
-    <string key="ui.sg.action.Read">viewed this record</string>
-    <string key="ui.sg.action.Create">created this record</string>
-    <string key="ui.sg.action.Update">updated this record</string>
-    <string key="ui.sg.action.Delete">deleted this record</string>
-    <string key="ui.sg.on">at timestamp</string>
-    <string key="ui.sg.accessPoint">on device</string>
-    <string key="ui.sg.action.success">Success</string>
-    <string key="ui.sg.action.minorFail">Warning</string>
-    <string key="ui.sg.action.majorFail">Failure</string>
-    <string key="ui.sg.action.epicFail">Major Failure</string>
-    <string key="ui.sg.action.join"> was </string>
-    <string key="ui.sg.activity.info">This tab shows activities where your user account was used to access a system function. You can use this information to see the history of your user account over time</string> 
-  </strings>
 </AppletManifest>
