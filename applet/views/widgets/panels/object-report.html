@@ -15,13 +15,13 @@
             <p class="m-auto"><i class="fas fa-circle-notch fa-spin"></i> {{ 'ui.wait' | i18n }}</p>
         </div>
     </div>
-    <div class="container-fluid" ng-if="scopedObject.id">
+    <div class="container-fluid" ng-if="scopedObject.id || scopedObject.entity.id">
         <div class="row">
             <div class="col-6">
-                <report-view report-id="'org.santedb.bi.core.reports.audit.object'" parameters="{ 'object-id' : scopedObject.id }" view="'user'" legend="true" />
+                <report-view report-id="'org.santedb.bi.core.reports.audit.object'" parameters="{ 'object-id' : scopedObject.id || scopedObject.entity.id }" view="'user'" legend="true" />
             </div>
             <div class="col-6">
-                <report-view report-id="'org.santedb.bi.core.reports.audit.object'" parameters="{ 'object-id' : scopedObject.id }" view="'time'"  legend="true" />
+                <report-view report-id="'org.santedb.bi.core.reports.audit.object'" parameters="{ 'object-id' : scopedObject.id || scopedObject.entity.id }" view="'time'"  legend="true" />
             </div>
         </div>
     </div>
