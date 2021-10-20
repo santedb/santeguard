@@ -15,16 +15,16 @@
     <string name="ui.audit.log.Execute.friendly"><![CDATA[user + " processed system action (source machine: " + ipMachine + ")" ]]></string>
     <string name="org.santedb.sg.admin.audit">Detailed Audit Log</string>
     <string name="org.santedb.sg.admin.audit.help">This panel shows a detailed log of all times this object was accessed.</string>
-    <string name="org.santedb.sg.admin.patient">Audit Trail</string>
-    <string name="org.santedb.sg.admin.user.profile">Audit Trail</string>
+    <string name="org.santedb.sg.admin.patient">Access &amp; Audit Trail</string>
+    <string name="org.santedb.sg.admin.user.profile">Access &amp; Audit Trail</string>
     <string name="org.santedb.sg.user.activityLog">My Activity</string>
     <string name="org.santedb.sg.user.admin.activityLog">User Activity</string>
     <string name="org.santedb.sg.admin.auditStat">Access Patterns</string>
     <string name="org.santedb.sg.admin.auditStat.help">This panel shows a summary of all the times this object was accessed.</string>
-    <string name="org.santedb.sg.admin.role.profile">Audit Trail</string>
-    <string name="org.santedb.sg.admin.device.profile">Audit Trail</string>
-    <string name="org.santedb.sg.admin.application.profile">Audit Trail</string>
-    <string name="org.santedb.sg.admin.policy.profile">Audit Trail</string>
+    <string name="org.santedb.sg.admin.role.profile">Access &amp; Audit Trail</string>
+    <string name="org.santedb.sg.admin.device.profile">Access &amp; Audit Trail</string>
+    <string name="org.santedb.sg.admin.application.profile">Access &amp; Audit Trail</string>
+    <string name="org.santedb.sg.admin.policy.profile">Access &amp; Audit Trail</string>
     <string name="org.santedb.sg.emr.patient">Access Log / History</string>
 
     <string name="ui.sg.action.Read">viewed this record</string>
