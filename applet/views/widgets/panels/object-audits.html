@@ -20,7 +20,8 @@
         default-query="{ 'object.id' : scopedObject.id  || scopedObject.entity.id }"
         properties="[ 'action', 'event', 'timestamp', 'outcome' ]"
         sort="{ action: 'action', event: 'event', outcome: 'outcome', timestamp: 'timestamp' }"
-        button-bar="'#extendedAuditFilter'">
+        button-bar="'#extendedAuditFilter'"
+        class="table-responsive" >
 
     </entity-table>
 
