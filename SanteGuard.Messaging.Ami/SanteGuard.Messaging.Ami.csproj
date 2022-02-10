@@ -67,9 +67,6 @@
     <PackageReference Include="SanteDB.Core.Model">
       <Version>$(VersionNumber)</Version>
     </PackageReference>
-    <PackageReference Include="SanteDB.Core.Model.RISI">
-      <Version>$(VersionNumber)</Version>
-    </PackageReference>
     <PackageReference Include="SanteDB.OrmLite">
       <Version>$(VersionNumber)</Version>
     </PackageReference>
