@@ -78,8 +78,6 @@ namespace SanteGuard.Persistence.Ado.Services.Persistence
             if (data.Item == null) return data;
             this.m_tracer.TraceInfo("Audit Bundle has {0} objects...", data.Item.Count);
 
-            if (this.m_persistenceService.GetConfiguration().PrepareStatements)
-                context.PrepareStatements = true;
             for (int i = 0; i < data.Item.Count; i++)
             {
                 var itm = data.Item[i];

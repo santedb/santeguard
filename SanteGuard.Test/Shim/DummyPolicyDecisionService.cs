@@ -15,6 +15,10 @@ namespace SanteGuard.Test.Shim
             throw new System.NotImplementedException();
         }
 
+        public void ClearCache(string principalName)
+        {
+        }
+
         public IEnumerable<IPolicyInstance> GetEffectivePolicySet(IPrincipal securable)
         {
             return new List<IPolicyInstance>();

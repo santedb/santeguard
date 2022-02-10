@@ -125,11 +125,10 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
         /// <summary>
         /// Forward an audit
         /// </summary>
-        private void DoForwardAudit(Object state)
+        private void DoForwardAudit(KeyValuePair<String, byte[]> parms)
         {
             try
             {
-                KeyValuePair<String, byte[]> parms = (KeyValuePair<String, byte[]>)state;
                 var address = new Uri(parms.Key);
                 this.m_traceSource.TraceInfo("Forwarding to {0}...", address);
                 var transport = CreateTransport(address.Scheme);

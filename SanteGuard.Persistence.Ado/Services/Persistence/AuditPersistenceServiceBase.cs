@@ -394,7 +394,7 @@ namespace SanteGuard.Persistence.Ado.Services
             sw.Start();
 #endif
 
-            QueryRequestEventArgs<TModel> preArgs = new QueryRequestEventArgs<TModel>(query, offset, count, queryId, authContext);
+            QueryRequestEventArgs<TModel> preArgs = new QueryRequestEventArgs<TModel>(query, offset, count, queryId, authContext, orderBy);
             this.Querying?.Invoke(this, preArgs);
             if (preArgs.Cancel)
             {
@@ -412,8 +412,6 @@ namespace SanteGuard.Persistence.Ado.Services
                     this.m_tracer.TraceVerbose("QUERY {0}", query);
 
                     // Is there an obsoletion item already specified?
-                    if ((count ?? 1000) > 25 && AdoAuditPersistenceService.GetConfiguration().PrepareStatements)
-                        connection.PrepareStatements = true;
                     if (fastQuery)
                     {
                         connection.AddData("loadFast", true);

@@ -120,7 +120,27 @@ namespace SanteGuard.Test.Shim
             throw new NotImplementedException();
         }
 
+        public SecurityApplication GetApplication(string applicationName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SecurityApplication GetApplication(IIdentity identity)
+        {
+            throw new NotImplementedException();
+        }
+
         public SecurityDevice GetDevice(Guid deviceId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SecurityDevice GetDevice(string deviceName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SecurityDevice GetDevice(IIdentity identity)
         {
             throw new NotImplementedException();
         }
@@ -151,6 +171,11 @@ namespace SanteGuard.Test.Shim
         }
 
         public SecurityRole GetRole(string roleName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SecurityEntity GetSecurityEntity(IPrincipal principal)
         {
             throw new NotImplementedException();
         }

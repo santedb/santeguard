@@ -1,4 +1,5 @@
-﻿using SanteDB.Rest.AMI.Resources;
+﻿using SanteDB.Core.Services;
+using SanteDB.Rest.AMI.Resources;
 using SanteGuard.Model;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,12 @@ namespace SanteGuard.Messaging.Ami.ResourceHandler
     /// </summary>
     public class AuditSessionResourceHandler : ResourceHandlerBase<AuditSession>
     {
+        /// <summary>
+        /// DI constructor
+        /// </summary>
+        public AuditSessionResourceHandler(ILocalizationService localizationService) : base(localizationService)
+        {
+        }
 
         /// <summary>
         /// Gets the name of the resource

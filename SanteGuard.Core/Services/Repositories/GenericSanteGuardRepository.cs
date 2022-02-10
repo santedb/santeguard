@@ -1,5 +1,7 @@
 ﻿using SanteDB.Core.Model;
 using SanteDB.Core.Security;
+using SanteDB.Core.Security.Services;
+using SanteDB.Core.Services;
 using SanteDB.Core.Services.Impl;
 using SanteDB.Server.Core.Services.Impl;
 
@@ -15,7 +17,7 @@ namespace SanteGuard.Services.Repositories
         /// <summary>
         /// CTOR for guard service
         /// </summary>
-        public GenericSanteGuardRepository() : base (null)
+        public GenericSanteGuardRepository(IPrivacyEnforcementService privacyService, IPolicyEnforcementService policyService, ILocalizationService localizationService) : base (privacyService, policyService, localizationService)
         {
 
         }
