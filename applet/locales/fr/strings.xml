@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Configuration  -->
+    <string name="ui.config.sg.noConfig">Il n\'y avait pas de configuration ou de service pour envoyer/recevoir des messages SYSLOG. Ce panneau a été désactivé</string>
+
     </resources>
