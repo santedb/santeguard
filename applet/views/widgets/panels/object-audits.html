@@ -20,7 +20,11 @@
         default-query="{ 'object.id' : scopedObject.id  || scopedObject.entity.id }"
         properties="[ 'action', 'event', 'timestamp', 'outcome' ]"
         sort="{ action: 'action', event: 'event', outcome: 'outcome', timestamp: 'timestamp' }"
-        button-bar="'#extendedAuditFilter'">
+        button-bar="'#extendedAuditFilter'"
+        item-actions="[
+        { name: 'detail', action: 'viewAudit', demand: '1.3.6.1.4.1.33349.3.1.5.9.2.0.11', className: 'btn-primary', icon: 'fa fa-ellipsis-v' }
+        ]"
+        >
 
     </entity-table>
 

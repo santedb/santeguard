@@ -8,11 +8,16 @@
     <string name="ui.config.sg.endpoint.label">Endpoint</string>
     <string name="ui.config.sg.endpoint.help">Indicate the endpoint where clients will send their SYSLOG messages to this DCG instance.</string>
 
-    <string name="ui.audit.log.Read.friendly"><![CDATA[user + " accessed this record (source machine: " + ipMachine + ")" ]]></string>
-    <string name="ui.audit.log.Query.friendly"><![CDATA["Disclosed in a query result to " + user + "(source machine: " + ipMachine + ")" ]]></string>
-    <string name="ui.audit.log.Create.friendly"><![CDATA[user + " created this record (source machine: " + ipMachine + ")" ]]></string>
-    <string name="ui.audit.log.Update.friendly"><![CDATA[user + " updated this record (source machine: " + ipMachine + ")" ]]></string>
-    <string name="ui.audit.log.Execute.friendly"><![CDATA[user + " processed system action (source machine: " + ipMachine + ")" ]]></string>
+    <string name="ui.audit.activity.Query.friendly">{user} performed a query ({event}) using {application} from endpoint {source}</string>
+    <string name="ui.audit.activity.Read.friendly">{user} had a record disclosed ({event}) using {application} from endpoint {source}</string>
+    <string name="ui.audit.activity.Create.friendly">{user} created a new record ({event}) using {application} from endpoint {source}</string>
+    <string name="ui.audit.activity.Update.friendly">{user} updated a record ({event}) using {application} from endpoint {source}</string>
+    <string name="ui.audit.activity.Execute.friendly">{user} executed a system function ({event}) using {application} from endpoint {source}</string>
+    <string name="ui.audit.log.Read.friendly">This record was disclosed to {user} ({event}) on {application} at endpoint {source} (network address: {ipaddr})</string>
+    <string name="ui.audit.log.Query.friendly">This record was disclosed as part of a query result set to {user} ({event}) on {application} at endpoint {source} (network address: {ipaddr})</string>
+    <string name="ui.audit.log.Create.friendly">{user} created this record ({event}) using {application} from endpoint {source} (network address: {ipaddr})</string>
+    <string name="ui.audit.log.Update.friendly">{user} amended/updated this record ({event}) using {application} from endpoint {source} (network address: {ipaddr})</string>
+    <string name="ui.audit.log.Executed.friendly">{user} executed a system function with this record ({event}) using {application} from endpoint {source} (network address: {ipaddr})</string>
     <string name="org.santedb.sg.admin.audit">Detailed Audit Log</string>
     <string name="org.santedb.sg.admin.audit.help">This panel shows a detailed log of all times this object was accessed.</string>
     <string name="org.santedb.sg.admin.patient">Access &amp; Audit Trail</string>

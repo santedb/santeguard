@@ -1,4 +1,4 @@
-/// <reference path="../../.ref/js/santedb.js"/>
+    /// <reference path="../../.ref/js/santedb.js"/>
 /*
  * Portions Copyright 2015-2019 Mohawk College of Applied Arts and Technology
  * Portions Copyright 2019-2019 SanteSuite Contributors (See NOTICE)
@@ -18,7 +18,7 @@
  * User: Justin Fyfe
  * Date: 2019-9-27
  */
-angular.module('santedb').controller('SanteGuardActivityLogController', ["$scope", "$rootScope", function($scope, $rootScope) {
+angular.module('santedb').controller('SanteGuardActivityLogController', ["$scope", "$rootScope", "$state", function($scope, $rootScope, $state) {
 
       
     $scope.history = [];
@@ -128,18 +128,26 @@ angular.module('santedb').controller('SanteGuardActivityLogController', ["$scope
         if(!requestor)
             requestor = {};
         var user = requestor.uname;
-        var ipMachine = requestor.apId;
+        var source = audit.actor.find(a=>a.role && a.role[0].code == "110152");
+        var application = audit.actor.find(a=>a.role && a.role[0].code == "110150");
         var action = audit.action;
+        var event  = audit.type ? audit.type.code : null;
         if(audit.event == "Query" && audit.action == "Execute")
             action = "Query";
-        var friendlyMessage = SanteDB.locale.getString(`ui.audit.log.${action}.friendly`);
-        return $scope.$eval(friendlyMessage, { 
+        return SanteDB.locale.getString(`ui.audit.activity.${action}.friendly`, { 
             user: user,
-            ipMachine: ipMachine
+            action: audit.action,
+            event: event,
+            source: source ? source.uname : null,
+            ipaddr: source ? source.apId : null,
+            application: application ? application.uname : null
         });
     }
 
     
+    $scope.viewAudit = function(id) {
+        SanteDB.application.callResourceViewer('AuditData', $state, { id: id });
+    }
     
 
 }]);
