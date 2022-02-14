@@ -1,0 +1,47 @@
+<resources>
+    <string name="org.santedb.sg">SanteGuard</string>
+
+    <!-- Configuration  -->
+    <string name="ui.config.sg.noConfig">There was no configuration or service to send/receive SYSLOG messages. This panel has been disabled</string>
+    <string name="ui.config.sg.esite.label">Default Site ID</string>
+    <string name="ui.config.sg.esite.help">This disconnected gateway will use the default enterprise site ID if none is supplied</string>
+    <string name="ui.config.sg.endpoint.label">Endpoint</string>
+    <string name="ui.config.sg.endpoint.help">Indicate the endpoint where clients will send their SYSLOG messages to this DCG instance.</string>
+
+    <string name="ui.audit.activity.Query.friendly">{user} performed a query ({event}) using {application} from endpoint {source}</string>
+    <string name="ui.audit.activity.Read.friendly">{user} had a record disclosed ({event}) using {application} from endpoint {source}</string>
+    <string name="ui.audit.activity.Create.friendly">{user} created a new record ({event}) using {application} from endpoint {source}</string>
+    <string name="ui.audit.activity.Update.friendly">{user} updated a record ({event}) using {application} from endpoint {source}</string>
+    <string name="ui.audit.activity.Execute.friendly">{user} executed a system function ({event}) using {application} from endpoint {source}</string>
+    <string name="ui.audit.log.Read.friendly">This record was disclosed to {user} ({event}) on {application} at endpoint {source} (network address: {ipaddr})</string>
+    <string name="ui.audit.log.Query.friendly">This record was disclosed as part of a query result set to {user} ({event}) on {application} at endpoint {source} (network address: {ipaddr})</string>
+    <string name="ui.audit.log.Create.friendly">{user} created this record ({event}) using {application} from endpoint {source} (network address: {ipaddr})</string>
+    <string name="ui.audit.log.Update.friendly">{user} amended/updated this record ({event}) using {application} from endpoint {source} (network address: {ipaddr})</string>
+    <string name="ui.audit.log.Executed.friendly">{user} executed a system function with this record ({event}) using {application} from endpoint {source} (network address: {ipaddr})</string>
+    <string name="org.santedb.sg.admin.audit">Detailed Audit Log</string>
+    <string name="org.santedb.sg.admin.audit.help">This panel shows a detailed log of all times this object was accessed.</string>
+    <string name="org.santedb.sg.admin.patient">Access &amp; Audit Trail</string>
+    <string name="org.santedb.sg.admin.user.profile">Access &amp; Audit Trail</string>
+    <string name="org.santedb.sg.user.activityLog">My Activity</string>
+    <string name="org.santedb.sg.user.admin.activityLog">User Activity</string>
+    <string name="org.santedb.sg.admin.auditStat">Access Patterns</string>
+    <string name="org.santedb.sg.admin.auditStat.help">This panel shows a summary of all the times this object was accessed.</string>
+    <string name="org.santedb.sg.admin.role.profile">Access &amp; Audit Trail</string>
+    <string name="org.santedb.sg.admin.device.profile">Access &amp; Audit Trail</string>
+    <string name="org.santedb.sg.admin.application.profile">Access &amp; Audit Trail</string>
+    <string name="org.santedb.sg.admin.policy.profile">Access &amp; Audit Trail</string>
+    <string name="org.santedb.sg.emr.patient">Access Log / History</string>
+
+    <string name="ui.sg.action.Read">viewed this record</string>
+    <string name="ui.sg.action.Create">created this record</string>
+    <string name="ui.sg.action.Update">updated this record</string>
+    <string name="ui.sg.action.Delete">deleted this record</string>
+    <string name="ui.sg.on">at timestamp</string>
+    <string name="ui.sg.accessPoint">on device</string>
+    <string name="ui.sg.action.success">Success</string>
+    <string name="ui.sg.action.minorFail">Warning</string>
+    <string name="ui.sg.action.majorFail">Failure</string>
+    <string name="ui.sg.action.epicFail">Major Failure</string>
+    <string name="ui.sg.action.join"> was </string>
+    <string name="ui.sg.activity.info">This tab shows activities where your user account was used to access a system function. You can use this information to see the history of your user account over time</string> 
+</resources>

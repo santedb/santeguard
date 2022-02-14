@@ -1,6 +1,9 @@
 ﻿using SanteDB.Core.Interfaces;
 using SanteDB.Core.Model;
+using SanteDB.Core.Security;
 using SanteDB.Core.Security.Audit;
+using SanteDB.Core.Security.Services;
+using SanteDB.Core.Services;
 using System;
 
 namespace SanteGuard.Services.Repositories
@@ -12,7 +15,13 @@ namespace SanteGuard.Services.Repositories
     public class SanteGuardSecurityAttributeRepository<TResource> : GenericSanteGuardRepository<TResource>
         where TResource : IdentifiedData
     {
-      
+        /// <summary>
+        /// DI constructor
+        /// </summary>
+        public SanteGuardSecurityAttributeRepository(IPrivacyEnforcementService privacyService, IPolicyEnforcementService policyService, ILocalizationService localizationService) : base(privacyService, policyService, localizationService)
+        {
+        }
+
         /// <summary>
         /// Insert the security resource
         /// </summary>
