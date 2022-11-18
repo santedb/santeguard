@@ -43,5 +43,7 @@
     <string name="ui.sg.action.majorFail">Failure</string>
     <string name="ui.sg.action.epicFail">Major Failure</string>
     <string name="ui.sg.action.join"> was </string>
+    <string name="org.santedb.sg.admin.user.pattern">Access Patterns</string>
+    <string name="org.santedb.sg.admin.user.pattern.description"><![CDATA[Illustrates the days on which <strong><u>{user}</u></strong> accesses this system. This can be used to determine whether the user is accessing the system during inappropriate times]]></string>
     <string name="ui.sg.activity.info">This tab shows activities where your user account was used to access a system function. You can use this information to see the history of your user account over time</string> 
 </resources>
