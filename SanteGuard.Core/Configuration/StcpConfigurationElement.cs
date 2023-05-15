@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace SanteGuard.Configuration
+namespace SanteGuard.Messaging.Syslog.Configuration
 {
     /// <summary>
     /// Represents an STCP configuration

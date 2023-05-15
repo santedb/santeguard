@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PackageId>SanteGuard.Messaging.Syslog</PackageId>
+    <Title>SanteGuard.Messaging.Syslog</Title>
+    <Version>$(VersionNumber)</Version>
+    <Description>SanteGuard audit repository core functions</Description>
+    <Authors>SanteSuite Contributors</Authors>
+    <PackageTags>SanteDB</PackageTags>
+    <RepositoryUrl>https://github.com/santedb/santeguard</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+	  <Product>SanteDB</Product>
+    <Copyright>Copyright (C) 2015-2023 SanteSuite Contributors (See: NOTICES)</Copyright>
+    <Company>SanteSuite Contributors</Company>
+    <PackageIconUrl>http://santesuite.org/assets/img/logo.png</PackageIconUrl>
+    <PackageProjectUrl>http://santesuite.org</PackageProjectUrl>
+    <AssemblyName>SanteGuard.Messaging.Syslog</AssemblyName>
+    <RootNamespace>SanteGuard.Messaging.Syslog</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(VersionNumber)' == ''">
+    <VersionNumber>3.0.0-debug</VersionNumber>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="AtnaApi.NetStandard" Version="1.2.0" />
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="SanteDB.Core.Api">
+      <Version>$(VersionNumber)</Version>
+    </PackageReference>
+    <PackageReference Include="SanteDB.Core.Model">
+      <Version>$(VersionNumber)</Version>
+    </PackageReference>
+    
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\SanteDB.licenseheader">
+      <Link>SanteDB.licenseheader</Link>
+    </None>
+    <None Include="SanteGuard.Core.nuspec">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+</Project>

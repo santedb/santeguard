@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace SanteGuard.Configuration
+namespace SanteGuard.Messaging.Syslog.Configuration
 {
     /// <summary>
     /// Visualizer configuration
