@@ -3,12 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SanteGuard.Messaging.Syslog", "SanteGuard.Core\SanteGuard.Messaging.Syslog.csproj", "{AD258DF6-81C3-4C02-826A-2D72C0D61F5E}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{63184C4E-BB67-41B8-AFAE-97E2C141E468}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SanteGuard.Messaging.Syslog", "SanteGuard.Messaging.Syslog\SanteGuard.Messaging.Syslog.csproj", "{FB94EDE6-52D9-4852-A6F4-00A2F9B0B4E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SanteGuard.Docker", "SanteGuard.Docker\SanteGuard.Docker.csproj", "{A60D18AF-CB7C-47E0-A42D-65FEDC1437A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SanteGuard.Client", "SanteGuard.Client\SanteGuard.Client.csproj", "{F89E522D-33CD-4213-8F7E-079A41BF5743}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,10 +20,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AD258DF6-81C3-4C02-826A-2D72C0D61F5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AD258DF6-81C3-4C02-826A-2D72C0D61F5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AD258DF6-81C3-4C02-826A-2D72C0D61F5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AD258DF6-81C3-4C02-826A-2D72C0D61F5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB94EDE6-52D9-4852-A6F4-00A2F9B0B4E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB94EDE6-52D9-4852-A6F4-00A2F9B0B4E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB94EDE6-52D9-4852-A6F4-00A2F9B0B4E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB94EDE6-52D9-4852-A6F4-00A2F9B0B4E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A60D18AF-CB7C-47E0-A42D-65FEDC1437A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A60D18AF-CB7C-47E0-A42D-65FEDC1437A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A60D18AF-CB7C-47E0-A42D-65FEDC1437A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A60D18AF-CB7C-47E0-A42D-65FEDC1437A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F89E522D-33CD-4213-8F7E-079A41BF5743}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F89E522D-33CD-4213-8F7E-079A41BF5743}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F89E522D-33CD-4213-8F7E-079A41BF5743}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F89E522D-33CD-4213-8F7E-079A41BF5743}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

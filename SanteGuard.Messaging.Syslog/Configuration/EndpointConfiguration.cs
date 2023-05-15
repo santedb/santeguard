@@ -18,6 +18,7 @@
  * Date: 2018-10-27
  */
 using Newtonsoft.Json;
+using SanteDB.Core.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +56,7 @@ namespace SanteGuard.Messaging.Syslog.Configuration
             this.Forward = new List<String>();
             this.Timeout = new TimeSpan(0, 0, 5);
             this.ReadTimeout = new TimeSpan(0, 0, 0, 0, 250);
-            this.ActionXml = new List<String>();
+            this.Action = new List<TypeReferenceConfiguration>();
         }
 
         /// <summary>
@@ -98,16 +99,8 @@ namespace SanteGuard.Messaging.Syslog.Configuration
         /// Gets the handler of this endpoint
         /// </summary>
         [XmlArray("actions"), XmlArrayItem("add"), JsonProperty("actions")]
-        public List<String> ActionXml { get; set; }
+        public List<TypeReferenceConfiguration> Action { get; set; }
 
-        /// <summary>
-        /// Gets or sets the actions
-        /// </summary>
-        [XmlIgnore, JsonIgnore]
-        public IEnumerable<Type> Action {
-            get => this.ActionXml.Select(o => Type.GetType(o));
-        }
-        
         /// <summary>
         /// Gets or sets the read timeout
         /// </summary>

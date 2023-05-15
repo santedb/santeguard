@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SanteDB.Client" Version="$(VersionNumber)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SanteGuard.Messaging.Syslog\SanteGuard.Messaging.Syslog.csproj" />
+  </ItemGroup>
+
+</Project>
