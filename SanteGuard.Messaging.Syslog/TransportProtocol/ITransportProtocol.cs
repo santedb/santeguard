@@ -17,7 +17,7 @@
  * User: justin
  * Date: 2018-10-27
  */
-using SanteGuard.Configuration;
+using SanteGuard.Messaging.Syslog.Configuration;
 using System;
 using System.Security.Cryptography.X509Certificates;
 

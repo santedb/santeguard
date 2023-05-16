@@ -18,7 +18,7 @@
  * Date: 2018-10-27
  */
 using SanteDB.Core.Diagnostics;
-using SanteGuard.Configuration;
+using SanteGuard.Messaging.Syslog.Configuration;
 using SanteGuard.Messaging.Syslog.Exceptions;
 using System;
 using System.ComponentModel;

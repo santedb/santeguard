@@ -20,7 +20,7 @@
 using SanteDB.Core;
 using SanteDB.Core.Diagnostics;
 using SanteDB.Core.Services;
-using SanteGuard.Configuration;
+using SanteGuard.Messaging.Syslog.Configuration;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -39,24 +39,28 @@ namespace SanteGuard.Messaging.Syslog
 
         // Configuration
         private SanteGuardConfiguration m_configuration;
+        private readonly IServiceManager m_serviceManager;
 
+        /// <inheritdoc/>
         public event EventHandler Starting;
+        /// <inheritdoc/>
         public event EventHandler Stopping;
+        /// <inheritdoc/>
         public event EventHandler Started;
+        /// <inheritdoc/>
         public event EventHandler Stopped;
 
         /// <summary>
         /// Syslog messsage handler
         /// </summary>
-        public SyslogMessageHandler()
+        public SyslogMessageHandler(IServiceManager serviceManager)
         {
+            this.m_serviceManager = serviceManager;
         }
 
         #region IMessageHandlerService Members
 
-        /// <summary>
-        /// Start the message handler
-        /// </summary>
+        /// <inheritdoc/>
         public bool Start()
         {
             this.IsRunning = true;
@@ -64,7 +68,7 @@ namespace SanteGuard.Messaging.Syslog
             this.m_configuration = ApplicationServiceContext.Current.GetService<IConfigurationManager>().GetSection<SanteGuardConfiguration>();
             foreach (var ep in this.m_configuration.Endpoints)
             {
-                var sh = new SyslogListenerThread(ep);
+                var sh = new SyslogListenerThread(this.m_serviceManager, ep);
                 Thread thdSh = new Thread(sh.Run);
                 thdSh.IsBackground = true;
                 this.m_traceSource.TraceInfo("Starting Syslog Listener '{0}'...", ep.Name);
@@ -75,34 +79,16 @@ namespace SanteGuard.Messaging.Syslog
             return true;
         }
 
-
-
-        /// <summary>
-        /// Stop the message handler
-        /// </summary>
+        /// <inheritdoc/>
         public bool Stop()
         {
             return true; // background threads just get ended
         }
-
-        #endregion
-
-        #region IUsesHostContext Members
-
-        /// <summary>
-        /// Gets or sets the context
-        /// </summary>
-        public IServiceProvider Context
-        {
-            get;
-            set;
-        }
-
+      
+        /// <inheritdoc/>
         public bool IsRunning { get; private set; }
 
-        /// <summary>
-        /// Service name
-        /// </summary>
+        /// <inheritdoc/>
         public string ServiceName => "SanteGuard SysLog Message Service";
 
         #endregion

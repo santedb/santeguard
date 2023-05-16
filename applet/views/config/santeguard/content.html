@@ -6,13 +6,13 @@
   </sdb:widget>
   <div ng-controller="SanteGuardController">
 
-    <div class="alert alert-danger" ng-if="!sgConfig">
+    <div class="alert alert-danger" ng-if="!config.sg">
       <i class="fa fa-exclamation-triangle"></i> {{ 'ui.config.sg.noConfig' | i18n }}
     </div>
-    <div class="form-group row" ng-if="sgConfig">
+    <div class="form-group row" ng-if="config.sg">
       <label class="col-md-2 col-xs-12 control-label" for="localAuth" id="localAuthLabel">{{ 'ui.config.sg.esite.label' | i18n }}</label>
       <div class="col-md-10 col-xs-12">
-        <input ng-model="sgConfig.defaultEnterpriseSite" ng-required="true" placeholder="AUDIT^^^SITE" ng-pattern="/^[A-Za-z\^\&amp;]{3,10}$/i"
+        <input ng-model="config.sg.defaultEnterpriseSite" ng-required="true" placeholder="AUDIT^^^SITE" ng-pattern="/^[A-Za-z\^\&amp;]{3,10}$/i"
             autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false" class="form-control" type="text"
             name="localAuth" id="localAuth" aria-describedby="localAuthLabel" />
         <div class="form-text text-muted">
@@ -20,10 +20,10 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" ng-if="sgConfig">
+    <div class="form-group row" ng-if="config.sg">
       <label class="col-md-2 col-xs-12 control-label" for="sgEndpoint" id="sgEndpointLabel">{{ 'ui.config.sg.endpoint.label' | i18n }}</label>
       <div class="col-md-10 col-xs-12">
-        <input ng-model="sgConfig.endpoints[0].address" ng-required="true" placeholder="udp://127.0.0.1:514"
+        <input ng-model="config.sg.endpoints[0].address" ng-required="true" placeholder="udp://127.0.0.1:514"
         autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false" class="form-control" type="url"
         name="sgEndpoint" id="sgEndpoint" aria-describedby="sgEndpointLabel" />
         <div class="form-text text-muted">

@@ -18,19 +18,17 @@
  * Date: 2018-10-27
  */
 using SanteDB.Core;
-using SanteDB.Core.Auditing;
+using SanteDB;
 using SanteDB.Core.BusinessRules;
 using SanteDB.Core.Diagnostics;
+using SanteDB.Core.Model.Audit;
 using SanteDB.Core.Model.Security;
 using SanteDB.Core.Security;
 using SanteDB.Core.Security.Audit;
 using SanteDB.Core.Security.Services;
 using SanteDB.Core.Services;
-using SanteGuard.Core.Model;
 using SanteGuard.Messaging.Syslog.TransportProtocol;
-using SanteGuard.Model;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using static SanteGuard.Messaging.Syslog.Action.MessageUtil;
 
@@ -44,6 +42,17 @@ namespace SanteGuard.Messaging.Syslog.Action
         #region ISyslogAction Members
 
         private Tracer m_traceSource = Tracer.GetTracer(typeof(StorageAction));
+        private readonly IAuditService m_auditService;
+        private readonly IThreadPoolService m_threadPoolService;
+
+        /// <summary>
+        /// Storage action
+        /// </summary>
+        public StorageAction(IAuditService auditService, IThreadPoolService threadPoolService)
+        {
+            this.m_auditService = auditService;
+            this.m_threadPoolService = threadPoolService;
+        }
 
         /// <summary>
         /// Handle a message being received by the message handler
@@ -75,135 +84,40 @@ namespace SanteGuard.Messaging.Syslog.Action
                 }
 
 
-                // Secured copy
-                AuthenticatedSyslogMessageReceivedEventArgs securedEvent = e as AuthenticatedSyslogMessageReceivedEventArgs;
-
                 // Process a result
-                ApplicationServiceContext.Current.GetService<IThreadPoolService>().QueueUserWorkItem((p) =>
+                this.m_threadPoolService.QueueUserWorkItem<SyslogMessageReceivedEventArgs>(evt =>
                 {
-                    using (AuthenticationContext.EnterSystemContext())
+                    using(AuthenticationContext.EnterSystemContext())
                     {
                         try
                         {
-                            var processResult = (ParseAuditResult)p;
 
-                            // Now does the audit persistence service exist?
-                            if (ApplicationServiceContext.Current.GetService<IRepositoryService<AuditBundle>>() != null)
+                            var processedMessage = MessageUtil.ParseAudit(evt.Message);
+                            if(processedMessage.Outcome == DetectedIssuePriorityType.Error)
                             {
-                                AuditBundle insertBundle = new AuditBundle();
-                                Audit audit = processResult.Message.ToAudit();
-
-                                // Is this an error?
-                                if (audit != null)
-                                {
-
-                                    bool alertStatus = false;
-
-                                    // Set core properties
-                                    audit.CorrelationToken = processResult.SourceMessage.CorrelationId;
-
-                                    Uri solicitorEp = new Uri(String.Format("atna://{0}", e.SolicitorEndpoint.Host)),
-                                        receiveEp = new Uri(String.Format("atna://{0}", e.ReceiveEndpoint.Host));
-
-                                    // Create or get node
-                                    int tr = 0;
-                                    var senderNode = ApplicationServiceContext.Current.GetService<IRepositoryService<AuditNode>>().Find(o => o.HostName == e.Message.HostName.ToLower(), 0, 1, out tr).FirstOrDefault();
-                                    if (senderNode == null) // Flag alert
-                                    {
-                                        alertStatus = true;
-                                        processResult.Details.Add(new DetectedIssue(DetectedIssuePriorityType.Warning, "sender.unknown", $"The sender {e.Message.HostName} is unknown", DetectedIssueKeys.SecurityIssue));
-                                        senderNode = new AuditNode()
-                                        {
-                                            Key = Guid.NewGuid(),
-                                            HostName = e.Message.HostName.ToLower(),
-                                            Name = e.Message.HostName,
-                                            Status = AuditStatusType.New,
-                                            SecurityDeviceKey = ApplicationServiceContext.Current.GetService<IRepositoryService<SecurityDevice>>().Find(o => o.Name == e.Message.HostName, 0, 1, out tr).FirstOrDefault()?.Key.Value
-                                        };
-                                        insertBundle.Add(senderNode);
-                                    }
-
-                                    var receiverNode = insertBundle.Item.OfType<AuditNode>().FirstOrDefault(o => o.HostName == Environment.MachineName.ToLower()) ??
-                                        ApplicationServiceContext.Current.GetService<IRepositoryService<AuditNode>>().Find(o => o.HostName == Environment.MachineName.ToLower(), 0, 1, out tr).FirstOrDefault();
-
-                                    if (receiverNode == null) // Flag alert
-                                    {
-                                        alertStatus = true;
-                                        processResult.Details.Add(new DetectedIssue(DetectedIssuePriorityType.Warning, "receiver.unknown", $"The receiver {Environment.MachineName} is not registered to receive messages", DetectedIssueKeys.SecurityIssue));
-                                        receiverNode = new AuditNode()
-                                        {
-                                            Key = Guid.NewGuid(),
-                                            HostName = Environment.MachineName.ToLower(),
-                                            Name = Environment.MachineName,
-                                            Status = AuditStatusType.New,
-                                            SecurityDeviceKey = ApplicationServiceContext.Current.GetService<IRepositoryService<SecurityDevice>>().Find(o => o.Name == Environment.MachineName, 0, 1, out tr).FirstOrDefault()?.Key.Value
-                                        };
-                                        insertBundle.Add(receiverNode);
-                                    }
-
-                                    // Create or get session
-                                    var session = ApplicationServiceContext.Current.GetService<IRepositoryService<AuditSession>>().Get(processResult.SourceMessage.SessionId);
-                                    if (session == null)
-                                        insertBundle.Add(new AuditSession()
-                                        {
-                                            Key = processResult.SourceMessage.SessionId,
-                                            Receiver = receiverNode,
-                                            Sender = senderNode,
-                                            ReceivingEndpoint = receiveEp.ToString(),
-                                            SenderEndpoint = solicitorEp.ToString()
-                                        });
-
-                                    // Get the bundle ready ... 
-                                    audit.CorrelationToken = processResult.SourceMessage.CorrelationId;
-                                    audit.IsAlert = alertStatus;
-                                    audit.ProcessId = e.Message.ProcessId;
-                                    audit.ProcessName = e.Message.ProcessName;
-                                    audit.CreationTime = e.Timestamp;
-                                    audit.SessionKey = processResult.SourceMessage.SessionId;
-                                    audit.Status = AuditStatusType.New;
-                                    audit.Details = processResult.Details?.Select(i => new AuditDetailData()
-                                    {
-                                        Key = Guid.NewGuid(),
-                                        Message = i.Text,
-                                        IssueType = (DetectedIssuePriorityType)Enum.Parse(typeof(DetectedIssuePriorityType), i.Priority.ToString())
-                                    }).ToList();
-                                    insertBundle.Add(audit);
-
-                                }
-                                else if (processResult.Details.Count() > 0)
-                                    foreach (var i in processResult.Details.Where(o => o.Priority != DetectedIssuePriorityType.Information))
-                                        insertBundle.Add(new AuditDetailData()
-                                        {
-                                            Key = Guid.NewGuid(),
-                                            SourceEntityKey = audit.CorrelationToken,
-                                            Message = i.Text,
-                                            IssueType = i.Priority == DetectedIssuePriorityType.Error ? DetectedIssuePriorityType.Error : DetectedIssuePriorityType.Warning
-                                        });
-
-                                // Batch persistence service
-                                ApplicationServiceContext.Current.GetService<IRepositoryService<AuditBundle>>().Insert(insertBundle);
-                            }
-                            else
-                            {
-                                // Use "classic" mode
-                                AuditData audit = processResult.Message.ToAuditData();
-
-                                audit.AddMetadata(AuditMetadataKey.LocalEndpoint, e.ReceiveEndpoint.ToString());
-                                audit.AddMetadata(AuditMetadataKey.ProcessName, e.Message.ProcessName);
-                                audit.AddMetadata(AuditMetadataKey.RemoteHost, e.SolicitorEndpoint.ToString());
-                                audit.AddMetadata(AuditMetadataKey.SessionId, e.Message.SessionId.ToString());
-                                audit.AddMetadata(AuditMetadataKey.SubmissionTime, e.Message.Timestamp.ToString("o"));
-
-                                AuditUtil.SendAudit(audit);
+                                this.m_traceSource.TraceError("Audit Parse Error from {0}:\r\n{1}", evt.SolicitorEndpoint, 
+                                    String.Join("\r\n", processedMessage.Details.Select(o=>$"\t{o.Priority}: {o.Text}")));
+                                return;
                             }
 
+                            var auditData = processedMessage.Message.ToAuditData();
+                            // Extended data
+                            auditData.AddMetadata(AuditMetadataKey.RemoteHost, evt.SolicitorEndpoint.ToString());
+                            auditData.AddMetadata(AuditMetadataKey.LocalEndpoint, evt.ReceiveEndpoint.ToString());
+                            auditData.AddMetadata(AuditMetadataKey.OriginalFormat, processedMessage.SourceMessage.TypeId);
+                            auditData.AddMetadata(AuditMetadataKey.PID, processedMessage.SourceMessage.ProcessId);
+                            auditData.AddMetadata(AuditMetadataKey.ProcessName, processedMessage.SourceMessage.ProcessName);
+                            auditData.AddMetadata(AuditMetadataKey.SessionId, processedMessage.SourceMessage.SessionId.ToString());
+                            auditData.AddMetadata(AuditMetadataKey.SubmissionTime, processedMessage.SourceMessage.Timestamp.ToString("o"));
+
+                            this.m_auditService.SendAudit(auditData);
                         }
-                        catch (Exception ex)
+                        catch(Exception ex)
                         {
-                            this.m_traceSource.TraceError("Error persisting audit: {0}", ex);
+                            this.m_traceSource.TraceError("Error queueing audit from SYSLOG: {0}", ex.ToHumanReadableString());
                         }
                     }
-                }, MessageUtil.ParseAudit(e.Message));
+                }, e);
 
             }
             catch (Exception ex)
@@ -215,17 +129,5 @@ namespace SanteGuard.Messaging.Syslog.Action
 
         #endregion
 
-        #region IUsesHostContext Members
-
-        /// <summary>
-        /// Gets or sets the host context
-        /// </summary>
-        public IServiceProvider Context
-        {
-            get;
-            set;
-        }
-
-        #endregion
     }
 }

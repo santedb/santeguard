@@ -18,8 +18,9 @@
  * Date: 2018-10-27
  */
 using SanteDB.Core.Diagnostics;
-using SanteGuard.Configuration;
+using SanteDB.Core.Services;
 using SanteGuard.Messaging.Syslog.Action;
+using SanteGuard.Messaging.Syslog.Configuration;
 using SanteGuard.Messaging.Syslog.TransportProtocol;
 using System;
 using System.Collections.Generic;
@@ -54,7 +55,7 @@ namespace SanteGuard.Messaging.Syslog
         /// <summary>
         /// Listener thread
         /// </summary>
-        public SyslogListenerThread(EndpointConfiguration config)
+        public SyslogListenerThread(IServiceManager serviceManager, EndpointConfiguration config)
         {
             this.m_configuration = config;
             if (this.m_configuration == null)
@@ -64,7 +65,7 @@ namespace SanteGuard.Messaging.Syslog
             this.m_protocol.InvalidMessageReceived += new EventHandler<SyslogMessageReceivedEventArgs>(m_protocol_InvalidMessageReceived);
             foreach (var act in this.m_configuration.Action)
             {
-                var handler = Activator.CreateInstance(act) as ISyslogAction;
+                var handler = serviceManager.CreateInjected(act.Type) as ISyslogAction;
                 if (this.m_action == null)
                     throw new InvalidOperationException("Action does not implement ISyslogAction interface");
                 this.m_action.Add(handler);

@@ -18,10 +18,9 @@
  * Date: 2018-10-27
  */
 using SanteDB.Core;
-using SanteDB.Core.Auditing;
-using SanteDB.Core.Diagnostics;
+using SanteDB.Core.Model.Audit;
 using SanteDB.Core.Services;
-using SanteGuard.Configuration;
+using SanteGuard.Messaging.Syslog.Configuration;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -157,7 +156,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
                 Uri remoteEndpoint = new Uri(String.Format("stcp://{0}:{1}", remoteEp.Address, remoteEp.Port));
 
                 // Trace authentication error
-                AuditData ad = new AuditData(
+                AuditEventData ad = new AuditEventData(
                     DateTime.Now,
                     ActionType.Execute,
                     OutcomeIndicator.MinorFail,

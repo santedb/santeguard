@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>$(VersionNumber)</Version>
+    <PackageId>SanteGuard.Client</PackageId>
+    <Title>SanteGuard.Client</Title>
+    <Version>$(VersionNumber)</Version>
+    <Description>SanteGuard configuration support for dCDR instances</Description>
+    <Authors>SanteSuite Contributors</Authors>
+    <PackageTags>SanteDB</PackageTags>
+    <RepositoryUrl>https://github.com/santedb/santeguard</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Product>SanteDB</Product>
+    <Copyright>Copyright (C) 2015-2023 SanteSuite Contributors (See: NOTICES)</Copyright>
+    <Company>SanteSuite Contributors</Company>
+    <PackageIconUrl>http://santesuite.org/assets/img/logo.png</PackageIconUrl>
+    <PackageProjectUrl>http://santesuite.org</PackageProjectUrl>
+    <AssemblyName>SanteGuard.Client</AssemblyName>
+    <RootNamespace>SanteGuard.Client</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SanteDB.Client" Version="$(VersionNumber)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SanteGuard.Messaging.Syslog\SanteGuard.Messaging.Syslog.csproj" />
+  </ItemGroup>
+
+</Project>

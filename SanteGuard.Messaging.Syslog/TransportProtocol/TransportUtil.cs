@@ -21,7 +21,6 @@ using SanteDB.Core;
 using SanteDB.Core.Diagnostics;
 using SanteDB.Core.Interfaces;
 using SanteDB.Core.Services;
-using SanteGuard.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,7 +32,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
     /// <summary>
     /// Transport utilities
     /// </summary>
-    internal class TransportUtil 
+    public class TransportUtil 
     {
 
         // Trace source
@@ -99,7 +98,7 @@ namespace SanteGuard.Messaging.Syslog.TransportProtocol
         /// <summary>
         /// Create transport for the specified protocoltype
         /// </summary>
-        internal ITransportProtocol CreateTransport(string protocolType)
+        public ITransportProtocol CreateTransport(string protocolType)
         {
             Type pType = null;
             if (!m_prots.TryGetValue(protocolType, out pType))
