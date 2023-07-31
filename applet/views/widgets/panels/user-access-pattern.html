@@ -1,6 +1,6 @@
 <div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet" ng-controller="SanteGuardObjectAccessController">
     <sdb:widget name="org.santedb.sg.admin.user.pattern" headerClass="alert-warning"  
-    type="Panel" size="Small" order="100" context="org.santedb.securityUser.admin.security">
+    type="Panel" size="Medium" order="100" context="org.santedb.securityUser.admin.security">
         <sdb:icon>fas fa-shield-alt</sdb:icon>
         <sdb:description>Access Patterns</sdb:description>
         <sdb:guard>!scopedObject.tag || scopedObject.tag["$upstream"] != "true"</sdb:guard>
