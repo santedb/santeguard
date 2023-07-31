@@ -7,7 +7,11 @@
 
     </sdb:widget>
 
-    <div ng-bind-html="'org.santedb.sg.admin.user.pattern.description' | i18n: { user :  scopedObject.entity.userName }"></div>
-    <report-view report-id="'org.santedb.bi.core.reports.audit.actorDate'" parameters="{ 'actor-id' : scopedObject.entity.userName }" view="'by_day'" />
-
+    <div ng-if="!scopedObject">
+            <i class="fas fa-circle-notch fa-spin"></i> {{ 'ui.wait' | i18n }}
+    </div>
+    <div ng-if="scopedObject">
+        <div ng-bind-html="'org.santedb.sg.admin.user.pattern.description' | i18n: { user :  scopedObject.entity.userName }"></div>
+        <report-view report-id="'org.santedb.bi.core.reports.audit.actorDate'" parameters="{ 'actor-id' : scopedObject.entity.userName }" view="'by_day'" />
+    </div>
 </div>
