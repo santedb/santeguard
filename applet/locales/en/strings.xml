@@ -7,17 +7,37 @@
     <string name="ui.config.sg.esite.help">This disconnected gateway will use the default enterprise site ID if none is supplied</string>
     <string name="ui.config.sg.endpoint.label">Endpoint</string>
     <string name="ui.config.sg.endpoint.help">Indicate the endpoint where clients will send their SYSLOG messages to this DCG instance.</string>
-
-    <string name="ui.audit.activity.Query.friendly">{user} performed a query ({event}) using {application} from endpoint {source}</string>
-    <string name="ui.audit.activity.Read.friendly">{user} had a record disclosed ({event}) using {application} from endpoint {source}</string>
-    <string name="ui.audit.activity.Create.friendly">{user} created a new record ({event}) using {application} from endpoint {source}</string>
-    <string name="ui.audit.activity.Update.friendly">{user} updated a record ({event}) using {application} from endpoint {source}</string>
-    <string name="ui.audit.activity.Execute.friendly">{user} executed a system function ({event}) using {application} from endpoint {source}</string>
-    <string name="ui.audit.log.Read.friendly">This record was disclosed to {user} ({event}) on {application} at endpoint {source} (network address: {ipaddr})</string>
-    <string name="ui.audit.log.Query.friendly">This record was disclosed as part of a query result set to {user} ({event}) on {application} at endpoint {source} (network address: {ipaddr})</string>
-    <string name="ui.audit.log.Create.friendly">{user} created this record ({event}) using {application} from endpoint {source} (network address: {ipaddr})</string>
-    <string name="ui.audit.log.Update.friendly">{user} amended/updated this record ({event}) using {application} from endpoint {source} (network address: {ipaddr})</string>
-    <string name="ui.audit.log.Executed.friendly">{user} executed a system function with this record ({event}) using {application} from endpoint {source} (network address: {ipaddr})</string>
+    <string name="ui.config.sg.syslog.enabled">Enable Receiving Syslog Audit Receiver</string>
+    <string name="ui.audit.activity.Query.friendly"><![CDATA[
+        {user} performed a query ({event})<br/> using {application} from endpoint {source}
+    ]]></string>
+    <string name="ui.audit.activity.Read.friendly"><![CDATA[
+        {user} had a record disclosed ({event})<br/> using {application} from endpoint {source}
+    ]]></string>
+    <string name="ui.audit.activity.Create.friendly"><![CDATA[
+        {user} created a new record ({event})<br/> using {application} from endpoint {source}
+    ]]></string>
+    <string name="ui.audit.activity.Update.friendly"><![CDATA[
+        {user} updated a record ({event})<br/> using {application} from endpoint {source}
+    ]]></string>
+    <string name="ui.audit.activity.Execute.friendly"><![CDATA[
+        {user} executed a system function ({event})<br/> using {application} from endpoint {source}
+    ]]></string>
+    <string name="ui.audit.log.Read.friendly"><![CDATA[
+        Disclosed to {user} ({event})<br/> on {application} at {source} (net: {ipaddr})
+    ]]></string>
+    <string name="ui.audit.log.Query.friendly"><![CDATA[
+        Disclosed in a search result set to {user} ({event})<br/> on {application} at {source} (net: {ipaddr})
+    ]]></string>
+    <string name="ui.audit.log.Create.friendly"><![CDATA[
+        {user} created this record ({event})<br/> using {application} from {source} (net: {ipaddr})
+    ]]></string>
+    <string name="ui.audit.log.Update.friendly"><![CDATA[
+        {user} amended this record ({event})<br/> using {application} from {source} (net: {ipaddr})
+    ]]></string>
+    <string name="ui.audit.log.Executed.friendly"><![CDATA[
+        {user} executed an operation with this record ({event})<br/> using {application} from {source} (net: {ipaddr})
+    ]]></string>
     <string name="org.santedb.sg.admin.audit">Detailed Audit Log</string>
     <string name="org.santedb.sg.admin.audit.help">This panel shows a detailed log of all times this object was accessed.</string>
     <string name="org.santedb.sg.admin.patient">Access &amp; Audit Trail</string>

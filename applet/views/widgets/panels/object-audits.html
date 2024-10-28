@@ -1,5 +1,5 @@
 <div xmlns="http://www.w3.org/1999/xhtml" xmlns:sdb="http://santedb.org/applet" ng-controller="SanteGuardObjectAccessController">
-    <sdb:widget name="org.santedb.sg.admin.audit" headerClass="alert-warning"  type="Panel" size="Medium" order="100" context="org.santedb.dg.objectAudit">
+    <sdb:widget name="org.santedb.sg.admin.audit" headerClass="alert-warning"  type="Panel" size="Large" order="100" context="org.santedb.dg.objectAudit">
         <sdb:icon>fas fa-th-list</sdb:icon>
         <sdb:description>SanteGaurd Object Access Log</sdb:description>
         <sdb:guard>!scopedObject.tag || scopedObject.tag["$upstream"] != "true"</sdb:guard>
@@ -17,7 +17,7 @@
     </div>
     <entity-table ng-if="scopedObject.id || scopedObject.entity.id" id="SanteGuardAccessTable" type="Audit" search-field="actor.uname" i18n-prefix="'ui.model.audit.'"
         render="{ outcome: 'renderOutcome', event: 'renderEvent', action: 'renderAction',  timestamp : 'renderTimestamp' }"
-        default-query="{ 'object.id' : scopedObject.id  || scopedObject.entity.id }"
+        default-query="{ 'object.id' : scopedObject.id  || scopedObject.entity.id, _orderBy: 'timestamp:desc' }"
         properties="[ 'action', 'event', 'timestamp', 'outcome' ]"
         sort="{ action: 'action', event: 'event', outcome: 'outcome', timestamp: 'timestamp' }"
         button-bar="'#extendedAuditFilter'"

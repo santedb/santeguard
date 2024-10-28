@@ -69,7 +69,6 @@ namespace SanteGuard.Client
         private ConfigurationDictionary<string, object> GetConfiguration()
         {
             var retVal = new ConfigurationDictionary<string, object>();
-
             var endpoint = this.m_configuration?.Endpoints.FirstOrDefault();
             retVal.Add(ENABLED_SETTING, this.m_configuration != null);
             retVal.Add(ENTERPRISE_SETTING, this.m_configuration?.DefaultEnterpriseSiteID);
@@ -77,7 +76,6 @@ namespace SanteGuard.Client
             retVal.Add(FORWARD_SETTING, endpoint?.Forward?.FirstOrDefault());
             retVal.Add(MAX_SIZE_SETTING, endpoint?.MaxSize);
             retVal.Add(STCP_CERT_SETTING, (endpoint?.TransportConfiguration as StcpConfigurationElement)?.ServerCertificate?.FindType);
-
             return retVal;
         }
 
