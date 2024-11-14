@@ -88,7 +88,7 @@ namespace SanteGuard.Client
         /// <inheritdoc/>
         public bool Configure(SanteDBConfiguration configuration, IDictionary<string, object> featureConfiguration)
         {
-            if(!featureConfiguration.TryGetValue(ENABLED_SETTING, out var enabled) && !(bool)enabled)
+            if(!featureConfiguration.TryGetValue(ENABLED_SETTING, out var enabled) || !(bool)enabled)
             {
                 return true;
             }
@@ -97,7 +97,10 @@ namespace SanteGuard.Client
             var section = configuration.GetSection<SanteGuardConfiguration>();
             if(section == null)
             {
-                section = new SanteGuardConfiguration();
+                section = new SanteGuardConfiguration()
+                {
+                    Endpoints = new List<EndpointConfiguration>()
+                };
                 configuration.AddSection(section);
             }
 
@@ -106,7 +109,7 @@ namespace SanteGuard.Client
                 section.DefaultEnterpriseSiteID = enterpriseSetting.ToString();
             }
 
-            var endpointConfiguration = section.Endpoints.FirstOrDefault();
+            var endpointConfiguration = section.Endpoints?.FirstOrDefault();
             if(endpointConfiguration == null)
             {
                 endpointConfiguration = new EndpointConfiguration();
