@@ -31,7 +31,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="AtnaApi.NetStandard" Version="1.2.0" />
+    <PackageReference Include="AtnaApi.NetStandard" Version="1.2.2" />
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>
