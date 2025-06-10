@@ -137,7 +137,7 @@ namespace SanteGuard.Client
             }
             endpointConfiguration.MaxSize = maxSize;
 
-            if(featureConfiguration.TryGetValue(FORWARD_SETTING, out var forwardRaw))
+            if(featureConfiguration.TryGetValue(FORWARD_SETTING, out var forwardRaw) && forwardRaw != null)
             {
                 endpointConfiguration.Action.Add(new TypeReferenceConfiguration(typeof(ForwardAction)));
                 endpointConfiguration.Forward.Add(forwardRaw.ToString());
