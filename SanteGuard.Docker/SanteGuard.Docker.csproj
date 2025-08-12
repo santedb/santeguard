@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="SanteDB.Docker.Core" Version="$(VersionNumber)" />
+    <PackageReference Include="SharpCompress" Version="0.40.0" />
   </ItemGroup>
 
   <ItemGroup>
