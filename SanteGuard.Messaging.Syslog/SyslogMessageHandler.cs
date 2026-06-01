@@ -63,6 +63,11 @@ namespace SanteGuard.Messaging.Syslog
         /// <inheritdoc/>
         public bool Start()
         {
+            if(ApplicationServiceContext.Current.HostType == SanteDBHostType.Test)
+            {
+                return true;
+            }
+
             this.IsRunning = true;
             this.Starting?.Invoke(this, EventArgs.Empty);
             this.m_configuration = ApplicationServiceContext.Current.GetService<IConfigurationManager>().GetSection<SanteGuardConfiguration>();
