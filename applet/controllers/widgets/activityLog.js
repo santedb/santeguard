@@ -134,10 +134,11 @@ angular.module('santedb').controller('SanteGuardActivityLogController', ["$scope
         var event  = audit.type ? audit.type.code : null;
         if(audit.event == "Query" && audit.action == "Execute")
             action = "Query";
+        var object = audit.object?.find(o=>o.id == $scope.scopedObject?.id  || $scope.scopedObject?.entity?.id);
         return SanteDB.locale.getString(`ui.audit.activity.${action}.friendly`, { 
             user: user,
-            action: audit.action,
-            event: event,
+            action:  audit.action,
+            event: object?.lifecycle && object?.lifecycle != 'NotSet' ? object.lifecycle : event,
             source: source ? source.uname : null,
             ipaddr: source ? source.apId : null,
             application: application ? application.uname : null
