@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="SanteDB.Client" Version="$(VersionNumber)" />
-    <PackageReference Include="SharpCompress" Version="0.40.0" />
+    <PackageReference Include="SharpCompress" Version="0.50.0" />
   </ItemGroup>
 
   <ItemGroup>

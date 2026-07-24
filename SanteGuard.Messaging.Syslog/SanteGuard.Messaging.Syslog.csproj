@@ -41,7 +41,7 @@
     <PackageReference Include="SanteDB.Core.Model">
       <Version>$(VersionNumber)</Version>
     </PackageReference>
-    <PackageReference Include="SharpCompress" Version="0.40.0" />
+    <PackageReference Include="SharpCompress" Version="0.50.0" />
     
   </ItemGroup>
   <ItemGroup>
